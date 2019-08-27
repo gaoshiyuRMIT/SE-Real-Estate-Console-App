@@ -1,3 +1,3 @@
-public class Employee extends User {
+public abstract class Employee extends User {
 
 }

@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class User {
+public abstract class User {
     private String id;
     private String email;
     private String passwordHash;

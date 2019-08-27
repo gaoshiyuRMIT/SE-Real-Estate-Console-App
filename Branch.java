@@ -2,7 +2,6 @@ import java.util.*;
 
 public class Branch {
     private String name;
-    private BranchManager manager;
     private User currUser;
     private ArrayList<RentalProperty> rentalProps;
     private ArrayList<ForSaleProperty> forSaleProps;
@@ -29,13 +28,11 @@ public class Branch {
     }
 
     /*
+    :param role: one of (landlord, vendor, renter, buyer)
+    need to check (email, role) is unique
     create customer, add to `customers`, return userID starting with "c"
     */
-    public String register() throws CustomerExistException {
+    public String register(String email, String password, String role) throws CustomerExistException {
     }
 
-    /* according to runtime type of prop, add to `rentalProps` or `forSaleProps`
-    */
-    public addProperty(Property prop) {
-    }
 }

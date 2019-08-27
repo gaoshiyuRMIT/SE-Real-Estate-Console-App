@@ -3,6 +3,7 @@ public class Notification {
 
     // active, dismissed
     private String status;
+    private User user;
 
     public Notification(String message) {
         this.message = message;
