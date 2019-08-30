@@ -1,3 +1,5 @@
+package property;
+
 import java.util.*;
 
 public class RentalProperty extends Property {

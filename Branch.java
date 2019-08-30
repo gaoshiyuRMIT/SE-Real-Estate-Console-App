@@ -1,5 +1,7 @@
 import java.util.*;
 
+import const.*;
+
 public class Branch {
     private String name;
     private User currUser;
@@ -15,6 +17,10 @@ public class Branch {
         this.forSaleProps = new ArrayList<ForSaleProperty>();
         this.customers = new HashMap<String, Customer>();
         this.employees = new HashMap<String, Employee>();
+    }
+
+    public void addEmployee(Employee e) {
+        this.employees.put(e.getId(), e);
     }
 
     /*
@@ -35,4 +41,22 @@ public class Branch {
     public String register(String email, String password, String role) throws CustomerExistException {
     }
 
+    /*
+    :param capacity: key: bedroom, bathroom, carSpace
+    */
+    public ArrayList<Property> getProperties(String address, String suburb,
+                                            HashMap<String, Integer> capacity,
+                                            PropertyStatus status,
+                                            PropertyType type,
+                                            boolean forSale) {
+        for (String key : capacity.keySet())
+            if (capacity.get(key) == null)
+                capacity.remove(key);
+        ArrayList<Property> ret = new ArrayList<Property>();
+        ArrayList<Property> properties = forSale ? this.forSaleProps : this.rentalProps;
+        for (Property p : properties)
+            if (p.match(address, suburb, capacity, status, type))
+                ret.add(p);
+        return ret;
+    }
 }

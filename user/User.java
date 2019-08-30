@@ -1,3 +1,5 @@
+package user;
+
 import java.util.*;
 
 public abstract class User {
@@ -22,5 +24,7 @@ public abstract class User {
     public boolean authenticate(String passwd) {
     }
 
-
+    public String getId() {
+        return this.id;
+    }
 }
