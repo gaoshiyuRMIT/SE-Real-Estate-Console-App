@@ -2,10 +2,13 @@ package SnE;
 
 import java.time.*;
 
-import user.*;
+import user.customer.*;
 
 public class Application {
-    private Tenant[] applicants;
+    private static int idCounter = 0;
+
+    private String id;
+    private ApplicantDetail[] applicants;
     private double weeklyRental;
 
     // number of months
@@ -17,7 +20,12 @@ public class Application {
     private boolean rentBondPaid;
     private boolean withdrawn;
 
-    public Application(Tenant[] applicants, double weeklyRental, int duration) {
+    public static String genId() {
+        return String.format("a%08s", idCounter++);
+    }
+
+    public Application(ApplicantDetail[] applicants, double weeklyRental, int duration) {
+        id = genId();
         accepted = false;
         rejected = false;
         rentBondPaid = false;
@@ -28,12 +36,12 @@ public class Application {
         this.duration = duration;
     }
 
-    public Tenant[] getApplicants() {
-		return applicants;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setApplicants(Tenant[] applicants) {
-		this.applicants = applicants;
+    public ApplicantDetail[] getApplicants() {
+		return applicants;
 	}
 
 	public double getWeeklyRental() {

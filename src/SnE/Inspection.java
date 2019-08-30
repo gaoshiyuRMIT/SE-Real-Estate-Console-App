@@ -1,5 +1,5 @@
 package SnE;
 
-public class Inspection {
+public class Inspection implements Artifact {
 
 }

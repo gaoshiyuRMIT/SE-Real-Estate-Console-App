@@ -2,7 +2,7 @@ package SnE;
 
 import java.time.*;
 
-import user.*;
+import user.customer.*;
 
 public class PurchaseOffer {
     private String id;

@@ -3,6 +3,8 @@ package SnE;
 import java.util.*;
 
 import consts.*;
+import user.customer.*;
+import user.employee.*;
 import user.*;
 import property.*;
 
@@ -47,6 +49,40 @@ public class Branch {
         return "";
     }
 
+    public ArrayList<Consumer> getConsumers(String suburb) {
+        ArrayList<Consumer> ret = new ArrayList<Consumer>();
+        for (Customer c : this.customers.values()) {
+            if (c instanceof Consumer) {
+                Consumer cm = (Consumer)c;
+                if (suburb != null && !cm.interestedIn(suburb))
+                    continue;
+                ret.add(cm);
+            }
+        }
+        return ret;
+    }
+
+    public void addProperty(Property p) {
+        boolean rental;
+        if (p instanceof RentalProperty) {
+            rental = true;
+            this.rentalProps.add((RentalProperty)p);
+        } else {
+            rental = false;
+            this.forSaleProps.add((ForSaleProperty)p);
+        }
+        for (Consumer c : getConsumers(p.getSuburb())) {
+            if ((rental && c instanceof Tenant)
+                || (!rental && c instanceof Buyer)) {
+                Notification notif = new Notification(
+                    "A rental property has been added in the suburb of your interest.",
+                    p
+                );
+                c.addNotif(notif);
+            }
+        }
+    }
+
     /*
     :param capacity: key: bedroom, bathroom, carSpace
     */
@@ -67,6 +103,34 @@ public class Branch {
         else
             for (RentalProperty rp : this.rentalProps)
                 if (rp.match(address, suburb, capacity, status, type))
+                    ret.add(rp);
+        return ret;
+    }
+
+    public ArrayList<Property> getProperties(PropertyStatus status, Owner owner,
+                                            boolean forSale) {
+        ArrayList<Property> ret = new ArrayList<Property>();
+        if (forSale)
+            for (Property sp : this.forSaleProps)
+                if (sp.match(status, owner))
+                    ret.add(sp);
+        else
+            for (Property rp : this.rentalProps)
+                if (rp.match(status, owner))
+                    ret.add(rp);
+        return ret;
+    }
+
+    public ArrayList<Property> getProperties(PropertyStatus st, EmployeeAssigned e,
+                                            boolean forSale) {
+        ArrayList<Property> ret = new ArrayList<Property>();
+        if (forSale)
+            for (Property sp : this.forSaleProps)
+                if (sp.match(st, e))
+                    ret.add(sp);
+        else
+            for (Property rp : this.rentalProps)
+                if (rp.match(st, e))
                     ret.add(rp);
         return ret;
     }

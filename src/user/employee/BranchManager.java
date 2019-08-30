@@ -1,4 +1,4 @@
-package user;
+package user.employee;
 
 import java.util.*;
 
@@ -18,9 +18,7 @@ public class BranchManager extends Employee {
     }
 
     public void listProperty(Property property, EmployeeAssigned employee) {
-        if (property instanceof RentalProperty) {
-
-        }
+        property.setEmployee(employee);
         property.setStatus(PropertyStatus.ApplicationOpen);
     }
 }

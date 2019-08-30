@@ -3,14 +3,14 @@ package SnE;
 import java.time.*;
 
 import consts.*;
-import user.*;
+import user.customer.*;
 
 public class Lease {
     private LocalDateTime startDate;
     // # months
     private int duration;
     private double weeklyRental;
-    private Tenant[] tenants;
+    private ApplicantDetail[] tenants;
     // active, expired
     private LeaseStatus status;
 
