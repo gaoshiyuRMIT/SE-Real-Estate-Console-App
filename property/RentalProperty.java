@@ -2,6 +2,8 @@ package property;
 
 import java.util.*;
 
+import SnE.*;
+
 public class RentalProperty extends Property {
     private double weeklyRental;
 

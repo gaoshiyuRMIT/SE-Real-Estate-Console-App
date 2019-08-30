@@ -1,6 +1,10 @@
+package SnE;
+
 import java.util.*;
 
-import const.*;
+import consts.*;
+import user.*;
+import property.*;
 
 public class Branch {
     private String name;
@@ -28,6 +32,7 @@ public class Branch {
     iterate through all customers/employees, call authenticate
     */
     public boolean login(String id, String passwd) {
+        return false;
     }
 
     public void logout() {
@@ -39,6 +44,7 @@ public class Branch {
     create customer, add to `customers`, return userID starting with "c"
     */
     public String register(String email, String password, String role) throws CustomerExistException {
+        return "";
     }
 
     /*
@@ -53,10 +59,15 @@ public class Branch {
             if (capacity.get(key) == null)
                 capacity.remove(key);
         ArrayList<Property> ret = new ArrayList<Property>();
-        ArrayList<Property> properties = forSale ? this.forSaleProps : this.rentalProps;
-        for (Property p : properties)
-            if (p.match(address, suburb, capacity, status, type))
-                ret.add(p);
+
+        if (forSale)
+            for (ForSaleProperty sp : this.forSaleProps)
+                if (sp.match(address, suburb, capacity, status, type))
+                    ret.add(sp);
+        else
+            for (RentalProperty rp : this.rentalProps)
+                if (rp.match(address, suburb, capacity, status, type))
+                    ret.add(rp);
         return ret;
     }
 }

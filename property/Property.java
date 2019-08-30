@@ -2,7 +2,9 @@ package property;
 
 import java.util.*;
 
-import const.*;
+import SnE.*;
+import consts.*;
+import user.*;
 
 public abstract class Property {
     private String address;
@@ -36,8 +38,8 @@ public abstract class Property {
                             PropertyType type) {
         if (address != null && !this.address.contains(address))
             return false;
-        if (suburb != null && !suburb.toUpperCase().equals(this.suburb)
-            return false
+        if (suburb != null && !suburb.toUpperCase().equals(this.suburb))
+            return false;
         for (String k : capacity.keySet())
             if (capacity.get(k) != null && this.capacity.get(k) != capacity.get(k))
                 return false;

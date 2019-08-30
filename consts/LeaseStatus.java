@@ -1,4 +1,4 @@
-package const;
+package consts;
 
 public enum LeaseStatus {
     Active, Expired

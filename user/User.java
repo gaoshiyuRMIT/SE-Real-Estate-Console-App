@@ -2,6 +2,8 @@ package user;
 
 import java.util.*;
 
+import SnE.*;
+
 public abstract class User {
     private String id;
     private String email;
@@ -17,11 +19,12 @@ public abstract class User {
         this.id = id;
     }
 
-    public void addNotif(Notification) {
+    public void addNotif(Notification notif) {
     }
 
     // calculate md5 of passwd, compare it to `passwordHash`
     public boolean authenticate(String passwd) {
+        return false;
     }
 
     public String getId() {

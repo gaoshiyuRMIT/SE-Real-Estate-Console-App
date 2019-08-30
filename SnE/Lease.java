@@ -1,6 +1,9 @@
+package SnE;
+
 import java.time.*;
 
-import const.*;
+import consts.*;
+import user.*;
 
 public class Lease {
     private LocalDateTime startDate;
@@ -12,15 +15,15 @@ public class Lease {
     private LeaseStatus status;
 
     public Lease(Application a) {
-        this.duration = a.duration;
-        this.weeklyRental = a.weeklyRental;
-        this.tenants = a.tenants;
+        this.duration = a.getDuration();
+        this.weeklyRental = a.getWeeklyRental();
+        this.tenants = a.getApplicants();
         this.status = LeaseStatus.Active;
         this.startDate = LocalDateTime.now();
     }
 
     public LeaseStatus getStatus() {
-        if (Instant.now().isAfter(startDate.plusMonths(duration).toInstant())) {
+        if (LocalDateTime.now().compareTo(startDate.plusMonths(duration)) > 0) {
             status = LeaseStatus.Expired;
         }
         return status;

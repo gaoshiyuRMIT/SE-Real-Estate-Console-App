@@ -1,3 +1,5 @@
+package SnE;
+
 import java.time.*;
 
 import user.*;
@@ -27,7 +29,7 @@ public class PurchaseOffer {
 
     public boolean isRejected() {
         if (!accepted && !rejected
-                        && Instant.now().isAfter(dateReceived.plusDays(3).toInstant()))
+                        && LocalDateTime.now().compareTo(dateReceived.plusDays(3)) > 0)
             rejected = true;
         return rejected;
     }
@@ -38,7 +40,7 @@ public class PurchaseOffer {
     }
 
     public boolean isWithDrawn() {
-        if (accepted && Instant.now().isAfter(dateAccepted.plusHours(24).toInstant())
+        if (accepted && LocalDateTime.now().compareTo(dateAccepted.plusHours(24)) > 0
                         && !depositPaid)
             withdrawn = true;
         return withdrawn;

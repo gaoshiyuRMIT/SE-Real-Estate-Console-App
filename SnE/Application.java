@@ -1,4 +1,8 @@
+package SnE;
+
 import java.time.*;
+
+import user.*;
 
 public class Application {
     private Tenant[] applicants;
@@ -24,9 +28,33 @@ public class Application {
         this.duration = duration;
     }
 
-    public boolean isRejected() {
+    public Tenant[] getApplicants() {
+		return applicants;
+	}
+
+	public void setApplicants(Tenant[] applicants) {
+		this.applicants = applicants;
+	}
+
+	public double getWeeklyRental() {
+		return weeklyRental;
+	}
+
+	public void setWeeklyRental(double weeklyRental) {
+		this.weeklyRental = weeklyRental;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
+	}
+
+	public boolean isRejected() {
         if (!accepted && !rejected
-                        && Instant.now().isAfter(dateReceived.plusDays(3).toInstant()))
+                        && LocalDateTime.now().compareTo(dateReceived.plusDays(3)) > 0)
             rejected = true;
         return rejected;
     }
@@ -37,7 +65,7 @@ public class Application {
     }
 
     public boolean isWithDrawn() {
-        if (accepted && Instant.now().isAfter(dateAccepted.plusHours(24).toInstant())
+        if (accepted && LocalDateTime.now().compareTo(dateAccepted.plusHours(24)) > 0
                         && !rentBondPaid)
             withdrawn = true;
         return withdrawn;
