@@ -1,32 +1,28 @@
 package SnE;
 
 import java.time.*;
+import java.util.*;
 
 import consts.*;
 import user.customer.*;
 
 public class Lease {
     private LocalDateTime startDate;
-    // # months
     private int duration;
+    private ArrayList<ApplicantDetail> tenants;
     private double weeklyRental;
-    private ApplicantDetail[] tenants;
-    // active, expired
-    private LeaseStatus status;
 
     public Lease(Application a) {
-        this.duration = a.getDuration();
-        this.weeklyRental = a.getWeeklyRental();
-        this.tenants = a.getApplicants();
-        this.status = LeaseStatus.Active;
         this.startDate = LocalDateTime.now();
+        this.duration = a.getDuration();
+        this.tenants = new ArrayList<ApplicantDetail>();
+        for (ApplicantDetail d : a.getApplicants())
+            this.tenants.add(new ApplicantDetail(d));
+        this.weeklyRental = a.getWeeklyRental();
     }
 
-    public LeaseStatus getStatus() {
-        if (LocalDateTime.now().compareTo(startDate.plusMonths(duration)) > 0) {
-            status = LeaseStatus.Expired;
-        }
-        return status;
+    public boolean isExpired() {
+        return LocalDateTime.now().compareTo(startDate.plusMonths(duration)) > 0;
     }
 
 }

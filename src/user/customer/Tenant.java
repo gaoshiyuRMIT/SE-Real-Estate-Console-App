@@ -6,22 +6,23 @@ import SnE.*;
 import exception.*;
 import property.*;
 
-public class Tenant extends Consumer {
+public class Tenant extends Customer {
     private HashMap<String, Application> applications;
+    private ArrayList<ApplicantDetail> applicants;
 
     public Tenant(String email, String password) {
         super(email, password);
     }
 
-    public void initiateApplication(RentalProperty property, double weeklyRental,
-                                    int duration, ApplicantDetail[] details)
-                                    throws OperationNotAllowedException {
-        Application a = new Application(details, weeklyRental, duration);
-        property.addApplication(a);
-        this.applications.put(a.getId(), a);
+    public String getRole() {
+        return "Tenant";
     }
 
-    public void setApplicantDetail(ApplicantDetail detail, ApplicantDetail newDetail) {
-        detail.copyFrom(newDetail);
+    public ArrayList<ApplicantDetail> getApplicants() {
+        return applicants;
+    }
+
+    public void addApplicant(ApplicantDetail d) {
+        this.applicants.add(d);
     }
 }

@@ -10,6 +10,8 @@ public abstract class Customer extends User {
         return String.format("%c08d", Customer.idCounter++);
     }
 
+    public abstract String getRole();
+
     public Customer(String email, String passwd) {
         super(email, passwd, Customer.genId());
     }

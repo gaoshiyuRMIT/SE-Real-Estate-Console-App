@@ -1,9 +1,9 @@
 package user.employee;
 
-import java.util.*;
+import consts.*;
 
-import property.*;
-
-public class PropertyManager extends EmployeeAssigned {
-
+public class PropertyManager extends Employee {
+    public PropertyManager(String email, String password)  {
+        super(email, password,  EmployeeType.PropertyManager);
+    }
 }

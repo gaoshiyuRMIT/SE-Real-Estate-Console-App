@@ -1,9 +1,9 @@
 package user.employee;
 
-import java.util.*;
+import consts.*;
 
-import property.*;
-
-public class SalesConsultant extends EmployeeAssigned {
-
+public class SalesConsultant extends Employee {
+    public SalesConsultant(String email, String password) {
+        super(email, password,  EmployeeType.SalesConsultant);
+    }
 }

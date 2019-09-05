@@ -4,20 +4,18 @@ import user.*;
 import consts.*;
 
 public class Notification {
-    private Artifact artifact;
     private String message;
 
     // active, dismissed
     private NotifStatus status;
 
-    public Notification(String message, Artifact artifact) {
-        this.artifact = artifact;
+    public Notification(String message) {
         this.message = message;
         this.status = NotifStatus.Active;
     }
 
     // change status
     public void dismiss() {
-
+        this.status = NotifStatus.Archived;
     }
 }

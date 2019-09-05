@@ -1,48 +1,31 @@
 package SnE;
 
 import java.time.*;
+import java.util.*;
 
 import user.customer.*;
 
-public class Application {
+public class Application extends ApplicationBase {
     private static int idCounter = 0;
 
-    private String id;
-    private ApplicantDetail[] applicants;
     private double weeklyRental;
 
     // number of months
     private int duration;
-    private LocalDateTime dateReceived;
-    private LocalDateTime dateAccepted;
-    private boolean accepted;
-    private boolean rejected;
     private boolean rentBondPaid;
-    private boolean withdrawn;
 
     public static String genId() {
         return String.format("a%08s", idCounter++);
     }
 
-    public Application(ApplicantDetail[] applicants, double weeklyRental, int duration) {
-        id = genId();
-        accepted = false;
-        rejected = false;
-        rentBondPaid = false;
-        withdrawn = false;
-        dateReceived = LocalDateTime.now();
-        this.applicants = applicants;
+    public Application(ArrayList<ApplicantDetail> applicants, double weeklyRental,
+                        int duration, Tenant initiator) {
+        super(genId(), applicants, initiator);
         this.weeklyRental = weeklyRental;
         this.duration = duration;
-    }
+        rentBondPaid = false;
 
-    public String getId() {
-        return id;
     }
-
-    public ApplicantDetail[] getApplicants() {
-		return applicants;
-	}
 
 	public double getWeeklyRental() {
 		return weeklyRental;
@@ -60,22 +43,11 @@ public class Application {
 		this.duration = duration;
 	}
 
-	public boolean isRejected() {
-        if (!accepted && !rejected
-                        && LocalDateTime.now().compareTo(dateReceived.plusDays(3)) > 0)
-            rejected = true;
-        return rejected;
+    public void setRentBondPaid() {
+        this.rentBondPaid = true;
     }
 
-    public void setAccepted() {
-        accepted = true;
-        dateAccepted = LocalDateTime.now();
-    }
-
-    public boolean isWithDrawn() {
-        if (accepted && LocalDateTime.now().compareTo(dateAccepted.plusHours(24)) > 0
-                        && !rentBondPaid)
-            withdrawn = true;
-        return withdrawn;
+    public boolean isSecured() {
+        return rentBondPaid;
     }
 }

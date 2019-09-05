@@ -1,8 +1,10 @@
 package SnE;
 
 import java.util.*;
+import static java.util.AbstractMap.SimpleEntry;
 
 import consts.*;
+import exception.*;
 import user.customer.*;
 import user.employee.*;
 import user.*;
@@ -10,17 +12,18 @@ import property.*;
 
 public class Branch {
     private String name;
-    private User currUser;
-    private ArrayList<RentalProperty> rentalProps;
-    private ArrayList<ForSaleProperty> forSaleProps;
+    private HashMap<String, RentalProperty> rentalProps;
+    private HashMap<String, ForSaleProperty> forSaleProps;
+
     private HashMap<String, Customer> customers;
+
     private HashMap<String, Employee> employees;
 
     public Branch(String name) {
         this.name = name;
 
-        this.rentalProps = new ArrayList<RentalProperty>();
-        this.forSaleProps = new ArrayList<ForSaleProperty>();
+        this.rentalProps = new HashMap<String, RentalProperty>();
+        this.forSaleProps = new HashMap<String, ForSaleProperty>();
         this.customers = new HashMap<String, Customer>();
         this.employees = new HashMap<String, Employee>();
     }
@@ -29,15 +32,88 @@ public class Branch {
         this.employees.put(e.getId(), e);
     }
 
+    public ArrayList<SimpleEntry<RentalProperty, Application>> getApplications(Tenant t) {
+        ArrayList<SimpleEntry<RentalProperty, Application>> res
+                = new ArrayList<SimpleEntry<RentalProperty, Application>>();
+        for (RentalProperty p : this.rentalProps.values())
+            for (Application a : p.getApplicationsInitiatedBy(t))
+                res.add(new SimpleEntry<RentalProperty, Application>(p, a));
+        return res;
+    }
+
+    public ArrayList<RentalProperty> getOwnedRentalProperty(Landlord c) {
+        ArrayList<RentalProperty> res = new ArrayList<RentalProperty>();
+        for (Property p : getProperties(null, c))
+            res.add((RentalProperty)p);
+        return res;
+    }
+
+    public ArrayList<ForSaleProperty> getOwnedForSaleProperty(Vendor c) {
+        ArrayList<ForSaleProperty> res = new ArrayList<ForSaleProperty>();
+        for (Property p : getProperties(null, c))
+            res.add((ForSaleProperty)p);
+        return res;
+    }
+
+    public ArrayList<SalesConsultant> getAllSaleConsultants() {
+        ArrayList<SalesConsultant> res = new ArrayList<SalesConsultant>();
+        for (Employee e : this.employees.values())
+            if (e instanceof SalesConsultant)
+                res.add((SalesConsultant)e);
+        return res;
+    }
+
+    public ArrayList<PropertyManager> getAllPropertyManagers() {
+        ArrayList<PropertyManager> res = new ArrayList<PropertyManager>();
+        for (Employee e : this.employees.values())
+            if (e instanceof PropertyManager)
+                res.add((PropertyManager)e);
+        return res;
+    }
+
+    public Property getPropertyById(String pid) throws InvalidParamException {
+        Property p;
+        p = this.rentalProps.get(pid);
+        if (p == null)
+            p = this.forSaleProps.get(pid);
+        if (p == null)
+            throw new InvalidParamException("No property exists with the specified id.");
+        return p;
+    }
+
+    public ArrayList<Property> getNewlyAddedProperties() {
+        ArrayList<Property> res = new ArrayList<Property>();
+        for (RentalProperty p : rentalProps.values())
+            if (p.getStatus() == PropertyStatus.NotListed)
+                res.add(p);
+        for (ForSaleProperty p : forSaleProps.values())
+            if (p.getStatus() == PropertyStatus.NotListed)
+                res.add(p);
+        return res;
+    }
+
     /*
     determine customer or employee
     iterate through all customers/employees, call authenticate
     */
-    public boolean login(String id, String passwd) {
-        return false;
-    }
-
-    public void logout() {
+    public User login(String id, String passwd) {
+        if (id.startsWith("e"))
+            if (this.employees.containsKey(id)) {
+                User u = this.employees.get(id);
+                if (u.authenticate(passwd))
+                    return u;
+                else
+                    return null;
+            }
+        else if (id.startsWith("c"))
+            if (this.customers.containsKey(id)) {
+                User u = this.customers.get(id);
+                if (u.authenticate(passwd))
+                    return u;
+                else
+                    return null;
+            }
+        return null;
     }
 
     /*
@@ -45,41 +121,36 @@ public class Branch {
     need to check (email, role) is unique
     create customer, add to `customers`, return userID starting with "c"
     */
-    public String register(String email, String password, String role) throws CustomerExistException {
-        return "";
-    }
-
-    public ArrayList<Consumer> getConsumers(String suburb) {
-        ArrayList<Consumer> ret = new ArrayList<Consumer>();
-        for (Customer c : this.customers.values()) {
-            if (c instanceof Consumer) {
-                Consumer cm = (Consumer)c;
-                if (suburb != null && !cm.interestedIn(suburb))
-                    continue;
-                ret.add(cm);
-            }
-        }
-        return ret;
+    public String register(String email, String password, String role)
+                            throws CustomerExistException, InvalidParamException {
+        for (Customer c : this.customers.values())
+            if (c.getEmail().equals(email) && c.getRole().equals(role))
+                throw new CustomerExistException();
+        Customer newbie;
+        if (role.equals("Vendor"))
+            newbie = new Vendor(email, password);
+        else if (role.equals("Landlord"))
+            newbie = new Landlord(email, password);
+        else if (role.equals("Buyer"))
+            newbie = new Buyer(email, password);
+        else if (role.equals("Tenant"))
+            newbie = new Tenant(email, password);
+        else
+            throw new InvalidParamException(
+                "Customer role must be either Vendor, Landlord, Buyer or Tenant."
+            );
+        this.customers.put(newbie.getId(), newbie);
+        return newbie.getId();
     }
 
     public void addProperty(Property p) {
         boolean rental;
         if (p instanceof RentalProperty) {
             rental = true;
-            this.rentalProps.add((RentalProperty)p);
+            this.rentalProps.put(p.getId(), (RentalProperty)p);
         } else {
             rental = false;
-            this.forSaleProps.add((ForSaleProperty)p);
-        }
-        for (Consumer c : getConsumers(p.getSuburb())) {
-            if ((rental && c instanceof Tenant)
-                || (!rental && c instanceof Buyer)) {
-                Notification notif = new Notification(
-                    "A rental property has been added in the suburb of your interest.",
-                    p
-                );
-                c.addNotif(notif);
-            }
+            this.forSaleProps.put(p.getId(), (ForSaleProperty)p);
         }
     }
 
@@ -97,39 +168,37 @@ public class Branch {
         ArrayList<Property> ret = new ArrayList<Property>();
 
         if (forSale)
-            for (ForSaleProperty sp : this.forSaleProps)
+            for (ForSaleProperty sp : this.forSaleProps.values())
                 if (sp.match(address, suburb, capacity, status, type))
                     ret.add(sp);
         else
-            for (RentalProperty rp : this.rentalProps)
+            for (RentalProperty rp : this.rentalProps.values())
                 if (rp.match(address, suburb, capacity, status, type))
                     ret.add(rp);
         return ret;
     }
 
-    public ArrayList<Property> getProperties(PropertyStatus status, Owner owner,
-                                            boolean forSale) {
+    public ArrayList<Property> getProperties(PropertyStatus status, Customer owner) {
         ArrayList<Property> ret = new ArrayList<Property>();
-        if (forSale)
-            for (Property sp : this.forSaleProps)
+        if (owner instanceof Vendor)
+            for (Property sp : this.forSaleProps.values())
                 if (sp.match(status, owner))
                     ret.add(sp);
-        else
-            for (Property rp : this.rentalProps)
+        else if (owner instanceof Landlord)
+            for (Property rp : this.rentalProps.values())
                 if (rp.match(status, owner))
                     ret.add(rp);
         return ret;
     }
 
-    public ArrayList<Property> getProperties(PropertyStatus st, EmployeeAssigned e,
-                                            boolean forSale) {
+    public ArrayList<Property> getProperties(PropertyStatus st, Employee e) {
         ArrayList<Property> ret = new ArrayList<Property>();
-        if (forSale)
-            for (Property sp : this.forSaleProps)
+        if (e.getRole() == EmployeeType.SalesConsultant)
+            for (Property sp : this.forSaleProps.values())
                 if (sp.match(st, e))
                     ret.add(sp);
-        else
-            for (Property rp : this.rentalProps)
+        else if (e.getRole() == EmployeeType.PropertyManager)
+            for (Property rp : this.rentalProps.values())
                 if (rp.match(st, e))
                     ret.add(rp);
         return ret;
