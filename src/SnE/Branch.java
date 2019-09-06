@@ -148,6 +148,13 @@ public class Branch {
         if (p instanceof RentalProperty) {
             rental = true;
             this.rentalProps.put(p.getId(), (RentalProperty)p);
+            ArrayList<Property> ps = getProperties(null, p.getOwner());
+            if (ps.size() >= 2)
+                for (Property p : ps) {
+                    RentalProperty rp = (RentalProperty)p;
+                    rp.setMinManagementFeeRate(0.6);
+                    rp.setMaxManagementFeeRate(0.7);
+                }
         } else {
             rental = false;
             this.forSaleProps.put(p.getId(), (ForSaleProperty)p);

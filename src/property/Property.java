@@ -58,6 +58,10 @@ public abstract class Property {
         return id;
     }
 
+    public HashMap<String, String> getDocuments() {
+        return documents;
+    }
+
     public void setEmployee(Employee e) {
         this.assignee = e;
     }
@@ -175,6 +179,27 @@ public abstract class Property {
                 setStatus(PropertyStatus.ApplicationOpen);
         } else
             throw new OperationNotAllowedException();
+    }
+
+    public void addInspection(Inspection i) throws OperationNotAllowedException {
+        if (!isOpenForInspection())
+            throw new OperationNotAllowedException(
+                "Currently inspection is closed for this property."
+            );
+        this.inspection.add(i);
+    }
+
+    public ArrayList<Inspection> getUpcomingInspections() {
+        ArrayList<Inspection> res = new ArrayList<Inspection>();
+        for (Inspection i : this.inspections)
+            if (i.isUpcoming())
+                res.add(i);
+        return res;
+    }
+
+    public void cancelAllInspections() {
+        for (Inspection i : getUpcomingInspections())
+            i.setCancelled();
     }
 }
 

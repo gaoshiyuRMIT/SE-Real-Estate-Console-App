@@ -35,5 +35,7 @@ public class PurchaseOffer extends ApplicationBase {
         depositPaid = true;
     }
 
-
+    public double getAmount() {
+        return amount;
+    }
 }

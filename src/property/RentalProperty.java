@@ -1,6 +1,7 @@
 package property;
 
 import java.util.*;
+import static java.util.AbstractMap.SimpleEntry;
 
 import SnE.*;
 import consts.*;
@@ -15,12 +16,26 @@ public class RentalProperty extends Property {
     private int desiredDuration;
 
     private ArrayList<Lease> leases;
-    private double managementFee;
+    private double managementFeeRate;
+    private SimpleEntry<Double, Double> managementFeeRateRange;
 
     public RentalProperty(String address, String suburb, HashMap<String, Integer> capacity,
-                            PropertyType type, Landlord landlord)
+                            PropertyType type, double weeklyRental, int desiredDuration,
+                            Landlord landlord)
                             throws InvalidParamException {
         super(address, suburb, capacity, type, landlord);
+        this.weeklyRental = weeklyRental;
+        this.desiredDuration = desiredDuration;
+        this.managementFeeRate = 0.8;
+        this.managementFeeRateRange = new SimpleEntry<double, double>(0.7, 0.8);
+    }
+
+    public setWeeklyRental(double r) throws OperationNotAllowedException {
+        if (getCurrentLease() != null)
+            throw new OperationNotAllowedException(
+                "Rental may only be changed when the current lease is expired."
+            );
+        this.weeklyRental = r;
     }
 
     public void setManager(PropertyManager e) {
@@ -29,6 +44,32 @@ public class RentalProperty extends Property {
 
     public PropertyManager getManager() {
         return (PropertyManager)(getEmployee());
+    }
+
+    public double getManagementFee() {
+        Lease l = getCurrentLease();
+        double weeklyRental = (l == null) ? weeklyRental : l.getWeeklyRental();
+        return this.managementFeeRate * weeklyRental * 365 / (12 * 7);
+    }
+
+    public void setMinManagementFeeRate(double f) {
+        managementFeeRateRange = new SimpleEntry<Double, Double>(
+            f, managementFeeRateRange.getValue()
+        );
+    }
+
+    public void setMaxManagementFeeRate(double f) {
+        managementFeeRateRange.setValue(f);
+    }
+
+    public void setManagementFeeRate(double r) throws InvalidParamException {
+        double min = managementFeeRateRange.getKey();
+        double max = managementFeeRateRange.getValue();
+        if (r < min || r > max)
+            throw new InvalidParamException(
+                String.format("The rate must be between %.2f and %.2f.", min, max)
+            );
+        managementFeeRate = r;
     }
 
     public void list() throws OperationNotAllowedException {
@@ -75,11 +116,21 @@ public class RentalProperty extends Property {
             throw new OperationNotAllowedException();
         a.setRentBondPaid();
         setStatus(PropertyStatus.Secured);
+        cancelAllInspections();
         Lease lease = new Lease(a);
         this.leases.add(lease);
     }
 
     public void withdrawApplication(Application a) throws OperationNotAllowedException {
         super.withdrawApplicationBase(a);
+    }
+
+    public Lease getCurrentLease() {
+        if (this.leases.size() == 0)
+            return null;
+        Lease l = this.leases.get(this.leases.size()-1);
+        if (l.isExpired())
+            return null;
+        return l;
     }
 }

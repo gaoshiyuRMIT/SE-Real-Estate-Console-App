@@ -10,12 +10,21 @@ import exception.*;
 
 public class ForSaleProperty extends Property {
     private double commissionRate;
-    private double minimumPrice;
+    private double minPrice;
 
     public ForSaleProperty(String address, String suburb, HashMap<String, Integer> capacity,
-                            PropertyType type, Vendor vendor)
+                            PropertyType type, double minPrice, Vendor vendor)
                             throws InvalidParamException {
         super(address, suburb, capacity, type, vendor);
+        this.minPrice = minPrice;
+    }
+
+    public boolean hasSection32() {
+        return this.getDocuments().containsKey("Section 32");
+    }
+
+    public void setMinPrice(double p) {
+        minPrice = p;
     }
 
     public void list() throws OperationNotAllowedException {
@@ -42,7 +51,10 @@ public class ForSaleProperty extends Property {
         this.commissionRate = r;
     }
 
-    public void addApplication(PurchaseOffer a) throws OperationNotAllowedException{
+    public void addApplication(PurchaseOffer a) throws OperationNotAllowedException,
+                                                        OfferAmountTooLowException {
+        if (a.getAmount() < minPrice)
+            throw new OfferAmountTooLowException();
         super.addApplicationBase(a);
     }
 
@@ -58,6 +70,16 @@ public class ForSaleProperty extends Property {
         for (ApplicationBase a : super.getApplicationBasesInitiatedBy(c))
             res.add((PurchaseOffer)a);
         return res;
+    }
+
+    public void addInspection(Inspection i) throws OperationNotAllowedException {
+        if (!hasSection32())
+            throw new OperationNotAllowedException(
+                "Before any inspection can be conducted, "
+                + "section 32 must be compiled by a legal profession "
+                + "and scanned into the system."
+            );
+        super.addInspection(i);
     }
 
     public void acceptApplication(PurchaseOffer a) throws OperationNotAllowedException {
@@ -78,6 +100,13 @@ public class ForSaleProperty extends Property {
             throw new OperationNotAllowedException();
         a.setDepositPaid();
         setStatus(PropertyStatus.Secured);
-        // TODO: add sale bonus to consultant
+        cancelAllInspections();
+    }
+
+    public void paySettlementForApplication(PurchaseOffer a)
+                                            throws OperationNotAllowedException{
+        if (!this.getApplications().contains(a) || !a.isSecured())
+            throw new OperationNotAllowedException();
+        a.setSettlementPaid();
     }
 }

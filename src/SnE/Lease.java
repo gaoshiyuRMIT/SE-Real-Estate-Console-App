@@ -21,6 +21,10 @@ public class Lease {
         this.weeklyRental = a.getWeeklyRental();
     }
 
+    public double getWeeklyRental() {
+        return weeklyRental;
+    }
+
     public boolean isExpired() {
         return LocalDateTime.now().compareTo(startDate.plusMonths(duration)) > 0;
     }

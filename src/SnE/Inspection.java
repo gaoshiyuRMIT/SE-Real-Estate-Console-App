@@ -6,17 +6,30 @@ import exception.*;
 
 public class Inspection {
     private LocalDateTime dateTime;
-    private String description;
     private boolean cancelled;
-    private boolean done;
 
-    public Inspection(LocalDateTime dateTime, String description)
+    public Inspection(LocalDateTime dateTime)
                         throws InvalidParamException {
-        if (LocalDateTime.now().compareTo(dateTime) < 0)
+        if (LocalDateTime.now().compareTo(dateTime) > 0)
             throw new InvalidParamException("Cannot schedule an inspection in the past.");
         this.dateTime = dateTime;
-        this.description = description;
         cancelled = false;
-        done = false;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public boolean isDone() {
+        return !isCancelled() && LocalDateTime.now().compareTo(this.dateTime) > 0;
+    }
+
+    public boolean isUpcoming() {
+        return !isCancelled() && LocalDateTime.now().compareTo(this.dateTime) <= 0;
+    }
+
+    public void setCancelled() {
+        if (isUpcoming())
+            cancelled = true;
     }
 }
