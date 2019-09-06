@@ -186,7 +186,7 @@ public abstract class Property {
             throw new OperationNotAllowedException(
                 "Currently inspection is closed for this property."
             );
-        this.inspection.add(i);
+        this.inspections.add(i);
     }
 
     public ArrayList<Inspection> getUpcomingInspections() {

@@ -1,12 +1,12 @@
 package exception;
 
 
-public class OperationNotAllowedException extends Exception {
-    public OperationNotAllowedException() {
+public class OfferAmountTooLowException extends Exception {
+    public OfferAmountTooLowException() {
         super();
     }
 
-    public OperationNotAllowedException(String msg) {
+    public OfferAmountTooLowException(String msg) {
         super(msg);
     }
 }

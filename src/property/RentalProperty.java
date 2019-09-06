@@ -27,10 +27,10 @@ public class RentalProperty extends Property {
         this.weeklyRental = weeklyRental;
         this.desiredDuration = desiredDuration;
         this.managementFeeRate = 0.8;
-        this.managementFeeRateRange = new SimpleEntry<double, double>(0.7, 0.8);
+        this.managementFeeRateRange = new SimpleEntry<Double, Double>(0.7, 0.8);
     }
 
-    public setWeeklyRental(double r) throws OperationNotAllowedException {
+    public void setWeeklyRental(double r) throws OperationNotAllowedException {
         if (getCurrentLease() != null)
             throw new OperationNotAllowedException(
                 "Rental may only be changed when the current lease is expired."
@@ -48,7 +48,7 @@ public class RentalProperty extends Property {
 
     public double getManagementFee() {
         Lease l = getCurrentLease();
-        double weeklyRental = (l == null) ? weeklyRental : l.getWeeklyRental();
+        double weeklyRental = (l == null) ? this.weeklyRental : l.getWeeklyRental();
         return this.managementFeeRate * weeklyRental * 365 / (12 * 7);
     }
 
