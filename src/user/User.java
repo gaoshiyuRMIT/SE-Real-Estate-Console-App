@@ -2,7 +2,7 @@ package user;
 
 import java.util.*;
 
-import SnE.*;
+import se.*;
 
 public abstract class User {
     private String id;

@@ -1,4 +1,4 @@
-package SnE;
+package se;
 
 import java.util.*;
 import static java.util.AbstractMap.SimpleEntry;

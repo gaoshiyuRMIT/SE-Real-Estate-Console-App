@@ -1,12 +1,10 @@
-package SnE;
+package se;
 
 import user.*;
 import consts.*;
 
 public class Notification {
     private String message;
-
-    // active, dismissed
     private NotifStatus status;
 
     public Notification(String message) {

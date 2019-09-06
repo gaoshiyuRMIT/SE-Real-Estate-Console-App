@@ -3,7 +3,7 @@ package property;
 import java.util.*;
 import static java.util.AbstractMap.SimpleEntry;
 
-import SnE.*;
+import se.*;
 import consts.*;
 import user.customer.*;
 import user.employee.*;

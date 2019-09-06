@@ -2,7 +2,7 @@ package property;
 
 import java.util.*;
 
-import SnE.*;
+import se.*;
 import consts.*;
 import user.customer.*;
 import user.employee.*;

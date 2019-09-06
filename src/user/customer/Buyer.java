@@ -2,7 +2,7 @@ package user.customer;
 
 import java.util.*;
 
-import SnE.*;
+import se.*;
 
 import property.*;
 import exception.*;

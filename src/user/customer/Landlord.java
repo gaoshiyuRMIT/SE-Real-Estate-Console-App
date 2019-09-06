@@ -4,7 +4,7 @@ package user.customer;
 import java.util.*;
 
 import consts.*;
-import SnE.*;
+import se.*;
 import property.*;
 
 public class Landlord extends Customer {

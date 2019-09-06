@@ -3,7 +3,7 @@ package user.customer;
 import java.util.*;
 
 import property.*;
-import SnE.*;
+import se.*;
 import consts.*;
 
 public class Vendor extends Customer {
