@@ -3,6 +3,7 @@ package se;
 import java.time.*;
 import java.util.*;
 
+import exception.*;
 import user.customer.*;
 
 public class Application extends ApplicationBase {
@@ -15,12 +16,13 @@ public class Application extends ApplicationBase {
     private boolean rentBondPaid;
 
     public static String genId() {
-        return String.format("a%08s", idCounter++);
+        return String.format("a%08d", idCounter++);
     }
 
-    public Application(ArrayList<ApplicantDetail> applicants, double weeklyRental,
-                        int duration, Tenant initiator) {
-        super(genId(), applicants, initiator);
+    public Application(List<ID> applicantIds, double weeklyRental,
+                        int duration, Tenant initiator)
+                        throws InvalidParamException {
+        super(genId(), applicantIds, initiator);
         this.weeklyRental = weeklyRental;
         this.duration = duration;
         rentBondPaid = false;

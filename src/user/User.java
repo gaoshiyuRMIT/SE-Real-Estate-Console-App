@@ -18,6 +18,7 @@ public abstract class User {
         this.notifications = new ArrayList<Notification>();
         this.id = id;
         this.password = password;
+        this.email = email;
     }
 
     public void addNotif(Notification notif) {

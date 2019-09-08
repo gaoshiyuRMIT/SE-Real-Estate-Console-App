@@ -6,9 +6,7 @@ import se.*;
 import exception.*;
 import property.*;
 
-public class Tenant extends Customer {
-    private HashMap<String, Application> applications;
-    private ArrayList<ApplicantDetail> applicants;
+public class Tenant extends NonOwner {
 
     public Tenant(String email, String password) {
         super(email, password);
@@ -18,11 +16,6 @@ public class Tenant extends Customer {
         return "Tenant";
     }
 
-    public ArrayList<ApplicantDetail> getApplicants() {
-        return applicants;
-    }
 
-    public void addApplicant(ApplicantDetail d) {
-        this.applicants.add(d);
-    }
+
 }

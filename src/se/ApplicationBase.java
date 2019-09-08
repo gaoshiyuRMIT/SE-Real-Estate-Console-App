@@ -3,26 +3,35 @@ package se;
 import java.time.*;
 import java.util.*;
 
+import exception.*;
 import user.customer.*;
 
 public abstract class ApplicationBase {
     private String id;
-    private ArrayList<ApplicantDetail> applicants;
+    private List<ID> applicantIds;
 
-    private Customer initiator;
+    private NonOwner initiator;
     private LocalDateTime dateReceived;
     private LocalDateTime dateAccepted;
     private boolean accepted;
     private boolean rejected;
     private boolean withdrawn;
 
-    public ApplicationBase(String id, ArrayList<ApplicantDetail> applicants, Customer initiator) {
+    public ApplicationBase(String id, List<ID> applicantIds, NonOwner initiator)
+                            throws InvalidParamException{
         this.id = id;
         accepted = false;
         rejected = false;
         withdrawn = false;
         dateReceived = LocalDateTime.now();
-        this.applicants = applicants;
+        if (applicantIds == null || applicantIds.size() == 0)
+            throw new InvalidParamException("Applicant details not specified.");
+        for (ID adid : applicantIds)
+            if (!initiator.hasApplicant(adid))
+                throw new InvalidParamException(
+                    "The applicant ids supplied are inconsistent with the initiator."
+                );
+        this.applicantIds = applicantIds;
         this.initiator = initiator;
     }
 
@@ -34,8 +43,8 @@ public abstract class ApplicationBase {
         return id;
     }
 
-    public ArrayList<ApplicantDetail> getApplicants() {
-        return applicants;
+    public List<ApplicantDetail> getApplicants() {
+        return this.initiator.getApplicants(applicantIds);
     }
 
     public abstract boolean isSecured();

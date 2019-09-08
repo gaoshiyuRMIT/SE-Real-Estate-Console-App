@@ -3,7 +3,7 @@ package user.employee;
 import user.*;
 import consts.*;
 
-public abstract class Employee extends User {
+public class Employee extends User {
     private static int idCounter = 0;
     private static final double maxMonthlyHours = 40;
 

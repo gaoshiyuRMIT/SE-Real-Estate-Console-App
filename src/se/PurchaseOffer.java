@@ -3,6 +3,7 @@ package se;
 import java.time.*;
 import java.util.*;
 
+import exception.*;
 import user.customer.*;
 
 public class PurchaseOffer extends ApplicationBase {
@@ -16,8 +17,9 @@ public class PurchaseOffer extends ApplicationBase {
         return String.format("po%08s", idCounter++);
     }
 
-    public PurchaseOffer(double amount, Buyer buyer, ArrayList<ApplicantDetail> applicants) {
-        super(genId(), applicants, buyer);
+    public PurchaseOffer(double amount, Buyer buyer, List<ID> applicantIds)
+                            throws InvalidParamException {
+        super(genId(), applicantIds, buyer);
         this.amount = amount;
         depositPaid = false;
         settlementPaid = false;

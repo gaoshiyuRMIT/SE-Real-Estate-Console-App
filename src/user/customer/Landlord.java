@@ -20,5 +20,8 @@ public class Landlord extends Customer {
         a.setAccepted();
     }
 
-
+    public static void main(String[] args) {
+        Landlord l = new Landlord("a.b@c.d", "aaaaaa");
+        System.out.println(l.getId());
+    }
 }

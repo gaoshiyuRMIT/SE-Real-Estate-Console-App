@@ -7,17 +7,14 @@ import se.*;
 import property.*;
 import exception.*;
 
-public class Buyer extends Customer {
-    private ArrayList<PurchaseOffer> purchaseOffers;
-    private ArrayList<ApplicantDetail> applicants;
+public class Buyer extends NonOwner {
+    private HashMap<ID, ApplicantDetail> applicants;
 
     public Buyer(String email, String password) {
         super(email, password);
-        purchaseOffers = new ArrayList<PurchaseOffer>();
     }
 
     public String getRole() {
         return "Buyer";
     }
-
 }

@@ -32,7 +32,7 @@ public class Branch {
         this.employees.put(e.getId(), e);
     }
 
-    public ArrayList<SimpleEntry<RentalProperty, Application>> getApplications(Tenant t) {
+    public List<SimpleEntry<RentalProperty, Application>> getApplications(Tenant t) {
         ArrayList<SimpleEntry<RentalProperty, Application>> res
                 = new ArrayList<SimpleEntry<RentalProperty, Application>>();
         for (RentalProperty p : this.rentalProps.values())
@@ -41,21 +41,28 @@ public class Branch {
         return res;
     }
 
-    public ArrayList<RentalProperty> getOwnedRentalProperty(Landlord c) {
+    public List<RentalProperty> getOwnedRentalProperty(Landlord c) {
         ArrayList<RentalProperty> res = new ArrayList<RentalProperty>();
         for (Property p : getProperties(null, c))
             res.add((RentalProperty)p);
         return res;
     }
 
-    public ArrayList<ForSaleProperty> getOwnedForSaleProperty(Vendor c) {
+    public List<RentalProperty> getManagedRentalProperty(PropertyManager e) {
+        ArrayList<RentalProperty> res = new ArrayList<RentalProperty>();
+        for (Property p : getProperties(null, e))
+            res.add((RentalProperty)p);
+        return res;
+    }
+
+    public List<ForSaleProperty> getOwnedForSaleProperty(Vendor c) {
         ArrayList<ForSaleProperty> res = new ArrayList<ForSaleProperty>();
         for (Property p : getProperties(null, c))
             res.add((ForSaleProperty)p);
         return res;
     }
 
-    public ArrayList<SalesConsultant> getAllSaleConsultants() {
+    public List<SalesConsultant> getAllSaleConsultants() {
         ArrayList<SalesConsultant> res = new ArrayList<SalesConsultant>();
         for (Employee e : this.employees.values())
             if (e instanceof SalesConsultant)
@@ -63,7 +70,7 @@ public class Branch {
         return res;
     }
 
-    public ArrayList<PropertyManager> getAllPropertyManagers() {
+    public List<PropertyManager> getAllPropertyManagers() {
         ArrayList<PropertyManager> res = new ArrayList<PropertyManager>();
         for (Employee e : this.employees.values())
             if (e instanceof PropertyManager)
@@ -81,7 +88,7 @@ public class Branch {
         return p;
     }
 
-    public ArrayList<Property> getNewlyAddedProperties() {
+    public List<Property> getNewlyAddedProperties() {
         ArrayList<Property> res = new ArrayList<Property>();
         for (RentalProperty p : rentalProps.values())
             if (p.getStatus() == PropertyStatus.NotListed)
@@ -97,23 +104,22 @@ public class Branch {
     iterate through all customers/employees, call authenticate
     */
     public User login(String id, String passwd) {
-        if (id.startsWith("e"))
+        User u = null;
+        if (id.startsWith("e")) {
             if (this.employees.containsKey(id)) {
-                User u = this.employees.get(id);
-                if (u.authenticate(passwd))
-                    return u;
-                else
-                    return null;
+                u = this.employees.get(id);
+                if (!u.authenticate(passwd))
+                    u = null;
             }
-        else if (id.startsWith("c"))
+        }
+        else if (id.startsWith("c")) {
             if (this.customers.containsKey(id)) {
-                User u = this.customers.get(id);
-                if (u.authenticate(passwd))
-                    return u;
-                else
-                    return null;
+                u = this.customers.get(id);
+                if (!u.authenticate(passwd))
+                    u = null;
             }
-        return null;
+        }
+        return u;
     }
 
     /*
@@ -123,9 +129,10 @@ public class Branch {
     */
     public String register(String email, String password, String role)
                             throws CustomerExistException, InvalidParamException {
-        for (Customer c : this.customers.values())
+        for (Customer c : this.customers.values()) {
             if (c.getEmail().equals(email) && c.getRole().equals(role))
                 throw new CustomerExistException();
+        }
         Customer newbie;
         if (role.equals("Vendor"))
             newbie = new Vendor(email, password);
@@ -148,7 +155,7 @@ public class Branch {
         if (p instanceof RentalProperty) {
             rental = true;
             this.rentalProps.put(p.getId(), (RentalProperty)p);
-            ArrayList<RentalProperty> ps = getOwnedRentalProperty(
+            List<RentalProperty> ps = getOwnedRentalProperty(
                 ((RentalProperty)p).getLandlord()
             );
             if (ps.size() >= 2)
@@ -165,7 +172,7 @@ public class Branch {
     /*
     :param capacity: key: bedroom, bathroom, carSpace
     */
-    public ArrayList<Property> getProperties(String address, String suburb,
+    public List<Property> getProperties(String address, String suburb,
                                             HashMap<String, Integer> capacity,
                                             PropertyStatus status,
                                             PropertyType type,
@@ -186,7 +193,7 @@ public class Branch {
         return ret;
     }
 
-    public ArrayList<Property> getProperties(PropertyStatus status, Customer owner) {
+    public List<Property> getProperties(PropertyStatus status, Customer owner) {
         ArrayList<Property> ret = new ArrayList<Property>();
         if (owner instanceof Vendor)
             for (Property sp : this.forSaleProps.values())
@@ -199,7 +206,7 @@ public class Branch {
         return ret;
     }
 
-    public ArrayList<Property> getProperties(PropertyStatus st, Employee e) {
+    public List<Property> getProperties(PropertyStatus st, Employee e) {
         ArrayList<Property> ret = new ArrayList<Property>();
         if (e.getRole() == EmployeeType.SalesConsultant)
             for (Property sp : this.forSaleProps.values())
@@ -210,5 +217,24 @@ public class Branch {
                 if (rp.match(st, e))
                     ret.add(rp);
         return ret;
+    }
+
+    public static void main(String[] args) throws Exception {
+        // HashMap<String, String> h = new HashMap<String, String>();
+        // String s1 = "a";
+        // String s2 = "a";
+        // h.put(s1, "b");
+        // System.out.println(h.containsKey(s1));
+        // System.out.println(h.containsKey(s2));
+
+
+        Branch b = new Branch("test");
+        String id = b.register("a.b@c.d", "111111", "Vendor");
+        System.out.println(id);
+
+        System.out.println(b.customers.containsKey(id));
+
+        User u = b.login(id, "111111");
+        System.out.println(u);
     }
 }

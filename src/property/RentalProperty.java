@@ -30,6 +30,13 @@ public class RentalProperty extends Property {
         this.managementFeeRateRange = new SimpleEntry<Double, Double>(0.7, 0.8);
     }
 
+    public List<Application> getApplications() {
+        List<Application> res = new ArrayList<Application>();
+        for (ApplicationBase ab : super.getApplicationBases())
+            res.add((Application)ab);
+        return res;
+    }
+
     public void setWeeklyRental(double r) throws OperationNotAllowedException {
         if (getCurrentLease() != null)
             throw new OperationNotAllowedException(
@@ -56,10 +63,14 @@ public class RentalProperty extends Property {
         managementFeeRateRange = new SimpleEntry<Double, Double>(
             f, managementFeeRateRange.getValue()
         );
+        if (managementFeeRate < f)
+            managementFeeRate = f;
     }
 
     public void setMaxManagementFeeRate(double f) {
         managementFeeRateRange.setValue(f);
+        if (managementFeeRate > f)
+            managementFeeRate = f;
     }
 
     public void setManagementFeeRate(double r) throws InvalidParamException {

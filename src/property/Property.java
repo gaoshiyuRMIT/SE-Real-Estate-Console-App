@@ -16,12 +16,12 @@ public abstract class Property {
     private String suburb;
     private HashMap<String, Integer> capacity;
     private PropertyType type;
-    private ArrayList<Inspection> inspections;
+    private List<Inspection> inspections;
     private HashMap<String, String> documents;
     private PropertyStatus status;
     private Customer owner;
     private Employee assignee;
-    private ArrayList<ApplicationBase> applications;
+    private List<ApplicationBase> applications;
 
 
     public Property(String address, String suburb, HashMap<String, Integer> capacity,
@@ -34,6 +34,7 @@ public abstract class Property {
         this.address = address;
         this.id = Property.genId();
         this.owner = owner;
+        this.applications = new ArrayList<ApplicationBase>();
     }
 
     public Property(String address, String suburb, HashMap<String, Integer> capacity,
@@ -41,7 +42,7 @@ public abstract class Property {
         this(address, suburb, capacity, PropertyType.valueOf(typeS), owner);
     }
 
-    public ArrayList<ApplicationBase> getApplications() {
+    public List<ApplicationBase> getApplicationBases() {
         return applications;
     }
 
@@ -139,7 +140,7 @@ public abstract class Property {
         this.applications.add(a);
     }
 
-    public ArrayList<ApplicationBase> getPendingApplicationBases() {
+    public List<ApplicationBase> getPendingApplicationBases() {
         ArrayList<ApplicationBase> res = new ArrayList<ApplicationBase>();
         for (ApplicationBase a : this.applications)
             if (a.isPending())
@@ -147,7 +148,7 @@ public abstract class Property {
         return res;
     }
 
-    public ArrayList<ApplicationBase> getApplicationBasesInitiatedBy(Customer c) {
+    public List<ApplicationBase> getApplicationBasesInitiatedBy(Customer c) {
         ArrayList<ApplicationBase> res = new ArrayList<ApplicationBase>();
         for (ApplicationBase a : this.applications)
             if (a.initiatedBy(c))
@@ -189,7 +190,7 @@ public abstract class Property {
         this.inspections.add(i);
     }
 
-    public ArrayList<Inspection> getUpcomingInspections() {
+    public List<Inspection> getUpcomingInspections() {
         ArrayList<Inspection> res = new ArrayList<Inspection>();
         for (Inspection i : this.inspections)
             if (i.isUpcoming())

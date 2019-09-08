@@ -19,6 +19,13 @@ public class ForSaleProperty extends Property {
         this.minPrice = minPrice;
     }
 
+    public List<PurchaseOffer> getApplications() {
+        List<PurchaseOffer> res = new ArrayList<PurchaseOffer>();
+        for (ApplicationBase ab : super.getApplicationBases())
+            res.add((PurchaseOffer)ab);
+        return res;
+    }
+
     public boolean hasSection32() {
         return this.getDocuments().containsKey("Section 32");
     }

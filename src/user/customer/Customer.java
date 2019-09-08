@@ -7,12 +7,12 @@ public abstract class Customer extends User {
     private static int idCounter = 0;
 
     public static String genId() {
-        return String.format("%c08d", Customer.idCounter++);
+        return String.format("c%08d", idCounter++);
     }
 
     public abstract String getRole();
 
     public Customer(String email, String passwd) {
-        super(email, passwd, Customer.genId());
+        super(email, passwd, genId());
     }
 }
