@@ -62,10 +62,12 @@ public class TestRentalProperty {
 
         Inspection inspection = new Inspection(LocalDateTime.now().plusDays(10));
         rentalProperty.addInspection(inspection);
-        assertTrue(rentalProperty.getUpcomingInspections().contains(inspection));
+        List<Inspection> upcomingBefore = rentalProperty.getUpcomingInspections();
         // cancel an inspection
         inspection.setCancelled();
-        assertFalse(rentalProperty.getUpcomingInspections().contains(inspection));
+        List<Inspection> upcomingAfter = rentalProperty.getUpcomingInspections();
+        assertTrue(upcomingBefore.contains(inspection));
+        assertFalse(upcomingAfter.contains(inspection));
     }
 
     /*
@@ -94,12 +96,11 @@ public class TestRentalProperty {
         rentalProperty.addApplication(a);
 
         List<Application> pas = rentalProperty.getApplications();
-        assertTrue(pas.contains(a));
-
         List<Application> pias = rentalProperty.getApplicationsInitiatedBy(tenant);
-        assertTrue(pias.contains(a));
-
         List<Application> ppas = rentalProperty.getPendingApplications();
+
+        assertTrue(pias.contains(a));
+        assertTrue(pas.contains(a));
         assertTrue(pas.contains(a));
     }
 
