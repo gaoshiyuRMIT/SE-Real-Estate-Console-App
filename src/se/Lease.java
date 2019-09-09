@@ -9,15 +9,13 @@ import user.customer.*;
 public class Lease {
     private LocalDateTime startDate;
     private int duration;
-    private ArrayList<ApplicantDetail> tenants;
+    private List<ApplicantDetail> tenants;
     private double weeklyRental;
 
     public Lease(Application a) {
         this.startDate = LocalDateTime.now();
         this.duration = a.getDuration();
-        this.tenants = new ArrayList<ApplicantDetail>();
-        for (ApplicantDetail d : a.getApplicants())
-            this.tenants.add(new ApplicantDetail(d));
+        this.tenants = a.getApplicants();
         this.weeklyRental = a.getWeeklyRental();
     }
 
@@ -25,8 +23,15 @@ public class Lease {
         return weeklyRental;
     }
 
+    public double getDuration() {
+        return duration;
+    }
+
     public boolean isExpired() {
         return LocalDateTime.now().compareTo(startDate.plusMonths(duration)) > 0;
     }
 
+    public List<ApplicantDetail> getTenants() {
+        return tenants;
+    }
 }

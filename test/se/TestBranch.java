@@ -150,7 +150,7 @@ public class TestBranch {
     the property should be returned when searching for properties managed by this property manager
     */
     @Test
-    public void testAssignPropertyManager2RentalProperty() throws Exception {
+    public void testAssignPropertyManagerToRentalProperty() throws Exception {
         setUpLandlord();
         setUpRentalProperty(landlord);
         branch.addEmployee(propMgrs[0]);
@@ -198,7 +198,7 @@ public class TestBranch {
     }
 
     @Test
-    public void addApplicantDetail2Tenant() throws Exception {
+    public void addApplicantDetailToTenant() throws Exception {
         setUpTenant();
         ApplicantDetail ad = new ApplicantDetail(
             new ID(IDType.Passport, "E00001111"),
@@ -215,7 +215,7 @@ public class TestBranch {
     (tests the method that searches for applications initiated by a particular tenant)
     */
     @Test
-    public void testGetPropertyNApplication4Tenant() throws Exception {
+    public void testGetPropertyApplicationForTenant() throws Exception {
         setUpLandlord();
         setUpRentalProperty(landlord);
         branch.addEmployee(propMgrs[1]);
@@ -244,6 +244,93 @@ public class TestBranch {
         ));
     }
 
+    /*
+    1.the range of management fee should change
+    2.attempts to set the management fee outside of the range should fail
+    */
+    @Test
+    public void testAddMultiplePropertiesForOneLandlord() {
+        fail("not implemented");
+    }
+
+    /*
+    1.browse rental property by address(road/street name)/suburb/capacity/type
+    2.only listed ones should be returned
+    */
+    @Test
+    public void testBrowseRentalProperty() throws Exception {
+
+        Landlord[] landlords = {
+            (Landlord)branch.login(branch.register("a.de.landlord@gmail.com", "123", "Landlord"), "123"),
+            (Landlord)branch.login(branch.register("b.de.landlord@gmail.com", "123", "Landlord"), "123"),
+            (Landlord)branch.login(branch.register("c.de.landlord@gmail.com", "123", "Landlord"), "123"),
+            (Landlord)branch.login(branch.register("d.de.landlord@gmail.com", "123", "Landlord"), "123")
+        };
+        HashMap<String, Integer> cap = new HashMap<String, Integer>();
+        cap.put("bedroom", 2);
+        cap.put("bathroom", 1);
+        cap.put("car space", 2);
+        HashMap<String, Integer> cap2 = new HashMap<String, Integer>();
+        cap2.put("bedroom", 2);
+        cap2.put("bathroom", 1);
+        cap2.put("car space", 1);
+
+        RentalProperty[] properties = {
+            new RentalProperty(
+                "31 Thomas St, VIC 3122", "Hawthorn", cap,
+                PropertyType.House, 500, 6, landlords[0]
+            ),
+            new RentalProperty(
+                "29 Manningtree Rd, VIC 3122", "Hawthorn", cap,
+                PropertyType.House, 500, 6, landlords[1]
+            ),
+            new RentalProperty(
+                "159 Through Rd, VIC 3124", "Camberwell", cap2,
+                PropertyType.Flat, 400, 6, landlords[2]
+            ),
+            new RentalProperty(
+                "9/185 Auburn Rd, VIC 3122", "Hawthorn", cap2,
+                PropertyType.Unit, 300, 6, landlords[3]
+            ),
+            new RentalProperty(
+                "92 Heaslip St, Mount Saint Thomas, NSW 2500", "Coniston", cap,
+                PropertyType.House, 500, 6, landlords[0]
+            )
+        };
+        for (RentalProperty p : properties)
+            branch.addProperty(p);
+        for (int i = 0; i < 4; i++) {
+            properties[i].setManager(propMgrs[0]);
+            properties[i].list();
+        }
+        List<RentalProperty> res;
+        res = branch.browseRentalProperties("Thomas", null, null, null, true);
+        assertTrue(res.contains(properties[0]));
+        // not listed
+        assertFalse(res.contains(properties[4]));
+
+        res = branch.browseRentalProperties(null, "Hawthorn", null, null, true);
+        assertTrue(res.contains(properties[1]));
+        assertFalse(res.contains(properties[2]));
+
+        res = branch.browseRentalProperties(null, null, cap2, null, true);
+        assertTrue(res.contains(properties[3]));
+        assertFalse(res.contains(properties[1]));
+
+        res = branch.browseRentalProperties(null, null, null, PropertyType.House, true);
+        assertTrue(res.contains(properties[1]));
+        assertFalse(res.contains(properties[2]));
+        // not listed
+        assertFalse(res.contains(properties[4]));
+    }
+
+    /*
+    property with accepted application should disappear from searching result
+    */
+    @Test
+    public void testBrowseRentalPropertyAfterApplicationAcceptance() throws Exception {
+        fail("not implemented");
+    }
 
     public void setUpVendor() throws Exception {
         String cid = branch.register("john.doe345@gmail.com", "111111", "Vendor");

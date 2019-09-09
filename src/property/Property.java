@@ -8,7 +8,7 @@ import user.customer.*;
 import user.employee.*;
 import exception.*;
 
-public abstract class Property {
+public abstract class Property{
     private static int idCounter = 0;
 
     private String id;
@@ -35,6 +35,7 @@ public abstract class Property {
         this.id = Property.genId();
         this.owner = owner;
         this.applications = new ArrayList<ApplicationBase>();
+        this.inspections = new ArrayList<Inspection>();
     }
 
     public Property(String address, String suburb, HashMap<String, Integer> capacity,
@@ -106,9 +107,10 @@ public abstract class Property {
             return false;
         if (suburb != null && !suburb.toUpperCase().equals(this.suburb))
             return false;
-        for (String k : capacity.keySet())
-            if (capacity.get(k) != null && this.capacity.get(k) != capacity.get(k))
-                return false;
+        if (capacity != null)
+            for (String k : capacity.keySet())
+                if (capacity.get(k) != null && this.capacity.get(k) != capacity.get(k))
+                    return false;
         if (status != null && status != this.status)
             return false;
         if (type != null && type != this.type)

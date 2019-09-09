@@ -15,7 +15,7 @@ public class RentalProperty extends Property {
     // number of months
     private int desiredDuration;
 
-    private ArrayList<Lease> leases;
+    private List<Lease> leases;
     private double managementFeeRate;
     private SimpleEntry<Double, Double> managementFeeRateRange;
 
@@ -28,6 +28,7 @@ public class RentalProperty extends Property {
         this.desiredDuration = desiredDuration;
         this.managementFeeRate = 0.8;
         this.managementFeeRateRange = new SimpleEntry<Double, Double>(0.7, 0.8);
+        this.leases = new ArrayList<Lease>();
     }
 
     public List<Application> getApplications() {
@@ -99,14 +100,14 @@ public class RentalProperty extends Property {
         super.addApplicationBase(a);
     }
 
-    public ArrayList<Application> getPendingApplications() {
+    public List<Application> getPendingApplications() {
         ArrayList<Application> res = new ArrayList<Application>();
         for (ApplicationBase a : super.getPendingApplicationBases())
             res.add((Application)a);
         return res;
     }
 
-    public ArrayList<Application> getApplicationsInitiatedBy(Tenant c) {
+    public List<Application> getApplicationsInitiatedBy(Tenant c) {
         ArrayList<Application> res = new ArrayList<Application>();
         for (ApplicationBase a : super.getApplicationBasesInitiatedBy(c))
             res.add((Application)a);

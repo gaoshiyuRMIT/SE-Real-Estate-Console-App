@@ -55,6 +55,13 @@ public class Branch {
         return res;
     }
 
+    public List<ForSaleProperty> getManagedForSaleProperty(SalesConsultant e) {
+        ArrayList<ForSaleProperty> res = new ArrayList<ForSaleProperty>();
+        for (Property p : getProperties(null, e))
+            res.add((ForSaleProperty)p);
+        return res;
+    }
+
     public List<ForSaleProperty> getOwnedForSaleProperty(Vendor c) {
         ArrayList<ForSaleProperty> res = new ArrayList<ForSaleProperty>();
         for (Property p : getProperties(null, c))
@@ -150,8 +157,7 @@ public class Branch {
         return newbie.getId();
     }
 
-    public void addProperty(Property p) {
-        boolean rental;
+    public void addProperty(Property p) {        boolean rental;
         if (p instanceof RentalProperty) {
             rental = true;
             this.rentalProps.put(p.getId(), (RentalProperty)p);
@@ -169,6 +175,32 @@ public class Branch {
         }
     }
 
+    public List<RentalProperty> browseRentalProperties(String address, String suburb,
+                                                    HashMap<String, Integer> capacity,
+                                                    PropertyType type,
+                                                    boolean listedOnly) {
+        List<RentalProperty> res = new ArrayList<RentalProperty>();
+        for (Property p : getProperties(address, suburb, capacity, null, type, false)){
+            if (listedOnly && p.getStatus() == PropertyStatus.NotListed)
+                continue;
+            res.add((RentalProperty)p);
+        }
+        return res;
+    }
+
+    public List<ForSaleProperty> browseForSaleProperties(String address, String suburb,
+                                                        HashMap<String, Integer> capacity,
+                                                        PropertyType type,
+                                                        boolean listedOnly) {
+        List<ForSaleProperty> res = new ArrayList<ForSaleProperty>();
+        for (Property p : getProperties(address, suburb, capacity,null, type, true)){
+            if (listedOnly && p.getStatus() == PropertyStatus.NotListed)
+                continue;
+            res.add((ForSaleProperty)p);
+        }
+        return res;
+    }
+
     /*
     :param capacity: key: bedroom, bathroom, carSpace
     */
@@ -177,45 +209,49 @@ public class Branch {
                                             PropertyStatus status,
                                             PropertyType type,
                                             boolean forSale) {
-        for (String key : capacity.keySet())
-            if (capacity.get(key) == null)
-                capacity.remove(key);
+        if (capacity != null)
+            for (String key : capacity.keySet())
+                if (capacity.get(key) == null)
+                    capacity.remove(key);
         ArrayList<Property> ret = new ArrayList<Property>();
 
-        if (forSale)
+        if (forSale) {
             for (ForSaleProperty sp : this.forSaleProps.values())
                 if (sp.match(address, suburb, capacity, status, type))
                     ret.add(sp);
-        else
+        } else {
             for (RentalProperty rp : this.rentalProps.values())
                 if (rp.match(address, suburb, capacity, status, type))
                     ret.add(rp);
+        }
         return ret;
     }
 
     public List<Property> getProperties(PropertyStatus status, Customer owner) {
         ArrayList<Property> ret = new ArrayList<Property>();
-        if (owner instanceof Vendor)
+        if (owner instanceof Vendor) {
             for (Property sp : this.forSaleProps.values())
                 if (sp.match(status, owner))
                     ret.add(sp);
-        else if (owner instanceof Landlord)
+        } else if (owner instanceof Landlord) {
             for (Property rp : this.rentalProps.values())
                 if (rp.match(status, owner))
                     ret.add(rp);
+        }
         return ret;
     }
 
     public List<Property> getProperties(PropertyStatus st, Employee e) {
         ArrayList<Property> ret = new ArrayList<Property>();
-        if (e.getRole() == EmployeeType.SalesConsultant)
+        if (e.getRole() == EmployeeType.SalesConsultant) {
             for (Property sp : this.forSaleProps.values())
                 if (sp.match(st, e))
                     ret.add(sp);
-        else if (e.getRole() == EmployeeType.PropertyManager)
+        } else if (e.getRole() == EmployeeType.PropertyManager) {
             for (Property rp : this.rentalProps.values())
                 if (rp.match(st, e))
                     ret.add(rp);
+        }
         return ret;
     }
 

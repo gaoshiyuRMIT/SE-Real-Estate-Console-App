@@ -1,6 +1,7 @@
 package property;
 
 import java.util.*;
+import java.time.*;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
@@ -51,6 +52,20 @@ public class TestRentalProperty {
             "123 Abc St, Melbourne, VIC 3000", "Melbourne", cap,
             PropertyType.Studio, 300, 6, l
         );
+    }
+
+    @Test
+    public void testAddInspectionToRentalProperty() throws Exception {
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        rentalProperty.setManager(pm);
+        rentalProperty.list();
+
+        Inspection inspection = new Inspection(LocalDateTime.now().plusDays(10));
+        rentalProperty.addInspection(inspection);
+        assertTrue(rentalProperty.getUpcomingInspections().contains(inspection));
+        // cancel an inspection
+        inspection.setCancelled();
+        assertFalse(rentalProperty.getUpcomingInspections().contains(inspection));
     }
 
     /*
@@ -154,9 +169,15 @@ public class TestRentalProperty {
                             new Object[] {a, a_ellen});
 
         rentalProperty.acceptApplication(a);
-        assertTrue(rentalProperty.isOpenForInspection());
         assertNotEquals(rentalProperty.getStatus(), PropertyStatus.ApplicationOpen);
         assertEquals(rentalProperty.getPendingApplications().size(), 0);
+        assertTrue(a.isAwaitingPayment());
+
+        assertTrue(rentalProperty.isOpenForInspection());
+        // add an inspection
+        Inspection inspection = new Inspection(LocalDateTime.now().plusDays(10));
+        rentalProperty.addInspection(inspection);
+        assertTrue(rentalProperty.getUpcomingInspections().contains(inspection));
 
         Tenant tenant2 = new Tenant("georgia.de.tenant@gmail.com", "123");
         ApplicantDetail ad2 = new ApplicantDetail(
@@ -173,5 +194,122 @@ public class TestRentalProperty {
 
         thrown.expect(OperationNotAllowedException.class);
         rentalProperty.addApplication(a2);
+    }
+
+    @Test
+    public void testWithdrawApplicationWhenPending() throws Exception{
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        rentalProperty.setManager(pm);
+        rentalProperty.list();
+
+        Tenant tenant = new Tenant("abby.de.tenant@gmail.com", "123");
+        ApplicantDetail ad = new ApplicantDetail(
+            new ID(IDType.Passport, "E00001111"),
+            "Abby de Tenant", 100000, "Software Engineer",
+            Arrays.asList("Dunder Mifflin, Junior Software Engineer, 06/2016-12/2017"),
+            Arrays.asList()
+        );
+        tenant.addApplicant(ad);
+
+        Application a = new Application(
+            Arrays.asList(ad.getId()), 300, 5, tenant
+        );
+        rentalProperty.addApplication(a);
+        rentalProperty.withdrawApplication(a);
+        assertFalse(rentalProperty.getPendingApplications().contains(a));
+        // accept after withdrawal
+        thrown.expect(OperationNotAllowedException.class);
+        rentalProperty.acceptApplication(a);
+    }
+
+    @Test
+    public void testWithdrawApplicationAfterAcceptance() throws Exception{
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        rentalProperty.setManager(pm);
+        rentalProperty.list();
+
+        Tenant tenant = new Tenant("abby.de.tenant@gmail.com", "123");
+        ApplicantDetail ad = new ApplicantDetail(
+            new ID(IDType.Passport, "E00001111"),
+            "Abby de Tenant", 100000, "Software Engineer",
+            Arrays.asList("Dunder Mifflin, Junior Software Engineer, 06/2016-12/2017"),
+            Arrays.asList()
+        );
+        tenant.addApplicant(ad);
+
+        Application a = new Application(
+            Arrays.asList(ad.getId()), 300, 5, tenant
+        );
+        rentalProperty.addApplication(a);
+        rentalProperty.acceptApplication(a);
+        assertEquals(rentalProperty.getStatus(), PropertyStatus.InspectionOpen);
+        rentalProperty.withdrawApplication(a);
+        assertEquals(rentalProperty.getStatus(), PropertyStatus.ApplicationOpen);
+    }
+
+    @Test
+    public void testRejectApplication() throws Exception {
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        rentalProperty.setManager(pm);
+        rentalProperty.list();
+
+        Tenant tenant = new Tenant("abby.de.tenant@gmail.com", "123");
+        ApplicantDetail ad = new ApplicantDetail(
+            new ID(IDType.Passport, "E00001111"),
+            "Abby de Tenant", 100000, "Software Engineer",
+            Arrays.asList("Dunder Mifflin, Junior Software Engineer, 06/2016-12/2017"),
+            Arrays.asList()
+        );
+        tenant.addApplicant(ad);
+
+        Application a = new Application(
+            Arrays.asList(ad.getId()), 300, 5, tenant
+        );
+        rentalProperty.addApplication(a);
+        rentalProperty.rejectApplication(a);
+        assertFalse(rentalProperty.getPendingApplications().contains(a));
+        // withdraw after rejection
+        thrown.expect(OperationNotAllowedException.class);
+        rentalProperty.withdrawApplication(a);
+    }
+
+    @Test
+    public void testPayRentNBondForAcceptedApplication() throws Exception {
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        rentalProperty.setManager(pm);
+        rentalProperty.list();
+        // add an inspection
+        Inspection inspection = new Inspection(LocalDateTime.now().plusDays(10));
+        rentalProperty.addInspection(inspection);
+
+        Tenant tenant = new Tenant("abby.de.tenant@gmail.com", "123");
+        ApplicantDetail ad = new ApplicantDetail(
+            new ID(IDType.Passport, "E00001111"),
+            "Abby de Tenant", 100000, "Software Engineer",
+            Arrays.asList("Dunder Mifflin, Junior Software Engineer, 06/2016-12/2017"),
+            Arrays.asList()
+        );
+        tenant.addApplicant(ad);
+
+        Application a = new Application(
+            Arrays.asList(ad.getId()), 300, 5, tenant
+        );
+        rentalProperty.addApplication(a);
+        // there are still upcoming inspections
+        assertTrue(rentalProperty.getUpcomingInspections().contains(inspection));
+
+        rentalProperty.acceptApplication(a);
+
+        rentalProperty.payRentBondForApplication(a);
+        assertFalse(rentalProperty.isOpenForInspection());
+        assertTrue(a.isSecured());
+        // upcoming inspections are all cancelled
+        assertFalse(rentalProperty.getUpcomingInspections().contains(inspection));
+        // a lease is created
+        Lease lease = rentalProperty.getCurrentLease();
+        assertNotNull(lease);
+        assertTrue(lease.getTenants().equals(a.getApplicants()));
+        assertEquals((long)(lease.getDuration()), 5l);
+        assertEquals(lease.getWeeklyRental(), 300, 5e-8);
     }
 }

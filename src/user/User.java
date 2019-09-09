@@ -38,7 +38,11 @@ public abstract class User {
         return this.id;
     }
 
-    public boolean equals(User u) {
-        return id.equals(u.id);
+    public boolean equals(Object o) {
+        if (o instanceof User) {
+            User u = (User)o;
+            return id.equals(u.id);
+        }
+        return false;
     }
 }

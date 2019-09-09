@@ -29,7 +29,11 @@ public class PurchaseOffer extends ApplicationBase {
         return depositPaid;
     }
 
-    public void setSettlementPaid() {
+    public void setSettlementPaid() throws OperationNotAllowedException {
+        if (!isSecured())
+            throw new OperationNotAllowedException(
+                "Settlement cannot be paid before deposit is paid."
+            );
         settlementPaid = true;
     }
 

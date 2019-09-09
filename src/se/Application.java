@@ -33,7 +33,11 @@ public class Application extends ApplicationBase {
 		return weeklyRental;
 	}
 
-	public void setWeeklyRental(double weeklyRental) {
+	public void setWeeklyRental(double weeklyRental) throws OperationNotAllowedException{
+        if (isAccepted())
+            throw new OperationNotAllowedException(
+                "The weekly rental of an accepted application cannot be modified."
+            );
 		this.weeklyRental = weeklyRental;
 	}
 
@@ -41,7 +45,11 @@ public class Application extends ApplicationBase {
 		return duration;
 	}
 
-	public void setDuration(int duration) {
+	public void setDuration(int duration) throws OperationNotAllowedException {
+        if (isAccepted())
+            throw new OperationNotAllowedException(
+                "The contract duration of an accepted application cannot be modified."
+            );
 		this.duration = duration;
 	}
 

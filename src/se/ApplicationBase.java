@@ -9,6 +9,7 @@ import user.customer.*;
 public abstract class ApplicationBase {
     private String id;
     private List<ID> applicantIds;
+    private List<ApplicantDetail> applicants;
 
     private NonOwner initiator;
     private LocalDateTime dateReceived;
@@ -33,6 +34,7 @@ public abstract class ApplicationBase {
                 );
         this.applicantIds = applicantIds;
         this.initiator = initiator;
+        this.applicants = null;
     }
 
     public boolean initiatedBy(Customer c) {
@@ -44,6 +46,8 @@ public abstract class ApplicationBase {
     }
 
     public List<ApplicantDetail> getApplicants() {
+        if (this.applicants != null)
+            return this.applicants;
         return this.initiator.getApplicants(applicantIds);
     }
 
@@ -63,6 +67,11 @@ public abstract class ApplicationBase {
     public void setAccepted() {
         accepted = true;
         dateAccepted = LocalDateTime.now();
+        // cannot edit applicant detail after application is accepted
+        List<ApplicantDetail> res = new ArrayList<ApplicantDetail>();
+        for (ApplicantDetail d : this.getApplicants())
+            res.add(new ApplicantDetail(d));
+        this.applicants = res;
     }
 
     public void setRejected() {
@@ -96,7 +105,11 @@ public abstract class ApplicationBase {
         return isAccepted() && !isSecured() && !isWithdrawn();
     }
 
-    public boolean equals(ApplicationBase a) {
-        return id == a.id;
+    public boolean equals(Object o) {
+        if (o instanceof ApplicationBase) {
+            ApplicationBase a = (ApplicationBase)o;
+            return id == a.id;
+        }
+        return false;
     }
 }
