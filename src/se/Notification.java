@@ -1,20 +1,21 @@
 package se;
 
 import java.util.*;
+import java.time.*;
 
 import consts.*;
 
 public class Notification {
+    private LocalDateTime dateTime;
     private String message;
     private NotifStatus status;
-    private List<WithId> artifacts;
-    private String artifactName;
-    private String artifactId;
+    private List<String> uris;
 
-    public Notification(String message, WithId... artifacts) {
-        this.artifacts = Arrays.asList(artifacts);
+    public Notification(String message, String... uris) {
+        this.uris = Arrays.asList(uris);
         this.message = message;
         this.status = NotifStatus.Active;
+        this.dateTime = LocalDateTime.now();
     }
 
     // change status
@@ -22,16 +23,7 @@ public class Notification {
         this.status = NotifStatus.Archived;
     }
 
-    public List<String> getObjectURIs() {
-        List<String> res = new ArrayList<String>();
-        for (WithId o : artifacts) {
-            String s = String.format(
-                "/%s/%s",
-                o.getClass().getSimpleName(),
-                o.getId()
-            );
-            res.add(s);
-        }
-        return res;
+    public List<String> getURIs() {
+        return uris;
     }
-}
+ }

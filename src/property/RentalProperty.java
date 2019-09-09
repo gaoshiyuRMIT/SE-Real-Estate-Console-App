@@ -74,6 +74,10 @@ public class RentalProperty extends Property {
             managementFeeRate = f;
     }
 
+    public double getManagementFeeRate() {
+        return managementFeeRate;
+    }
+
     public void setManagementFeeRate(double r) throws InvalidParamException {
         double min = managementFeeRateRange.getKey();
         double max = managementFeeRateRange.getValue();

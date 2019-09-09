@@ -4,10 +4,15 @@ import java.util.*;
 
 public abstract class NonOwner extends Customer {
     private HashMap<ID, ApplicantDetail> applicants;
+    private String interestedSuburb;
 
     public NonOwner(String email, String passwd) {
         super(email, passwd);
         applicants = new HashMap<ID, ApplicantDetail>();
+    }
+
+    public void setSuburb(String suburb) {
+        interestedSuburb = suburb;
     }
 
     public List<ApplicantDetail> getApplicants(List<ID> ids) {

@@ -108,9 +108,10 @@ public abstract class Property{
         if (suburb != null && !suburb.toUpperCase().equals(this.suburb))
             return false;
         if (capacity != null)
-            for (String k : capacity.keySet())
-                if (capacity.get(k) != null && this.capacity.get(k) != capacity.get(k))
+            for (String k : capacity.keySet()) {
+                if (capacity.get(k) != null && !this.capacity.get(k).equals(capacity.get(k)))
                     return false;
+            }
         if (status != null && status != this.status)
             return false;
         if (type != null && type != this.type)

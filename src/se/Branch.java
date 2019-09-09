@@ -178,10 +178,11 @@ public class Branch {
     public List<RentalProperty> browseRentalProperties(String address, String suburb,
                                                     HashMap<String, Integer> capacity,
                                                     PropertyType type,
-                                                    boolean listedOnly) {
+                                                    boolean onMarketOnly) {
         List<RentalProperty> res = new ArrayList<RentalProperty>();
         for (Property p : getProperties(address, suburb, capacity, null, type, false)){
-            if (listedOnly && p.getStatus() == PropertyStatus.NotListed)
+            if (onMarketOnly && (p.getStatus() == PropertyStatus.NotListed
+                                 || p.getStatus() == PropertyStatus.Secured))
                 continue;
             res.add((RentalProperty)p);
         }
@@ -191,10 +192,11 @@ public class Branch {
     public List<ForSaleProperty> browseForSaleProperties(String address, String suburb,
                                                         HashMap<String, Integer> capacity,
                                                         PropertyType type,
-                                                        boolean listedOnly) {
+                                                        boolean onMarketOnly) {
         List<ForSaleProperty> res = new ArrayList<ForSaleProperty>();
         for (Property p : getProperties(address, suburb, capacity,null, type, true)){
-            if (listedOnly && p.getStatus() == PropertyStatus.NotListed)
+            if (onMarketOnly && (p.getStatus() == PropertyStatus.NotListed
+                                 || p.getStatus() == PropertyStatus.Secured))
                 continue;
             res.add((ForSaleProperty)p);
         }
@@ -213,6 +215,7 @@ public class Branch {
             for (String key : capacity.keySet())
                 if (capacity.get(key) == null)
                     capacity.remove(key);
+        System.out.println(capacity);
         ArrayList<Property> ret = new ArrayList<Property>();
 
         if (forSale) {

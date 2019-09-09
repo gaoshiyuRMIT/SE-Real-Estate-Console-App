@@ -16,10 +16,6 @@ public class Landlord extends Customer {
         return "Landlord";
     }
 
-    public void acceptApplication(Application a) {
-        a.setAccepted();
-    }
-
     public static void main(String[] args) {
         Landlord l = new Landlord("a.b@c.d", "aaaaaa");
         System.out.println(l.getId());

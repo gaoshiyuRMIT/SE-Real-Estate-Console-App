@@ -312,4 +312,12 @@ public class TestRentalProperty {
         assertEquals((long)(lease.getDuration()), 5l);
         assertEquals(lease.getWeeklyRental(), 300, 5e-8);
     }
+
+    /*
+    attempts to set the management fee outside of the range should fail
+    */
+    @Test
+    public void testSetMangementFeeRateOutsideRateRange() {
+        fail("not implemented");
+    }
 }
