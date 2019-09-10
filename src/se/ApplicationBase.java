@@ -37,6 +37,20 @@ public abstract class ApplicationBase {
         this.applicants = null;
     }
 
+    public String getStatusS() {
+        if (isPending())
+            return "pending";
+        if (isAwaitingPayment())
+            return "awaiting payment";
+        if (isRejected())
+            return "rejected";
+        if (isWithdrawn())
+            return "withdrawn";
+        if (isSecured())
+            return "secured";
+        return "other";
+    }
+
     public boolean initiatedBy(Customer c) {
         return this.initiator.equals(c);
     }

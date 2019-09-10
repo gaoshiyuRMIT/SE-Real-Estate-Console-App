@@ -27,7 +27,7 @@ public abstract class Property{
     public Property(String address, String suburb, HashMap<String, Integer> capacity,
                     PropertyType type, Customer owner) throws InvalidParamException {
         this.status = PropertyStatus.NotListed;
-        this.suburb = suburb.toUpperCase();
+        this.suburb = suburb;
         this.type = type;
         PropertyUtil.checkCapacity(capacity);
         this.capacity = capacity;
@@ -45,6 +45,14 @@ public abstract class Property{
 
     public List<ApplicationBase> getApplicationBases() {
         return applications;
+    }
+
+    public ApplicationBase getApplicationBaseById(String id) {
+        for (ApplicationBase a : applications) {
+            if (a.getId() == id)
+                return a;
+        }
+        return null;
     }
 
     public boolean isOpenForInspection() {
@@ -93,6 +101,10 @@ public abstract class Property{
 
     public PropertyStatus getStatus() {
         return status;
+    }
+
+    public String getStatusS() {
+        return getStatus().name();
     }
 
     public String getSuburb() {
