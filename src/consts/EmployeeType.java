@@ -4,4 +4,3 @@ public enum EmployeeType {
     BranchManager, BranchAdmin, SalesConsultant, PropertyManager
 }
 
-////
