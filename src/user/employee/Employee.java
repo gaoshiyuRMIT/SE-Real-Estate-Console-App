@@ -12,10 +12,11 @@ public class Employee extends User {
     private int hours;
     private double salary;
 
-    public Employee(String email, String password, EmployeeType role, int hours) {
+    public Employee(String email, String password, EmployeeType role, int hours ,double salary) {
         super(email, password, genId());
         this.role = role;
         this.hours = hours;
+        this.salary = salary;
     }
 
     public static String genId() {
@@ -30,4 +31,8 @@ public class Employee extends User {
 		return hours;
 	}
 	
+	public double getSalary() {
+		return salary;
+	}
+
 }
