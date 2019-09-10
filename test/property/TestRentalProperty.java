@@ -56,7 +56,7 @@ public class TestRentalProperty {
 
     @Test
     public void testAddInspectionToRentalProperty() throws Exception {
-        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456",10);
         rentalProperty.setManager(pm);
         rentalProperty.list();
 
@@ -75,7 +75,7 @@ public class TestRentalProperty {
     */
     @Test
     public void testApplyForRentalProperty() throws Exception {
-        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456",10);
         rentalProperty.setManager(pm);
         rentalProperty.list();
 
@@ -133,7 +133,7 @@ public class TestRentalProperty {
     */
     @Test
     public void testAcceptApplicationAmongMultiple() throws Exception {
-        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456",10);
         rentalProperty.setManager(pm);
         rentalProperty.list();
 
@@ -198,7 +198,7 @@ public class TestRentalProperty {
 
     @Test
     public void testWithdrawApplicationWhenPending() throws Exception{
-        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456",10);
         rentalProperty.setManager(pm);
         rentalProperty.list();
 
@@ -224,7 +224,7 @@ public class TestRentalProperty {
 
     @Test
     public void testWithdrawApplicationAfterAcceptance() throws Exception{
-        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456",10);
         rentalProperty.setManager(pm);
         rentalProperty.list();
 
@@ -249,7 +249,7 @@ public class TestRentalProperty {
 
     @Test
     public void testRejectApplication() throws Exception {
-        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456",10);
         rentalProperty.setManager(pm);
         rentalProperty.list();
 
@@ -275,7 +275,7 @@ public class TestRentalProperty {
 
     @Test
     public void testPayRentNBondForAcceptedApplication() throws Exception {
-        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456",10);
         rentalProperty.setManager(pm);
         rentalProperty.list();
         // add an inspection

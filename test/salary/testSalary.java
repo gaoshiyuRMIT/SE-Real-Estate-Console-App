@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import user.employee.*;
 
-public class TestSalary {
+public class testSalary {
 	private Employee e1;
 	/*
 	 * check if entered work hours is 1.valid and 2.not null
@@ -27,10 +27,11 @@ public class TestSalary {
 	 */
 	@Test
 	public void testPaidSalary() throws Exception{
-		PropertyManager pm1 = new PropertyManager("pm1@gmail.com","pswd");
-		BranchManager bm1 = new BranchManager("bm1@gmail.com","pswd");
-		SalesConsultant sc1 = new SalesConsultant("sc1@gmail.com","pswd");
-		assertEquals(bm1.getSalary(), bm1.getHours()*Employee.hourlySalary+0.4*commissionReceived);
+		PropertyManager pm1 = new PropertyManager("pm1@gmail.com","pswd",1);
+		BranchManager bm1 = new BranchManager("bm1@gmail.com","pswd",1);
+		SalesConsultant sc1 = new SalesConsultant("sc1@gmail.com","pswd",1);
+		//assume hoursalary 20 and commissionreceived=1000
+		assertEquals(bm1.getSalary(), bm1.getHours()*20+0.4*1000);
 		
 	/*
 	 * check if the status change 
