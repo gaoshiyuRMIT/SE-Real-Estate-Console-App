@@ -12,7 +12,7 @@ import user.employee.*;
 public class testSalary {
 	private Employee e1;
 	/*
-	 * check if entered work hours is 1.valid and 2.not null
+	 * check if entered work hours is 1.valid(not minus ) and 2.not null
 	 */
 	@Test
 	public void testWorkHours() throws Exception{

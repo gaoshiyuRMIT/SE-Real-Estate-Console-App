@@ -10,6 +10,7 @@ public class Employee extends User {
     private EmployeeType role;
     private double hourlySalary;
     private int hours;
+    private double salary;
 
     public Employee(String email, String password, EmployeeType role, int hours) {
         super(email, password, genId());
@@ -28,4 +29,5 @@ public class Employee extends User {
 	public int getHours() {
 		return hours;
 	}
+	
 }
