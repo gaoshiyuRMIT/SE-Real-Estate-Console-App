@@ -32,7 +32,7 @@ public class testSalary {
 		BranchManager bm1 = new BranchManager("bm1@gmail.com","pswd",1);
 		SalesConsultant sc1 = new SalesConsultant("sc1@gmail.com","pswd",1);
 		//assume hoursalary 20 and commissionreceived=1000
-		assertEquals(bm1.getSalary(), bm1.getHours()*20+0.4*1000);
+		assertEquals(bm1.getSalary(), bm1.getSalary()+0.4*1000);
 	}	
 	/*
 	 * check if the status change 
