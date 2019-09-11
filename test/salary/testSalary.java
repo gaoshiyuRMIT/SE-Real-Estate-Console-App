@@ -25,6 +25,7 @@ public class testSalary {
 	 * check if Part-timers are paid a salary that is proportional to the hours they worked
 	 * SalesConsultant have extra 40% of commission
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testPaidSalary() throws Exception{
 		PropertyManager pm1 = new PropertyManager("pm1@gmail.com","pswd",1);
@@ -32,7 +33,7 @@ public class testSalary {
 		SalesConsultant sc1 = new SalesConsultant("sc1@gmail.com","pswd",1);
 		//assume hoursalary 20 and commissionreceived=1000
 		assertEquals(bm1.getSalary(), bm1.getHours()*20+0.4*1000);
-		
+	}	
 	/*
 	 * check if the status change 
 	 * when they get the branch manager approval 

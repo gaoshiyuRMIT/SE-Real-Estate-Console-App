@@ -11,14 +11,16 @@ public class Employee extends User {
     private double hourlySalary;
     private int hours;
     private double salary;
+    private JobSystem workerType;
 
-    public Employee(String email, String password, EmployeeType role, int hours ,double salary) {
+    public Employee(String email, String password, EmployeeType role, int hours ,double salary , JobSystem workerType) {
         super(email, password, genId());
         this.role = role;
         this.hours = hours;
         this.salary = salary;
+        this.workerType = workerType;
     }
-
+    
     public static String genId() {
         return String.format("e%08d", Employee.idCounter++);
     }
@@ -34,5 +36,12 @@ public class Employee extends User {
 	public double getSalary() {
 		return salary;
 	}
-
+	
+	public JobSystem getWorkerType() {
+		return workerType;
+	}
+	
+	public void calculateSalary(int hours) {
+		salary = hourlySalary*hours;
+	}
 }
