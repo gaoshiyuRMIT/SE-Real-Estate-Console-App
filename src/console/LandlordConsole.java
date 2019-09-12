@@ -26,6 +26,10 @@ public class LandlordConsole extends BaseConsole {
         user = (Landlord)u;
     }
 
+    public User getUser() {
+        return user;
+    }
+
     public void addProperty() throws Exception {
         System.out.println("Enter address: ");
         String address = getLine();
@@ -81,8 +85,9 @@ public class LandlordConsole extends BaseConsole {
     }
 
     public void console() throws Exception{
+        super.console();
         while (true) {
-            try {
+            // try {
                 String option = displayMenu();
                 if (option == "add property")
                     addProperty();
@@ -94,9 +99,9 @@ public class LandlordConsole extends BaseConsole {
                     acceptApplication();
                 else
                     break;
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+            // } catch (Exception e) {
+            //     System.out.println(e.getMessage());
+            // }
         }
     }
 }

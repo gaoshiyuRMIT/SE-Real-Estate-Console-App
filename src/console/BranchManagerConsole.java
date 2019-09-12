@@ -42,9 +42,15 @@ public class BranchManagerConsole extends BaseConsole {
         System.out.println("Successfully listed property.");
     }
 
+    public User getUser() {
+        return user;
+    }
+
+
     public void console() throws Exception{
+        super.console();
         while (true) {
-            try {
+            // try {
                 String option = displayMenu();
                 if (option.equals("view newly-added properties"))
                     viewNewlyAddedProperties();
@@ -52,9 +58,9 @@ public class BranchManagerConsole extends BaseConsole {
                     listPropertyOnMarket();
                 else
                     break;
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+            // } catch (Exception e) {
+            //     System.out.println(e.getMessage());
+            // }
         }
     }
 }
