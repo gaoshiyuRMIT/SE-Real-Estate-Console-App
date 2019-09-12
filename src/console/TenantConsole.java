@@ -153,7 +153,7 @@ public class TenantConsole extends BaseConsole {
     public void console() throws Exception{
         super.console();
         while (true) {
-            // try {
+            try {
                 String option = displayMenu();
                 if (option == "browse properties")
                     browseProperties();
@@ -167,9 +167,9 @@ public class TenantConsole extends BaseConsole {
                     viewApplicantDetails();
                 else
                     break;
-            // } catch (Exception e) {
-            //     System.out.println(e.getMessage());
-            // }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 }

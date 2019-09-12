@@ -64,7 +64,7 @@ public class Console extends BaseConsole {
     public static void main(String[] args) throws Exception{
         Console console = new Console();
         while (true) {
-            // try {
+            try {
                 String option = console.displayMenu();
                 if (option == "register")
                     console.register();
@@ -72,9 +72,9 @@ public class Console extends BaseConsole {
                     console.login();
                 else
                     break;
-            // } catch (Exception e) {
-            //     System.out.println(e.getMessage());
-            // }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 }
