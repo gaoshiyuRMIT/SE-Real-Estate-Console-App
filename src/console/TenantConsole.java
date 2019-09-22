@@ -35,26 +35,42 @@ public class TenantConsole extends BaseConsole {
         System.out.println("Specify filter (leave empty if there is no constraint)");
         System.out.println("Enter road/street name: ");
         String address = getLine().trim();
-        if (address.equals("none"))
-            address = null;
         System.out.println("Enter suburb: ");
         String suburb = getLine().trim();
-        if (suburb.equals("none"))
-            suburb = null;
         System.out.println("Enter type(House/Unit/Flat/Townhouse/Studio): ");
         String typeS = getLine().trim();
+
         PropertyType type;
-        if (typeS.equals("none"))
+        if (typeS.isEmpty())
             type = null;
-        else
-            type = PropertyType.valueOf(typeS);
+        else {
+            try {
+                type = PropertyType.valueOf(typeS);
+            } catch (IllegalArgumentException e) {
+                throw new Exception("Invalid input for property type!");
+            }
+        }
+
         HashMap<String, Integer> cap = new HashMap<String, Integer>();
-        System.out.print("Enter number of bedrooms: ");
-        cap.put("bedroom", scanner.nextInt());
-        System.out.print("Enter number of bathrooms: ");
-        cap.put("bathroom", scanner.nextInt());
-        System.out.print("Enter number of car spaces: ");
-        cap.put("car space", scanner.nextInt());
+        System.out.println("Enter number of bedrooms: ");
+        String nBedroomS = getLine().trim();
+        System.out.println("Enter number of bathrooms: ");
+        String nBathroomS = getLine().trim();
+        System.out.println("Enter number of car spaces: ");
+        String nCarSpaceS = getLine().trim();
+
+        try {
+            if (!nBedroomS.isEmpty())
+                cap.put("bedroom", Integer.parseInt(nBedroomS));
+
+            if (!nBathroomS.isEmpty())
+                cap.put("bathroom", Integer.parseInt(nBathroomS));
+
+            if (!nCarSpaceS.isEmpty())
+                cap.put("car space", Integer.parseInt(nCarSpaceS));
+        } catch (NumberFormatException e) {
+            throw new Exception("Invalid input format for capacity!");
+        }
         for (RentalProperty rp : branch.browseRentalProperties(address, suburb, cap, type, true)) {
             System.out.printf(
                 "%s %s\n",
@@ -68,8 +84,8 @@ public class TenantConsole extends BaseConsole {
         String idType = scanner.next();
         System.out.print("Enter ID number: ");
         String idContent = scanner.next();
-        System.out.print("Enter name: ");
-        String name = scanner.next();
+        System.out.println("Enter name: ");
+        String name = getLine().trim();
         System.out.print("Enter annual income: ");
         double annualIncome = scanner.nextDouble();
         System.out.print("Enter occupation: ");
@@ -93,8 +109,8 @@ public class TenantConsole extends BaseConsole {
 
     public void submitApplication() throws Exception{
         RentalProperty rp = (RentalProperty)getPropertyById();
-        viewApplicantDetails();
         System.out.println("Which applicant do you want to add? ");
+        viewApplicantDetails();
         System.out.print("Enter id type (Passport/DriverLicence): ");
         String idType = scanner.next();
         System.out.print("Enter id number: ");
@@ -104,7 +120,7 @@ public class TenantConsole extends BaseConsole {
         double rental = scanner.nextDouble();
         System.out.print("Enter duration (number of months): ");
         int duration = scanner.nextInt();
-        Application a = new Application(Arrays.asList(ad.getId()), rental, duration, user);
+        Application a = new Application(Arrays.asList(id), rental, duration, user);
         rp.addApplication(a);
         System.out.println("Application successfully submitted.");
     }
@@ -129,7 +145,13 @@ public class TenantConsole extends BaseConsole {
         }
     }
 
+    public User getUser() {
+        return user;
+    }
+
+
     public void console() throws Exception{
+        super.console();
         while (true) {
             try {
                 String option = displayMenu();

@@ -119,11 +119,7 @@ public abstract class ApplicationBase {
         return isAccepted() && !isSecured() && !isWithdrawn();
     }
 
-    public boolean equals(Object o) {
-        if (o instanceof ApplicationBase) {
-            ApplicationBase a = (ApplicationBase)o;
-            return id == a.id;
-        }
-        return false;
+    public boolean equals(ApplicationBase a) {
+        return id.equals(a.id);
     }
 }

@@ -15,16 +15,8 @@ public class ID {
         this(IDType.valueOf(typ), ctt);
     }
 
-    public boolean equals(Object o) {
-        if (o instanceof ID) {
-            ID id2 = (ID)o;
-            return idType == id2.idType && content == id2.content;
-        }
-        return false;
-    }
-
     public boolean equals(ID id) {
-        return idType == id.idType && content == id.content;
+        return idType == id.idType && content.equals(id.content);
     }
 
     public String toString() {

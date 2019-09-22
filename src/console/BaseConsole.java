@@ -5,6 +5,7 @@ import java.time.*;
 import java.io.*;
 
 import se.*;
+import user.*;
 import property.*;
 import user.employee.*;
 
@@ -25,7 +26,7 @@ public class BaseConsole {
     }
 
     public String displayMenu() throws Exception{
-        System.out.println("=================================");
+        System.out.println("\n=================================");
         for (int i = 0; i < menuOptions.length; i++) {
             System.out.printf("%-30d: %s\n", i+1, menuOptions[i]);
         }
@@ -43,6 +44,8 @@ public class BaseConsole {
         return p;
     }
 
+    public User getUser() {return null;};
+
     // public void viewPropertyDetail() throws Exception {
         // Property p = getPropertyById();
     //     System.out.printf(
@@ -53,7 +56,13 @@ public class BaseConsole {
 
     public String getLine() throws IOException{
         String fs;
-        fs = reader.readLine().trim();
+        fs = reader.readLine();
+        if (fs != null)
+            return fs.trim();
         return fs;
+    }
+
+    public void console() throws Exception{
+        System.out.printf("\nWelcome back, %s\n", getUser().getClass().getSimpleName());
     }
 }

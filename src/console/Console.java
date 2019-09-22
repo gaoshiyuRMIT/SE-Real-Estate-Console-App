@@ -11,7 +11,7 @@ import user.employee.*;
 import user.customer.*;
 
 public class Console extends BaseConsole {
-    public Console() {
+    public Console() throws Exception{
         super(
             new String[] {
                 "register",
@@ -25,9 +25,11 @@ public class Console extends BaseConsole {
         );
         branch.addEmployee(pm);
         BranchManager bm = new BranchManager("Abe.de.branchmanager@gmail.com", "123");
-        branch.addEmployee(
-            bm
-        );
+        branch.addEmployee(bm);
+        User landlord = branch.login(branch.register("landlord@gmail.com", "123", "Landlord"), "123");
+        User tenant = branch.login(branch.register("tenant@gmail.com", "123", "Tenant"), "123");
+        System.out.println("landlord " + landlord.getId());
+        System.out.println("tenant " + tenant.getId());
         System.out.println("branch manager " + bm.getId());
         System.out.println("property manager " + pm.getId());
     }
@@ -50,7 +52,7 @@ public class Console extends BaseConsole {
         String pswd = scanner.next();
         User u = branch.login(uid, pswd);
         if (u == null)
-            throw new Exception("User id does not exist.");
+            throw new Exception("Combination of user id and password does not exist.");
         if (u instanceof BranchManager)
             (new BranchManagerConsole(u, branch, scanner, reader, pm)).console();
         else if (u instanceof Landlord)
@@ -62,7 +64,7 @@ public class Console extends BaseConsole {
     public static void main(String[] args) throws Exception{
         Console console = new Console();
         while (true) {
-            // try {
+            try {
                 String option = console.displayMenu();
                 if (option == "register")
                     console.register();
@@ -70,9 +72,9 @@ public class Console extends BaseConsole {
                     console.login();
                 else
                     break;
-            // } catch (Exception e) {
-            //     System.out.println(e.getMessage());
-            // }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 }

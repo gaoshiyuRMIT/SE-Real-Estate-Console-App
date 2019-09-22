@@ -215,7 +215,6 @@ public class Branch {
             for (String key : capacity.keySet())
                 if (capacity.get(key) == null)
                     capacity.remove(key);
-        System.out.println(capacity);
         ArrayList<Property> ret = new ArrayList<Property>();
 
         if (forSale) {

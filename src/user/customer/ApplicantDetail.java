@@ -47,11 +47,7 @@ public class ApplicantDetail {
         return name;
     }
 
-    public boolean equals(Object o) {
-        if (o instanceof ApplicantDetail) {
-            ApplicantDetail d = (ApplicantDetail)o;
-            return id.equals(d.id);
-        }
-        return false;
+    public boolean equals(ApplicantDetail d) {
+        return id.equals(d.id);
     }
 }

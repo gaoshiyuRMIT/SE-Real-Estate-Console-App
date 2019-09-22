@@ -27,7 +27,7 @@ public abstract class Property{
     public Property(String address, String suburb, HashMap<String, Integer> capacity,
                     PropertyType type, Customer owner) throws InvalidParamException {
         this.status = PropertyStatus.NotListed;
-        this.suburb = suburb;
+        this.suburb = suburb.toUpperCase();
         this.type = type;
         PropertyUtil.checkCapacity(capacity);
         this.capacity = capacity;
@@ -49,7 +49,7 @@ public abstract class Property{
 
     public ApplicationBase getApplicationBaseById(String id) {
         for (ApplicationBase a : applications) {
-            if (a.getId() == id)
+            if (a.getId().equals(id))
                 return a;
         }
         return null;
@@ -115,9 +115,9 @@ public abstract class Property{
                             HashMap<String, Integer> capacity,
                             PropertyStatus status,
                             PropertyType type) {
-        if (address != null && !this.address.contains(address))
+        if (address != null && !address.equals("") && !this.address.contains(address))
             return false;
-        if (suburb != null && !suburb.toUpperCase().equals(this.suburb))
+        if (suburb != null && !suburb.equals("") && !suburb.toUpperCase().equals(this.suburb))
             return false;
         if (capacity != null)
             for (String k : capacity.keySet()) {
@@ -172,13 +172,14 @@ public abstract class Property{
     }
 
     public void acceptApplicationBase(ApplicationBase a) throws OperationNotAllowedException {
-        if (this.applications.contains(a) && a.isPending())  {
-            a.setAccepted();
-            setStatus(PropertyStatus.InspectionOpen);
-            for (ApplicationBase oa : getPendingApplicationBases())
-                oa.setRejected();
-        } else
-            throw new OperationNotAllowedException();
+        if (!this.applications.contains(a))
+            throw new OperationNotAllowedException("The application specified is not pertinent to this property.");
+        if (!a.isPending())
+            throw new OperationNotAllowedException("The application is not pending.");
+        a.setAccepted();
+        setStatus(PropertyStatus.InspectionOpen);
+        for (ApplicationBase oa : getPendingApplicationBases())
+            oa.setRejected();
     }
 
     public void rejectApplicationBase(ApplicationBase a) throws OperationNotAllowedException {

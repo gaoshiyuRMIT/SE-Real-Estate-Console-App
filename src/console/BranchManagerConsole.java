@@ -42,7 +42,13 @@ public class BranchManagerConsole extends BaseConsole {
         System.out.println("Successfully listed property.");
     }
 
+    public User getUser() {
+        return user;
+    }
+
+
     public void console() throws Exception{
+        super.console();
         while (true) {
             try {
                 String option = displayMenu();
