@@ -129,11 +129,12 @@ public class TestRentalProperty {
     /*
     after an application is accepted,
     1.property status should change
-    2.other applications should be automatically rejected
-    3.no further applications can be taken
+    2.application status should change
+    3.pending-application list of the property should be cleared
+    4.inspections can still be scheduled
     */
     @Test
-    public void testAcceptApplicationAmongMultiple() throws Exception {
+    public void testAcceptApplication() throws Exception {
         PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
         rentalProperty.setManager(pm);
         rentalProperty.list();
@@ -151,35 +152,83 @@ public class TestRentalProperty {
             Arrays.asList(ad.getId()), 300, 5, tenant
         );
         rentalProperty.addApplication(a);
-
-        Tenant tenant_ellen = new Tenant("ellen.de.tenant@gmail.com", "123");
-        ApplicantDetail ad_ellen = new ApplicantDetail(
-            new ID(IDType.Passport, "E00001113"),
-            "Ellen de Tenant", 100000, "Software Engineer",
-            Arrays.asList("Dunder Mifflin, Junior Software Engineer, 06/2016-12/2017"),
-            Arrays.asList()
-        );
-        tenant_ellen.addApplicant(ad_ellen);
-
-        Application a_ellen = new Application(
-            Arrays.asList(ad_ellen.getId()), 300, 5, tenant_ellen
-        );
-        rentalProperty.addApplication(a_ellen);
-
-        assertArrayEquals(rentalProperty.getPendingApplications().toArray(),
-                            new Object[] {a, a_ellen});
-
         rentalProperty.acceptApplication(a);
-        assertNotEquals(rentalProperty.getStatus(), PropertyStatus.ApplicationOpen);
-        assertEquals(rentalProperty.getPendingApplications().size(), 0);
-        assertTrue(a.isAwaitingPayment());
-
-        assertTrue(rentalProperty.isOpenForInspection());
+        List<Application> pendingApplications = rentalProperty.getPendingApplications();
         // add an inspection
         Inspection inspection = new Inspection(LocalDateTime.now().plusDays(10));
         rentalProperty.addInspection(inspection);
-        assertTrue(rentalProperty.getUpcomingInspections().contains(inspection));
 
+        assertEquals(rentalProperty.getStatus(), PropertyStatus.InspectionOpen);
+        assertTrue(a.isAwaitingPayment());
+        assertEquals(pendingApplications.size(), 0);
+        assertTrue(rentalProperty.isOpenForInspection());
+        assertTrue(rentalProperty.getUpcomingInspections().contains(inspection));
+    }
+
+    /*
+    after an application is accepted,
+    1.inspections added before are still upcoming
+    2.new inspections can still be scheduled
+    */
+    @Test
+    public void testAddInspectionsAndAcceptApplication() throws Exception {
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        rentalProperty.setManager(pm);
+        rentalProperty.list();
+
+        Tenant tenant = new Tenant("abby.de.tenant@gmail.com", "123");
+        ApplicantDetail ad = new ApplicantDetail(
+            new ID(IDType.Passport, "E00001111"),
+            "Abby de Tenant", 100000, "Software Engineer",
+            Arrays.asList("Dunder Mifflin, Junior Software Engineer, 06/2016-12/2017"),
+            Arrays.asList()
+        );
+        tenant.addApplicant(ad);
+
+        Application a = new Application(
+            Arrays.asList(ad.getId()), 300, 5, tenant
+        );
+        // submit application
+        rentalProperty.addApplication(a);
+        // add an inspection
+        Inspection inspectionBefore = new Inspection(LocalDateTime.now().plusDays(10));
+        rentalProperty.addInspection(inspectionBefore);
+        // accept the application
+        rentalProperty.acceptApplication(a);
+        // schedule a new inspection
+        Inspection inspection = new Inspection(LocalDateTime.now().plusDays(10));
+        rentalProperty.addInspection(inspection);
+
+        List<Inspection> upcomingList = rentalProperty.getUpcomingInspections();
+
+        assertTrue(upcomingList.contains(inspectionBefore));
+        assertTrue(upcomingList.contains(inspection));
+    }
+
+    /*
+    after an application is accepted, no further application can be taken
+    */
+    @Test
+    public void testAddApplicationAfterApplicationAcceptance() throws Exception{
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        rentalProperty.setManager(pm);
+        rentalProperty.list();
+
+        Tenant tenant = new Tenant("abby.de.tenant@gmail.com", "123");
+        ApplicantDetail ad = new ApplicantDetail(
+            new ID(IDType.Passport, "E00001111"),
+            "Abby de Tenant", 100000, "Software Engineer",
+            Arrays.asList("Dunder Mifflin, Junior Software Engineer, 06/2016-12/2017"),
+            Arrays.asList()
+        );
+        tenant.addApplicant(ad);
+
+        Application a = new Application(
+            Arrays.asList(ad.getId()), 300, 5, tenant
+        );
+        rentalProperty.addApplication(a);
+        rentalProperty.acceptApplication(a);
+        // attempt to add a new application
         Tenant tenant2 = new Tenant("georgia.de.tenant@gmail.com", "123");
         ApplicantDetail ad2 = new ApplicantDetail(
             new ID(IDType.Passport, "E00001112"),
@@ -197,6 +246,57 @@ public class TestRentalProperty {
         rentalProperty.addApplication(a2);
     }
 
+    /*
+    when multiple applications are submitted to one property,
+    after an application is accepted,
+    1.other applications should be automatically rejected
+    2.hence the pending list should be empty
+    */
+    @Test
+    public void testAcceptApplicationAmongMultiple() throws Exception {
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        rentalProperty.setManager(pm);
+        rentalProperty.list();
+
+        // first application
+        Tenant tenant = new Tenant("abby.de.tenant@gmail.com", "123");
+        ApplicantDetail ad = new ApplicantDetail(
+            new ID(IDType.Passport, "E00001111"),
+            "Abby de Tenant", 100000, "Software Engineer",
+            Arrays.asList("Dunder Mifflin, Junior Software Engineer, 06/2016-12/2017"),
+            Arrays.asList()
+        );
+        tenant.addApplicant(ad);
+        Application a = new Application(
+            Arrays.asList(ad.getId()), 300, 5, tenant
+        );
+        rentalProperty.addApplication(a);
+
+        // second application
+        Tenant tenant_ellen = new Tenant("ellen.de.tenant@gmail.com", "123");
+        ApplicantDetail ad_ellen = new ApplicantDetail(
+            new ID(IDType.Passport, "E00001113"),
+            "Ellen de Tenant", 100000, "Software Engineer",
+            Arrays.asList("Dunder Mifflin, Junior Software Engineer, 06/2016-12/2017"),
+            Arrays.asList()
+        );
+        tenant_ellen.addApplicant(ad_ellen);
+        Application a_ellen = new Application(
+            Arrays.asList(ad_ellen.getId()), 300, 5, tenant_ellen
+        );
+        rentalProperty.addApplication(a_ellen);
+
+        // accept the first application
+        rentalProperty.acceptApplication(a);
+        List<Application> pendingList = rentalProperty.getPendingApplications();
+
+        assertTrue(a_ellen.isRejected());
+        assertEquals(pendingList.size(), 0);
+    }
+
+    /*
+    after an application is withdrawn, landlord should no longer see it in pending list
+    */
     @Test
     public void testWithdrawApplicationWhenPending() throws Exception{
         PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
@@ -217,12 +317,14 @@ public class TestRentalProperty {
         );
         rentalProperty.addApplication(a);
         rentalProperty.withdrawApplication(a);
+
+        assertTrue(a.isWithdrawn());
         assertFalse(rentalProperty.getPendingApplications().contains(a));
-        // accept after withdrawal
-        thrown.expect(OperationNotAllowedException.class);
-        rentalProperty.acceptApplication(a);
     }
 
+    /*
+    after an application is accepted and then withdrawn, property should be back on market
+    */
     @Test
     public void testWithdrawApplicationAfterAcceptance() throws Exception{
         PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
@@ -243,11 +345,15 @@ public class TestRentalProperty {
         );
         rentalProperty.addApplication(a);
         rentalProperty.acceptApplication(a);
-        assertEquals(rentalProperty.getStatus(), PropertyStatus.InspectionOpen);
         rentalProperty.withdrawApplication(a);
-        assertEquals(rentalProperty.getStatus(), PropertyStatus.ApplicationOpen);
+        PropertyStatus stAfterWithdrawal = rentalProperty.getStatus();
+
+        assertEquals(stAfterWithdrawal, PropertyStatus.ApplicationOpen);
     }
 
+    /*
+    after an application is rejected, it should not appear in the pending-application list
+    */
     @Test
     public void testRejectApplication() throws Exception {
         PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
@@ -268,20 +374,23 @@ public class TestRentalProperty {
         );
         rentalProperty.addApplication(a);
         rentalProperty.rejectApplication(a);
+
         assertFalse(rentalProperty.getPendingApplications().contains(a));
-        // withdraw after rejection
-        thrown.expect(OperationNotAllowedException.class);
-        rentalProperty.withdrawApplication(a);
+        assertTrue(a.isRejected());
+        assertFalse(a.isPending());
     }
 
+    /*
+    after rent & bond are paid for an application,
+    1.a lease with the same applicants, rental, and duration should be created
+    2.application status should change
+    3.property status should change
+    */
     @Test
     public void testPayRentNBondForAcceptedApplication() throws Exception {
         PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
         rentalProperty.setManager(pm);
         rentalProperty.list();
-        // add an inspection
-        Inspection inspection = new Inspection(LocalDateTime.now().plusDays(10));
-        rentalProperty.addInspection(inspection);
 
         Tenant tenant = new Tenant("abby.de.tenant@gmail.com", "123");
         ApplicantDetail ad = new ApplicantDetail(
@@ -291,27 +400,91 @@ public class TestRentalProperty {
             Arrays.asList()
         );
         tenant.addApplicant(ad);
-
         Application a = new Application(
             Arrays.asList(ad.getId()), 300, 5, tenant
         );
         rentalProperty.addApplication(a);
-        // there are still upcoming inspections
-        assertTrue(rentalProperty.getUpcomingInspections().contains(inspection));
-
         rentalProperty.acceptApplication(a);
-
         rentalProperty.payRentBondForApplication(a);
+        Lease lease = rentalProperty.getCurrentLease();
+
         assertFalse(rentalProperty.isOpenForInspection());
         assertTrue(a.isSecured());
-        // upcoming inspections are all cancelled
-        assertFalse(rentalProperty.getUpcomingInspections().contains(inspection));
-        // a lease is created
-        Lease lease = rentalProperty.getCurrentLease();
         assertNotNull(lease);
         assertTrue(lease.getTenants().equals(a.getApplicants()));
         assertEquals((long)(lease.getDuration()), 5l);
         assertEquals(lease.getWeeklyRental(), 300, 5e-8);
+    }
+
+    /*
+    after rent & bond are paid for an application, all future inspections are cancelled
+    */
+    @Test
+    public void testPayRentNBondAndInspection() throws Exception {
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        rentalProperty.setManager(pm);
+        rentalProperty.list();
+
+        // add an inspection
+        Inspection inspectionBefore = new Inspection(LocalDateTime.now().plusDays(9));
+        rentalProperty.addInspection(inspectionBefore);
+        // add application
+        Tenant tenant = new Tenant("abby.de.tenant@gmail.com", "123");
+        ApplicantDetail ad = new ApplicantDetail(
+            new ID(IDType.Passport, "E00001111"),
+            "Abby de Tenant", 100000, "Software Engineer",
+            Arrays.asList("Dunder Mifflin, Junior Software Engineer, 06/2016-12/2017"),
+            Arrays.asList()
+        );
+        tenant.addApplicant(ad);
+        Application a = new Application(
+            Arrays.asList(ad.getId()), 300, 5, tenant
+        );
+        rentalProperty.addApplication(a);
+        // accept application
+        rentalProperty.acceptApplication(a);
+        // add another inspection
+        Inspection inspection = new Inspection(LocalDateTime.now().plusDays(10));
+        rentalProperty.addInspection(inspection);
+        // pay rent & bond
+        rentalProperty.payRentBondForApplication(a);
+
+        assertEquals(rentalProperty.getUpcomingInspections().size(), 0);
+        assertTrue(inspectionBefore.isCancelled());
+        assertTrue(inspection.isCancelled());
+    }
+
+
+    /*
+    after rent & bond are paid for an application, scheduling new inspections is forbidden
+    */
+    @Test
+    public void testAddInspectionAfterRentBondPaid() throws Exception {
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        rentalProperty.setManager(pm);
+        rentalProperty.list();
+        // add application
+        Tenant tenant = new Tenant("abby.de.tenant@gmail.com", "123");
+        ApplicantDetail ad = new ApplicantDetail(
+            new ID(IDType.Passport, "E00001111"),
+            "Abby de Tenant", 100000, "Software Engineer",
+            Arrays.asList("Dunder Mifflin, Junior Software Engineer, 06/2016-12/2017"),
+            Arrays.asList()
+        );
+        tenant.addApplicant(ad);
+        Application a = new Application(
+            Arrays.asList(ad.getId()), 300, 5, tenant
+        );
+        rentalProperty.addApplication(a);
+        // accept application
+        rentalProperty.acceptApplication(a);
+        // pay rent & bond
+        rentalProperty.payRentBondForApplication(a);
+
+        Inspection inspection = new Inspection(LocalDateTime.now().plusDays(10));
+
+        thrown.expect(OperationNotAllowedException.class);
+        rentalProperty.addInspection(inspection);
     }
 
     /*
