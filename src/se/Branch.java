@@ -50,6 +50,10 @@ public class Branch {
         return (PartTimeBaseSalary)getMonthlyPayroll(date).get(id);
     }
 
+    public PartTimeBaseSalary getHourSubmission(LocalDateTime date, Employee e) {
+        return getHourSubmission(date, PartTimeBaseSalary.formatId(e));
+    }
+
     public HashMap<String, PayrollItem> getThisMonthPayroll() {
         return getMonthlyPayroll(LocalDateTime.now());
     }

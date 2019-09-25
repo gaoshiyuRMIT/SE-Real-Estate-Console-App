@@ -17,6 +17,10 @@ public class PartTimeBaseSalary extends PayrollItem{
         branchManager = null;
     }
 
+    public static String formatId(Employee e) {
+        return super.formatId(idPrefix, e);
+    }
+
     public HoursStatus getStatus() {
         return status;
     }

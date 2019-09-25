@@ -25,8 +25,12 @@ public class PayrollItem {
         amount = 0;
         LocalDateTime now = LocalDateTime.now();
         date = LocalDateTime.of(now.getYear(), now.getMonth(), 0, 0, 0);
-        id = String.format("%s-%s", idPrefix, employee.getId());
+        id = formatId(idPrefix, employee);
         this.amount = amount;
+    }
+
+    public static String formatId(String idPrefix, Employee employee) {
+        return String.format("%s-%s", idPrefix, employee.getId());
     }
 
     public String getId() {
