@@ -83,7 +83,7 @@ public class ForSaleProperty extends Property {
         if (!hasSection32())
             throw new OperationNotAllowedException(
                 "Before any inspection can be conducted, "
-                + "section 32 must be compiled by a legal profession "
+                + "section 32 must be compiled by a legal professional "
                 + "and scanned into the system."
             );
         super.addInspection(i);
