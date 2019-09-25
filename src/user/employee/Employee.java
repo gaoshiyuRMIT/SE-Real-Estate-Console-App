@@ -1,36 +1,21 @@
 package user.employee;
 
 import user.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import consts.*;
-import hourSubmission.HourSubmission;
 
 public class Employee extends User {
     private static int idCounter = 0;
     private static final double maxMonthlyHours = 40;
-    
+
     private EmployeeType role;
     private double hourlySalary;
     private double salary;
-    private boolean isParttimer;//default full timer
-    private List<HourSubmission> hoursSubmitted;
+    private boolean workerType;
 
-    public List<HourSubmission> getHoursSubmitted() {
-		return hoursSubmitted;
-	}
-
-	public void setHoursSubmitted(List<HourSubmission> hoursSubmitted) {
-		this.hoursSubmitted = hoursSubmitted;
-	}
-
-	public Employee(String email, String password, EmployeeType role) {
+    public Employee(String email, String password, EmployeeType role, boolean workerType) {
         super(email, password, genId());
         this.role = role;
-        this.hoursSubmitted = new ArrayList<HourSubmission>();
-   //     this.workerType = workerType;
+        this.workerType = workerType;
     }
     
     public static String genId() {
@@ -41,37 +26,15 @@ public class Employee extends User {
         return role;
     }
 	
-	public double getBaseSalary() {
+	public double getSalary() {
 		return salary;
 	}
 	
-	public void setIsParttimer(boolean isParttimer) {
-		this.isParttimer = isParttimer;
+	public boolean getWorkerType() {
+		return workerType;
 	}
 	
-	
-	public boolean getIsParttimer() {
-		return isParttimer;
-	}
-	
-	public void setHourlySalary(double hourlySalary) {
-		this.hourlySalary = hourlySalary;		
-	}
-	
-	public double getHourlySalary() {
-		return hourlySalary;
-	}
-	
-	public void calculateBaseSalary(int hours) {
+	public void calculateSalary(int hours) {
 		salary = hourlySalary*hours;
 	}
-	
-	public int addHourSubmission(int hours) {
-		return hours;
-	}
-
-	//public List<HourSubmission> getHours() {
-	// hours;
-	//}
-	
 }

@@ -53,10 +53,10 @@ public class TestRentalProperty {
             PropertyType.Studio, 300, 6, l
         );
     }
-    
+
     @Test
     public void testAddInspectionToRentalProperty() throws Exception {
-        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456",10);
         rentalProperty.setManager(pm);
         rentalProperty.list();
 
@@ -68,7 +68,6 @@ public class TestRentalProperty {
         assertFalse(rentalProperty.getUpcomingInspections().contains(inspection));
     }
 
-    
     /*
     after an application is taken,
     1.it should be returned by multiple searching methods of the property
@@ -76,7 +75,7 @@ public class TestRentalProperty {
     */
     @Test
     public void testApplyForRentalProperty() throws Exception {
-        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456",10);
         rentalProperty.setManager(pm);
         rentalProperty.list();
 
@@ -134,7 +133,7 @@ public class TestRentalProperty {
     */
     @Test
     public void testAcceptApplicationAmongMultiple() throws Exception {
-        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456",10);
         rentalProperty.setManager(pm);
         rentalProperty.list();
 
@@ -199,7 +198,7 @@ public class TestRentalProperty {
 
     @Test
     public void testWithdrawApplicationWhenPending() throws Exception{
-        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456",10);
         rentalProperty.setManager(pm);
         rentalProperty.list();
 
@@ -225,7 +224,7 @@ public class TestRentalProperty {
 
     @Test
     public void testWithdrawApplicationAfterAcceptance() throws Exception{
-        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456",10);
         rentalProperty.setManager(pm);
         rentalProperty.list();
 
@@ -250,7 +249,7 @@ public class TestRentalProperty {
 
     @Test
     public void testRejectApplication() throws Exception {
-        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456",10);
         rentalProperty.setManager(pm);
         rentalProperty.list();
 
@@ -276,7 +275,7 @@ public class TestRentalProperty {
 
     @Test
     public void testPayRentNBondForAcceptedApplication() throws Exception {
-        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456");
+        PropertyManager pm = new PropertyManager("lucas.de.manager@gmail.com", "456",10);
         rentalProperty.setManager(pm);
         rentalProperty.list();
         // add an inspection
@@ -312,5 +311,13 @@ public class TestRentalProperty {
         assertTrue(lease.getTenants().equals(a.getApplicants()));
         assertEquals((long)(lease.getDuration()), 5l);
         assertEquals(lease.getWeeklyRental(), 300, 5e-8);
+    }
+
+    /*
+    attempts to set the management fee outside of the range should fail
+    */
+    @Test
+    public void testSetMangementFeeRateOutsideRateRange() {
+        fail("not implemented");
     }
 }
