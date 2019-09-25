@@ -4,7 +4,7 @@ import consts.*;
 import user.employee.*;
 
 public class PartTimeBaseSalary extends PayrollItem{
-    private static final String idPrefix = "PTBR";
+    private static final String idPrefix = "PTBS";
 
     private int nHour;
     private HoursStatus status;
