@@ -22,6 +22,10 @@ public class Employee extends User {
         this.partTime = true;
     }
 
+    public static int getMaxMonthlyHours() {
+        return maxMonthlyHours;
+    }
+
     public double getHourlySalary() {
         return hourlySalary;
     }

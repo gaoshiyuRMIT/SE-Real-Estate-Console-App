@@ -1,5 +1,8 @@
 package finance;
 
+import user.employee.*;
+import se.*;
+
 public class SalesBonus extends PayrollItem{
     private static final String idPrefix = "SB";
     PurchaseOffer offer;

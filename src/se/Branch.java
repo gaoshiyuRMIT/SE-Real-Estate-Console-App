@@ -31,8 +31,32 @@ public class Branch {
 
     public void submitHours(Employee e, int nHour) {
         PartTimeBaseSalary pbs = new PartTimeBaseSalary(nHour, e);
-        HashMap<String, PayrollItem> monthlyPayroll = payroll.get(pbs.getDate());
-        monthlyPayroll.put(pbs.getId(), pbs);
+        getMonthlyPayroll(pbs.getDate()).put(pbs.getId(), pbs);
+    }
+
+    public List<PartTimeBaseSalary> getPendingHourSubmissions() {
+        List<PartTimeBaseSalary> res = new ArrayList<PartTimeBaseSalary>();
+        for (PayrollItem pri : getThisMonthPayroll().values()) {
+            if (pri instanceof PartTimeBaseSalary) {
+                PartTimeBaseSalary ptbs = (PartTimeBaseSalary)pri;
+                if (ptbs.isPending())
+                    res.add(ptbs);
+            }
+        }
+        return res;
+    }
+
+    public PartTimeBaseSalary getHourSubmission(LocalDateTime date, String id) {
+        return (PartTimeBaseSalary)getMonthlyPayroll(date).get(id);
+    }
+
+    public HashMap<String, PayrollItem> getThisMonthPayroll() {
+        return getMonthlyPayroll(LocalDateTime.now());
+    }
+
+    public HashMap<String, PayrollItem> getMonthlyPayroll(LocalDateTime date) {
+        date = LocalDateTime.of(date.getYear(), date.getMonth(), 0, 0, 0);
+        return payroll.get(date);
     }
 
     public void addEmployee(Employee e) {
