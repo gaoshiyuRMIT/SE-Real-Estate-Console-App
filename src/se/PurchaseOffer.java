@@ -29,6 +29,10 @@ public class PurchaseOffer extends ApplicationBase {
         return depositPaid;
     }
 
+    public boolean isFulfilled() {
+        return settlementPaid;
+    }
+
     public void setSettlementPaid() throws OperationNotAllowedException {
         if (!isSecured())
             throw new OperationNotAllowedException(
