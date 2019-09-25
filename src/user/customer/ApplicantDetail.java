@@ -2,6 +2,8 @@ package user.customer;
 
 import java.util.*;
 
+import consts.*;
+
 public class ApplicantDetail {
     private ID id;
     private String name;
@@ -30,15 +32,22 @@ public class ApplicantDetail {
         this.rentalHistory = rentalHistory;
     }
 
+    public ApplicantDetail(String idType, String idContent, String name, double annualIncome, String occupation,
+                            List<String> employmentHistory,
+                            List<String> rentalHistory) {
+        this(new ID(IDType.valueOf(idType), idContent), name, annualIncome,
+                occupation, employmentHistory, rentalHistory);
+    }
+
     public ID getId() {
         return id;
     }
 
-    public boolean equals(Object o) {
-        if (o instanceof ApplicantDetail) {
-            ApplicantDetail d = (ApplicantDetail)o;
-            return id.equals(d.id);
-        }
-        return false;
+    public String getName() {
+        return name;
+    }
+
+    public boolean equals(ApplicantDetail d) {
+        return id.equals(d.id);
     }
 }

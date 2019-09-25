@@ -31,11 +31,34 @@ public class RentalProperty extends Property {
         this.leases = new ArrayList<Lease>();
     }
 
+    public RentalProperty(String address, String suburb, HashMap<String, Integer> capacity,
+                            String typeS, double weeklyRental, int desiredDuration,
+                            Landlord landlord)
+                            throws InvalidParamException {
+        this(address, suburb, capacity, PropertyType.valueOf(typeS), weeklyRental,
+            desiredDuration, landlord);
+    }
+
+    public Application getApplicationById(String id) {
+        ApplicationBase ab = super.getApplicationBaseById(id);
+        if (ab == null)
+            return null;
+        return (Application)ab;
+    }
+
+    public int getDuration() {
+        return desiredDuration;
+    }
+
     public List<Application> getApplications() {
         List<Application> res = new ArrayList<Application>();
         for (ApplicationBase ab : super.getApplicationBases())
             res.add((Application)ab);
         return res;
+    }
+
+    public double getWeeklyRental() {
+        return weeklyRental;
     }
 
     public void setWeeklyRental(double r) throws OperationNotAllowedException {

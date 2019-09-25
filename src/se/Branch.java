@@ -1,9 +1,11 @@
 package se;
 
 import java.util.*;
+import java.time.*;
 import static java.util.AbstractMap.SimpleEntry;
 
 import consts.*;
+import finance.*;
 import exception.*;
 import user.customer.*;
 import user.employee.*;
@@ -14,10 +16,9 @@ public class Branch {
     private String name;
     private HashMap<String, RentalProperty> rentalProps;
     private HashMap<String, ForSaleProperty> forSaleProps;
-
     private HashMap<String, Customer> customers;
-
     private HashMap<String, Employee> employees;
+    private HashMap<LocalDateTime, HashMap<String, PayrollItem>> payroll;
 
     public Branch(String name) {
         this.name = name;
@@ -26,6 +27,12 @@ public class Branch {
         this.forSaleProps = new HashMap<String, ForSaleProperty>();
         this.customers = new HashMap<String, Customer>();
         this.employees = new HashMap<String, Employee>();
+    }
+
+    public void submitHours(Employee e, int nHour) {
+        PartTimeBaseSalary pbs = new PartTimeBaseSalary(nHour, e);
+        HashMap<String, PayrollItem> monthlyPayroll = payroll.get(pbs.getDate());
+        monthlyPayroll.put(pbs.getId(), pbs);
     }
 
     public void addEmployee(Employee e) {
@@ -215,7 +222,6 @@ public class Branch {
             for (String key : capacity.keySet())
                 if (capacity.get(key) == null)
                     capacity.remove(key);
-        System.out.println(capacity);
         ArrayList<Property> ret = new ArrayList<Property>();
 
         if (forSale) {
@@ -256,24 +262,5 @@ public class Branch {
                     ret.add(rp);
         }
         return ret;
-    }
-
-    public static void main(String[] args) throws Exception {
-        // HashMap<String, String> h = new HashMap<String, String>();
-        // String s1 = "a";
-        // String s2 = "a";
-        // h.put(s1, "b");
-        // System.out.println(h.containsKey(s1));
-        // System.out.println(h.containsKey(s2));
-
-
-        Branch b = new Branch("test");
-        String id = b.register("a.b@c.d", "111111", "Vendor");
-        System.out.println(id);
-
-        System.out.println(b.customers.containsKey(id));
-
-        User u = b.login(id, "111111");
-        System.out.println(u);
     }
 }

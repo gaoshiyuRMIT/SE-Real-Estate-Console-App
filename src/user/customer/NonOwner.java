@@ -3,12 +3,12 @@ package user.customer;
 import java.util.*;
 
 public abstract class NonOwner extends Customer {
-    private HashMap<ID, ApplicantDetail> applicants;
+    private HashMap<String, ApplicantDetail> applicants;
     private String interestedSuburb;
 
     public NonOwner(String email, String passwd) {
         super(email, passwd);
-        applicants = new HashMap<ID, ApplicantDetail>();
+        applicants = new HashMap<String, ApplicantDetail>();
     }
 
     public void setSuburb(String suburb) {
@@ -20,19 +20,21 @@ public abstract class NonOwner extends Customer {
             return new ArrayList<ApplicantDetail>(applicants.values());
         ArrayList<ApplicantDetail> res = new ArrayList<ApplicantDetail>();
         for (ID id : ids)
-            res.add(this.applicants.get(id));
+            res.add(this.applicants.get(""+id));
         return res;
     }
 
     public boolean hasApplicant(ID id) {
-        return applicants.containsKey(id);
+        System.out.println(id);
+        System.out.println(applicants.containsKey(""+id));
+        return applicants.containsKey(""+id);
     }
 
     public void addApplicant(ApplicantDetail d, boolean override)
                                 throws ApplicantExistException {
         if (!override && applicants.containsKey(d.getId()))
             throw new ApplicantExistException();
-        this.applicants.put(d.getId(), d);
+        this.applicants.put(""+d.getId(), d);
     }
 
     public void addApplicant(ApplicantDetail d) throws ApplicantExistException {

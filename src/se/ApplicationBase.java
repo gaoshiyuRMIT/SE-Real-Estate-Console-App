@@ -37,6 +37,20 @@ public abstract class ApplicationBase {
         this.applicants = null;
     }
 
+    public String getStatusS() {
+        if (isPending())
+            return "pending";
+        if (isAwaitingPayment())
+            return "awaiting payment";
+        if (isRejected())
+            return "rejected";
+        if (isWithdrawn())
+            return "withdrawn";
+        if (isSecured())
+            return "secured";
+        return "other";
+    }
+
     public boolean initiatedBy(Customer c) {
         return this.initiator.equals(c);
     }
@@ -105,11 +119,7 @@ public abstract class ApplicationBase {
         return isAccepted() && !isSecured() && !isWithdrawn();
     }
 
-    public boolean equals(Object o) {
-        if (o instanceof ApplicationBase) {
-            ApplicationBase a = (ApplicationBase)o;
-            return id == a.id;
-        }
-        return false;
+    public boolean equals(ApplicationBase a) {
+        return id.equals(a.id);
     }
 }
