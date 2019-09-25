@@ -19,8 +19,17 @@ public class Branch {
     private HashMap<String, Customer> customers;
     private HashMap<String, Employee> employees;
     private HashMap<LocalDateTime, HashMap<String, PayrollItem>> payroll;
+	public double branchMoney;
 
-    public Branch(String name) {
+    public double getBranchMoney() {
+		return branchMoney;
+	}
+
+	public void setBranchMoney(double branchMoney) {
+		this.branchMoney = branchMoney;
+	}
+
+	public Branch(String name) {
         this.name = name;
 
         this.rentalProps = new HashMap<String, RentalProperty>();

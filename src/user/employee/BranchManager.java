@@ -1,7 +1,6 @@
 package user.employee;
 
 import consts.*;
-import hourSubmission.HourSubmission;
 
 public class BranchManager extends Employee {
 	private int submitid;

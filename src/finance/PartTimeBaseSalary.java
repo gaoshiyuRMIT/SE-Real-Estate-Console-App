@@ -7,7 +7,16 @@ public class PartTimeBaseSalary extends PayrollItem{
     private static final String idPrefix = "PTBR";
 
     private int nHour;
-    private HoursStatus status;
+    
+    public int getnHour() {
+		return nHour;
+	}
+
+	public void setnHour(int nHour) {
+		this.nHour = nHour;
+	}
+
+	private HoursStatus status;
     private BranchManager branchManager;
 
     public PartTimeBaseSalary(int nHour, Employee employee) {

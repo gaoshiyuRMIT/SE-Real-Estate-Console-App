@@ -12,7 +12,9 @@ public class PayrollItem {
     // only year & month are useful information
     private LocalDateTime date;
     private double amount;
-    private boolean paid;
+
+
+	private boolean paid;
     private Employee employee;
 
     public PayrollItem(Employee employee, String idPrefix) {
@@ -44,4 +46,8 @@ public class PayrollItem {
     public LocalDateTime getDate() {
         return date;
     }
+    
+    public double getAmount() {
+		return amount;
+	}
 }
