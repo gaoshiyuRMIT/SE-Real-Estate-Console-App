@@ -29,7 +29,7 @@ public class Branch {
         this.employees = new HashMap<String, Employee>();
     }
 
-    public void submitHours(Employee e, int nHour) {
+    public void submitHours(Employee e, int nHour) throws OperationNotAllowedException{
         PartTimeBaseSalary pbs = new PartTimeBaseSalary(nHour, e);
         getMonthlyPayroll(pbs.getDate()).put(pbs.getId(), pbs);
     }

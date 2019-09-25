@@ -2,6 +2,7 @@ package finance;
 
 import consts.*;
 import user.employee.*;
+import exception.*;
 
 public class PartTimeBaseSalary extends PayrollItem{
     private static final String idPrefix = "PTBS";
@@ -10,8 +11,14 @@ public class PartTimeBaseSalary extends PayrollItem{
     private HoursStatus status;
     private BranchManager branchManager;
 
-    public PartTimeBaseSalary(int nHour, Employee employee) {
+    public PartTimeBaseSalary(int nHour, Employee employee)
+                                throws OperationNotAllowedException{
         super(employee, idPrefix);
+        int maxNHour = Employee.getMaxMonthlyHours();
+        if (nHour > maxNHour)
+            throw new OperationNotAllowedException(
+                String.format("Monthly hours cannot exceed %d.", maxNHour)
+            );
         this.nHour = nHour;
         status = HoursStatus.Pending;
         branchManager = null;
