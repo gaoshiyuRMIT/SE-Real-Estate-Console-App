@@ -40,6 +40,31 @@ public class TestNonOwner {
     }
 
     @Test
+    public void testEditExistingApplicant() throws Exception {
+        ApplicantDetail ad = new ApplicantDetail(
+            new ID(IDType.Passport, "E00001111"),
+            "Abby de Tenant", 100000, "Software Engineer",
+            Arrays.asList("Dunder Mifflin, Junior Software Engineer, 06/2016-12/2017"),
+            Arrays.asList()
+        );
+        tenant.addApplicant(ad);
+        // create an applicant with the same ID, with different name and income
+        ApplicantDetail ad_rep = new ApplicantDetail(
+            new ID(IDType.Passport, "E00001111"),
+            "Doby de Tenant", 80000, "Software Engineer",
+            Arrays.asList("Dunder Mifflin, Sales, 06/2016-12/2017"),
+            Arrays.asList()
+        );
+
+        // add applicant, override
+        tenant.addApplicant(ad_rep, true);
+
+        ApplicantDetail detail = tenant.getApplicants(null).get(0);
+        assertEquals(detail.getName(), "Doby de Tenant");
+        assertEquals(detail.getAnnualIncome(), 80000, 5e-8);
+    }
+
+    @Test
     public void testAddExistingApplicant() throws Exception {
         ApplicantDetail ad = new ApplicantDetail(
             new ID(IDType.Passport, "E00001111"),

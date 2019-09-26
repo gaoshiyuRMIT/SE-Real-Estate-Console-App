@@ -43,6 +43,10 @@ public class ApplicantDetail {
         return id;
     }
 
+    public double getAnnualIncome() {
+        return annualIncome;
+    }
+
     public String getName() {
         return name;
     }
