@@ -25,14 +25,12 @@ public abstract class NonOwner extends Customer {
     }
 
     public boolean hasApplicant(ID id) {
-        System.out.println(id);
-        System.out.println(applicants.containsKey(""+id));
         return applicants.containsKey(""+id);
     }
 
     public void addApplicant(ApplicantDetail d, boolean override)
                                 throws ApplicantExistException {
-        if (!override && applicants.containsKey(d.getId()))
+        if (!override && hasApplicant(d.getId()))
             throw new ApplicantExistException();
         this.applicants.put(""+d.getId(), d);
     }
