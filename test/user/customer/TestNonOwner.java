@@ -59,7 +59,9 @@ public class TestNonOwner {
         // add applicant, override
         tenant.addApplicant(ad_rep, true);
 
-        ApplicantDetail detail = tenant.getApplicants(null).get(0);
+        List<ApplicantDetail> details = tenant.getApplicants(null);
+        ApplicantDetail detail = details.get(0);
+        assertEquals(details.size(), 1);
         assertEquals(detail.getName(), "Doby de Tenant");
         assertEquals(detail.getAnnualIncome(), 80000, 5e-8);
     }
