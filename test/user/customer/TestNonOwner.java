@@ -26,7 +26,7 @@ public class TestNonOwner {
     }
 
     @Test
-    public void testAddApplication() throws Exception{
+    public void testAddApplicant() throws Exception{
         ApplicantDetail ad = new ApplicantDetail(
             new ID(IDType.Passport, "E00001111"),
             "Abby de Tenant", 100000, "Software Engineer",
@@ -40,7 +40,7 @@ public class TestNonOwner {
     }
 
     @Test
-    public void testAddExistingApplication() throws Exception {
+    public void testAddExistingApplicant() throws Exception {
         ApplicantDetail ad = new ApplicantDetail(
             new ID(IDType.Passport, "E00001111"),
             "Abby de Tenant", 100000, "Software Engineer",
