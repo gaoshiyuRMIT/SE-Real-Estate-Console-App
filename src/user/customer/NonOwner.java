@@ -2,6 +2,8 @@ package user.customer;
 
 import java.util.*;
 
+import exception.*;
+
 public abstract class NonOwner extends Customer {
     private HashMap<String, ApplicantDetail> applicants;
     private String interestedSuburb;
@@ -15,13 +17,17 @@ public abstract class NonOwner extends Customer {
         interestedSuburb = suburb;
     }
 
-    public List<ApplicantDetail> getApplicants(List<ID> ids) {
-        if (ids == null)
-            return new ArrayList<ApplicantDetail>(applicants.values());
+    public List<ApplicantDetail> getApplicants(List<ID> ids){
         ArrayList<ApplicantDetail> res = new ArrayList<ApplicantDetail>();
-        for (ID id : ids)
-            res.add(this.applicants.get(""+id));
+        if (ids != null) {
+            for (ID id : ids)
+                res.add(this.applicants.get(""+id));
+        }
         return res;
+    }
+
+    public List<ApplicantDetail> getApplicants() {
+        return new ArrayList<ApplicantDetail>(applicants.values());
     }
 
     public boolean hasApplicant(ID id) {

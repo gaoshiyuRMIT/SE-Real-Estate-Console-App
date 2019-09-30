@@ -137,7 +137,7 @@ public class TenantConsole extends BaseConsole {
     }
 
     public void viewApplicantDetails() throws Exception{
-        for (ApplicantDetail ad : user.getApplicants(null)) {
+        for (ApplicantDetail ad : user.getApplicants()) {
             System.out.printf(
                 "%s %s\n",
                 ad.getId(), ad.getName()
