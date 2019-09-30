@@ -99,9 +99,9 @@ public class TestRentalProperty {
         List<Application> pias = rentalProperty.getApplicationsInitiatedBy(tenant);
         List<Application> ppas = rentalProperty.getPendingApplications();
 
+        assertTrue(pas.contains(a));
         assertTrue(pias.contains(a));
-        assertTrue(pas.contains(a));
-        assertTrue(pas.contains(a));
+        assertTrue(ppas.contains(a));
     }
 
     /*
@@ -426,8 +426,8 @@ public class TestRentalProperty {
         rentalProperty.list();
 
         // add an inspection
-        Inspection inspectionBefore = new Inspection(LocalDateTime.now().plusDays(9));
-        rentalProperty.addInspection(inspectionBefore);
+        Inspection inspectionBeforeApplication = new Inspection(LocalDateTime.now().plusDays(9));
+        rentalProperty.addInspection(inspectionBeforeApplication);
         // add application
         Tenant tenant = new Tenant("abby.de.tenant@gmail.com", "123");
         ApplicantDetail ad = new ApplicantDetail(
@@ -444,14 +444,16 @@ public class TestRentalProperty {
         // accept application
         rentalProperty.acceptApplication(a);
         // add another inspection
-        Inspection inspection = new Inspection(LocalDateTime.now().plusDays(10));
-        rentalProperty.addInspection(inspection);
+        Inspection inspectionAfterApplicationAccepted = new Inspection(LocalDateTime.now().plusDays(10));
+        rentalProperty.addInspection(inspectionAfterApplicationAccepted);
         // pay rent & bond
         rentalProperty.payRentBondForApplication(a);
 
-        assertEquals(rentalProperty.getUpcomingInspections().size(), 0);
-        assertTrue(inspectionBefore.isCancelled());
-        assertTrue(inspection.isCancelled());
+        List<Inspection> upcomingInspectionsAfterRentBondPaid = rentalProperty.getUpcomingInspections();
+
+        assertEquals(upcomingInspectionsAfterRentBondPaid.size(), 0);
+        assertTrue(inspectionBeforeApplication.isCancelled());
+        assertTrue(inspectionAfterApplicationAccepted.isCancelled());
     }
 
 

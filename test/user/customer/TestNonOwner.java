@@ -35,8 +35,11 @@ public class TestNonOwner {
         );
         tenant.addApplicant(ad);
 
-        assertTrue(tenant.getApplicants(null).contains(ad));
-        assertTrue(tenant.hasApplicant(ad.getId()));
+        List<ApplicantDetail> allApplicantsOfTenant = tenant.getApplicants();
+        ID applicantId = ad.getId();
+
+        assertTrue(allApplicantsOfTenant.contains(ad));
+        assertTrue(tenant.hasApplicant(applicantId));
     }
 
     @Test
@@ -59,7 +62,7 @@ public class TestNonOwner {
         // add applicant, override
         tenant.addApplicant(ad_rep, true);
 
-        List<ApplicantDetail> details = tenant.getApplicants(null);
+        List<ApplicantDetail> details = tenant.getApplicants();
         ApplicantDetail detail = details.get(0);
         assertEquals(details.size(), 1);
         assertEquals(detail.getName(), "Doby de Tenant");

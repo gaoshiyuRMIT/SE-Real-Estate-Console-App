@@ -195,19 +195,6 @@ public class TestBranch {
         rentalProperty.list();
     }
 
-    @Test
-    public void addApplicantDetailToTenant() throws Exception {
-        setUpTenant();
-        ApplicantDetail ad = new ApplicantDetail(
-            new ID(IDType.Passport, "E00001111"),
-            "Abby de Tenant", 100000, "Software Engineer",
-            Arrays.asList("Dunder Mifflin, Junior Software Engineer, 06/2016-12/2017"),
-            Arrays.asList()
-        );
-        tenant.addApplicant(ad);
-        assertTrue(tenant.getApplicants(null).contains(ad));
-        assertTrue(tenant.hasApplicant(ad.getId()));
-    }
 
     /*
     (tests the method that searches for applications initiated by a particular tenant)
