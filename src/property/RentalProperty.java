@@ -26,8 +26,8 @@ public class RentalProperty extends Property {
         super(address, suburb, capacity, type, landlord);
         this.weeklyRental = weeklyRental;
         this.desiredDuration = desiredDuration;
-        this.managementFeeRate = 0.8;
-        this.managementFeeRateRange = new SimpleEntry<Double, Double>(0.7, 0.8);
+        this.managementFeeRate = 0.08;
+        this.managementFeeRateRange = new SimpleEntry<Double, Double>(0.07, 0.08);
         this.leases = new ArrayList<Lease>();
     }
 
