@@ -8,7 +8,7 @@ public class SalesBonus extends PayrollItem{
     private static final String idPrefix = "SB";
     PurchaseOffer offer;
 
-    public SalesBonus(Employee employee, PurchaseOffer offer)
+    public SalesBonus(SalesConsultant employee, PurchaseOffer offer)
                         throws OperationNotAllowedException{
         super(
             employee,

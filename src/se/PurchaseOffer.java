@@ -10,6 +10,7 @@ public class PurchaseOffer extends ApplicationBase {
     private static int idCounter = 0;
 
     private double amount;
+    private double commissionRate;
     private boolean depositPaid;
     private boolean settlementPaid;
 
@@ -33,11 +34,12 @@ public class PurchaseOffer extends ApplicationBase {
         return settlementPaid;
     }
 
-    public void setSettlementPaid() throws OperationNotAllowedException {
+    public void setSettlementPaid(double commissionRate) throws OperationNotAllowedException {
         if (!isSecured())
             throw new OperationNotAllowedException(
                 "Settlement cannot be paid before deposit is paid."
             );
+        this.commissionRate = commissionRate;
         settlementPaid = true;
     }
 
@@ -47,5 +49,9 @@ public class PurchaseOffer extends ApplicationBase {
 
     public double getAmount() {
         return amount;
+    }
+
+    public double getCommission() {
+        return commissionRate * amount;
     }
 }

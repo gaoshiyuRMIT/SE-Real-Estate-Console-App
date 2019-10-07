@@ -9,6 +9,8 @@ import user.employee.*;
 import exception.*;
 
 public class ForSaleProperty extends Property {
+    private static final double maxCommissionRate = 0.05;
+    private static final double minCommissionRate = 0.02;
     private double commissionRate;
     private double minPrice;
 
@@ -17,6 +19,8 @@ public class ForSaleProperty extends Property {
                             throws InvalidParamException {
         super(address, suburb, capacity, type, vendor);
         this.minPrice = minPrice;
+        // by default, commission is set to max
+        this.commissionRate = maxCommissionRate;
     }
 
     public List<PurchaseOffer> getApplications() {
@@ -54,7 +58,15 @@ public class ForSaleProperty extends Property {
         return (SalesConsultant)(getEmployee());
     }
 
-    public void setCommissionRate(double r) {
+    public void setCommissionRate(double r) throws InvalidParamException{
+        if (r > maxCommissionRate || r < minCommissionRate) {
+            throw new InvalidParamException(
+                String.format(
+                    "The rate must be between %.2f and %.2f.",
+                    minCommissionRate, maxCommissionRate
+                )
+            );
+        }
         this.commissionRate = r;
     }
 
@@ -114,6 +126,6 @@ public class ForSaleProperty extends Property {
                                             throws OperationNotAllowedException{
         if (!this.getApplications().contains(a) || !a.isSecured())
             throw new OperationNotAllowedException();
-        a.setSettlementPaid();
+        a.setSettlementPaid(commissionRate);
     }
 }
