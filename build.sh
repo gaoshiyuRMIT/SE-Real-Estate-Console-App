@@ -6,6 +6,7 @@ javac -cp $CP src/console/*.java \
                 src/exception/*.java \
                 src/property/*.java \
                 src/se/*.java \
+                src/finance/*.java \
                 src/user/*.java \
                 src/user/customer/*.java \
                 src/user/employee/*.java  -d bin
