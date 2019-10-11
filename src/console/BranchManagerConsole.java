@@ -28,24 +28,9 @@ public class BranchManagerConsole extends BaseConsole {
         (new PropertyListConsole(user, branch.getNewlyAddedProperties(), this)).console();
     }
 
-    public void listPropertyOnMarket() throws InternalException, InvalidInputException{
-        Property p = getPropertyById();
-        if (p instanceof RentalProperty)
-            ((RentalProperty)p).setManager(pm);
-        else
-            throw new InternalException("not implemented");
-        try {
-            p.list();
-        } catch (OperationNotAllowedException e) {
-            throw new InternalException(e);
-        }
-        System.out.println("Successfully listed property.");
-    }
-
     public User getUser() {
         return user;
     }
-
 
     public void console() {
         super.console();
@@ -54,13 +39,9 @@ public class BranchManagerConsole extends BaseConsole {
                 String option = displayMenu();
                 if (option.equals("view newly-added properties"))
                     viewNewlyAddedProperties();
-                else if (option.equals("list property on market"))
-                    listPropertyOnMarket();
                 else
                     break;
             } catch (InvalidInputException e) {
-                System.out.println(e.getMessage());
-            } catch (InternalException e) {
                 System.out.println(e.getMessage());
             }
         }

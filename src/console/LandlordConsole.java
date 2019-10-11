@@ -19,8 +19,6 @@ public class LandlordConsole extends BaseConsole {
         super(new String[] {
             "add property",
             "view my properties",
-            // "view applications",
-            // "accept application",
             "log out"
         }, base);
         user = (Landlord)u;
@@ -66,31 +64,6 @@ public class LandlordConsole extends BaseConsole {
         (new PropertyListConsole(user, pl, this)).console();
     }
 
-    /*
-    public void viewApplications() throws InvalidInputException{
-        RentalProperty rp = (RentalProperty)getPropertyById();
-        for (Application a : rp.getApplications()) {
-            System.out.printf(
-                "%s %s\n",
-                a.getId(), a.getStatusS()
-            );
-        }
-    }
-
-
-    public void acceptApplication() throws InvalidInputException, InternalException {
-        RentalProperty rp = (RentalProperty)getPropertyById();
-        System.out.print("Enter application id: ");
-        String aid = scanner.next();
-        Application a = rp.getApplicationById(aid);
-        try {
-            rp.acceptApplication(a);
-        } catch (OperationNotAllowedException e) {
-            throw new InternalException(e);
-        }
-        System.out.println("Application accepted!");
-    }
-    */
 
     @Override
     public Property getPropertyById() throws InvalidInputException {
@@ -111,10 +84,6 @@ public class LandlordConsole extends BaseConsole {
                     addProperty();
                 else if (option.equals( "view my properties"))
                     viewMyProperties();
-                // else if (option.equals( "view applications"))
-                //     viewApplications();
-                // else if (option.equals( "accept application"))
-                //     acceptApplication();
                 else
                     break;
             } catch (InvalidInputException e) {

@@ -26,6 +26,8 @@ public class Console extends BaseConsole {
         );
         branch.addEmployee(pm);
         BranchManager bm = new BranchManager("Abe.de.branchmanager@gmail.com", "123");
+        Employee admin = new Employee("Carter.de.branchadmin@gmail.com", "123",
+                                        EmployeeType.BranchAdmin);
         branch.addEmployee(bm);
         User landlord = branch.login(branch.register("landlord@gmail.com", "123", "Landlord"), "123");
         User tenant = branch.login(branch.register("tenant@gmail.com", "123", "Tenant"), "123");

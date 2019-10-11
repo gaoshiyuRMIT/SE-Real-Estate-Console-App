@@ -20,18 +20,25 @@ public class PropertyConsole extends BaseConsole {
         List<String> menu = new ArrayList<String>();
         menu.add("view property detail");
         menu.add("back");
-        if (user instanceof Customer && !(user instanceof NonOwner)) {
-            menu.add(1, "edit property detail");
-            if (user instanceof Landlord) {
-                menu.add(2, "view applications");
-                menu.add(3, "edit rental and duration");
-                menu.add(4, "view leases");
-            } else if (user instanceof Vendor) {
-                menu.add(2, "view purchase offers");
-                menu.add(3, "edit minimum price");
+        if (!(user instanceof NonOwner)) {
+            if (property instanceof RentalProperty) {
+                menu.add(1, "view applications");
+                menu.add(2, "view leases");
+                if (user instanceof Landlord) {
+                    menu.add(3, "edit rental and duration");
+                }
+            } else {
+                menu.add(1, "view purchase offers");
+                if (user instanceof Vendor) {
+                    menu.add(2, "edit minimum price");
+                }
             }
-        } else if (user instanceof BranchManager) {
-            menu.add(1, "list property on market");
+            if (user instanceof Customer) {
+                menu.add(1, "edit property detail");
+            }
+            if (user instanceof BranchManager) {
+                menu.add(1, "list property on market");
+            }
         }
         setMenuOptions(menu);
     }
@@ -39,6 +46,20 @@ public class PropertyConsole extends BaseConsole {
     public void viewPropertyDetail() {
         System.out.println("===== property detail =======");
         System.out.println(property.getTextualDetail());
+        if (!(user instanceof NonOwner)) {
+            if (property instanceof RentalProperty) {
+                System.out.printf(
+                    "%-30s: %.2f\n",
+                    "management fee rate", ((RentalProperty)property).getManagementFeeRate()
+                );
+            } else if (property instanceof ForSaleProperty) {
+                System.out.printf(
+                    "%-30s: %.2f\n",
+                    "commission rate", ((ForSaleProperty)property).getCommissionRate()
+                );
+            }
+
+        }
     }
 
     public void viewApplications() {
