@@ -10,6 +10,7 @@ import exception.*;
 import user.*;
 import user.employee.*;
 import user.customer.*;
+import consts.*;
 
 public class Console extends BaseConsole {
     public Console() throws Exception{
