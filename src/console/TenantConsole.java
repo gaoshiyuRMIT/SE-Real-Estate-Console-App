@@ -8,6 +8,7 @@ import static java.util.AbstractMap.SimpleEntry;
 
 
 import se.*;
+import exception.*;
 import user.*;
 import user.employee.*;
 import user.customer.*;
@@ -18,27 +19,27 @@ public class TenantConsole extends BaseConsole {
     private Tenant user;
     private ApplicantDetail ad;
 
-    public TenantConsole(User u, Branch branch, Scanner scanner,
-                        BufferedReader reader, PropertyManager pm) {
+    public TenantConsole(User u, BaseConsole base) {
         super(new String[] {
             "browse properties",
             "add applicant detail",
             "view applicant details",
             "submit application",
             "view my applications",
+            "edit suburbs of interest",
             "log out"
-        }, branch, scanner, reader, pm);
+        }, base);
         user = (Tenant)u;
     }
 
-    public void browseProperties() throws Exception{
+    public void browseProperties() throws InternalException, InvalidInputException{
         System.out.println("Specify filter (leave empty if there is no constraint)");
         System.out.println("Enter road/street name: ");
-        String address = getLine().trim();
+        String address = getLine();
         System.out.println("Enter suburb: ");
-        String suburb = getLine().trim();
+        String suburb = getLine();
         System.out.println("Enter type(House/Unit/Flat/Townhouse/Studio): ");
-        String typeS = getLine().trim();
+        String typeS = getLine();
 
         PropertyType type;
         if (typeS.isEmpty())
@@ -47,17 +48,17 @@ public class TenantConsole extends BaseConsole {
             try {
                 type = PropertyType.valueOf(typeS);
             } catch (IllegalArgumentException e) {
-                throw new Exception("Invalid input for property type!");
+                throw new InvalidInputException("Invalid input for property type!");
             }
         }
 
         HashMap<String, Integer> cap = new HashMap<String, Integer>();
         System.out.println("Enter number of bedrooms: ");
-        String nBedroomS = getLine().trim();
+        String nBedroomS = getLine();
         System.out.println("Enter number of bathrooms: ");
-        String nBathroomS = getLine().trim();
+        String nBathroomS = getLine();
         System.out.println("Enter number of car spaces: ");
-        String nCarSpaceS = getLine().trim();
+        String nCarSpaceS = getLine();
 
         try {
             if (!nBedroomS.isEmpty())
@@ -69,7 +70,7 @@ public class TenantConsole extends BaseConsole {
             if (!nCarSpaceS.isEmpty())
                 cap.put("car space", Integer.parseInt(nCarSpaceS));
         } catch (NumberFormatException e) {
-            throw new Exception("Invalid input format for capacity!");
+            throw new InvalidInputException("Invalid input format for capacity!");
         }
         for (RentalProperty rp : branch.browseRentalProperties(address, suburb, cap, type, true)) {
             System.out.printf(
@@ -79,13 +80,13 @@ public class TenantConsole extends BaseConsole {
         }
     }
 
-    public void addApplicantDetail() throws Exception{
+    public void addApplicantDetail() throws InternalException{
         System.out.print("Enter ID type (Passport/DriverLicence): ");
         String idType = scanner.next();
         System.out.print("Enter ID number: ");
         String idContent = scanner.next();
         System.out.println("Enter name: ");
-        String name = getLine().trim();
+        String name = getLine();
         System.out.print("Enter annual income: ");
         double annualIncome = scanner.nextDouble();
         System.out.print("Enter occupation: ");
@@ -103,11 +104,15 @@ public class TenantConsole extends BaseConsole {
         ad = new ApplicantDetail(idType, idContent, name, annualIncome,
                                 occupation, employmentHistory,
                                 rentalHistory);
-        user.addApplicant(ad);
+        try {
+            user.addApplicant(ad);
+        } catch (ApplicantExistException e) {
+            throw new InternalException(e);
+        }
         System.out.println("Applicant person detail successfully added.");
     }
 
-    public void submitApplication() throws Exception{
+    public void submitApplication() throws InvalidInputException, InternalException{
         RentalProperty rp = (RentalProperty)getPropertyById();
         System.out.println("Which applicant do you want to add? ");
         viewApplicantDetails();
@@ -120,29 +125,46 @@ public class TenantConsole extends BaseConsole {
         double rental = scanner.nextDouble();
         System.out.print("Enter duration (number of months): ");
         int duration = scanner.nextInt();
-        Application a = new Application(Arrays.asList(id), rental, duration, user);
-        rp.addApplication(a);
+        Application a;
+        try {
+            a = new Application(rp, Arrays.asList(id), rental, duration, user);
+        } catch (InvalidParamException e) {
+            throw new InvalidInputException(e);
+        }
+        try {
+            rp.addApplication(a);
+        } catch (OperationNotAllowedException e) {
+            throw new InternalException(e);
+        }
         System.out.println("Application successfully submitted.");
     }
 
-    public void viewMyApplications() throws Exception{
+    public void viewMyApplications() {
+        System.out.println("============= Applications ==============");
         for (SimpleEntry<RentalProperty, Application> e : branch.getApplications(user)) {
             RentalProperty p = e.getKey();
             Application a = e.getValue();
-            System.out.printf(
-                "Property %s %s, Application %s %s\n",
-                p.getId(), p.getSuburb(), a.getId(), a.getStatusS()
-            );
+            System.out.printf("Property %s %s\n", p.getId(), p.getSuburb());
+            System.out.println(a.getTextualDetail());
+            System.out.println("==========================================");
         }
     }
 
-    public void viewApplicantDetails() throws Exception{
+    public void viewApplicantDetails() {
+        System.out.println("========= Applicants =========");
         for (ApplicantDetail ad : user.getApplicants()) {
-            System.out.printf(
-                "%s %s\n",
-                ad.getId(), ad.getName()
-            );
+            System.out.println(ad.getTextualDetail());
+            System.out.println("==============================");
         }
+    }
+
+    public void editSuburbsOfInterest() throws InternalException{
+        System.out.printf("Suburbs of interest: %s\n",
+                            String.join(", ", user.getSuburbsOfInterest()));
+        System.out.println("Edit suburbs of interest (seperated by space):");
+        String line = getLine();
+        String[] suburbs = line.split("\\s+");
+        user.setSuburbsOfInterest(Arrays.asList(suburbs));
     }
 
     public User getUser() {
@@ -150,24 +172,28 @@ public class TenantConsole extends BaseConsole {
     }
 
 
-    public void console() throws Exception{
+    public void console() {
         super.console();
         while (true) {
             try {
                 String option = displayMenu();
-                if (option == "browse properties")
+                if (option.equals("browse properties"))
                     browseProperties();
-                else if (option == "add applicant detail")
+                else if (option.equals("add applicant detail"))
                     addApplicantDetail();
-                else if (option == "submit application")
+                else if (option.equals("submit application"))
                     submitApplication();
                 else if (option.equals("view my applications"))
                     viewMyApplications();
                 else if (option.equals("view applicant details"))
                     viewApplicantDetails();
+                else if (option.equals("edit suburbs of interest"))
+                    editSuburbsOfInterest();
                 else
                     break;
-            } catch (Exception e) {
+            } catch (InvalidInputException e) {
+                System.out.println(e.getMessage());
+            } catch (InternalException e) {
                 System.out.println(e.getMessage());
             }
         }

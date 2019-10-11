@@ -1,11 +1,12 @@
 package console;
 
 import java.io.*;
-
 import java.util.*;
+
 import java.time.*;
 
 import se.*;
+import exception.*;
 import user.*;
 import user.employee.*;
 import user.customer.*;
@@ -14,23 +15,23 @@ import property.*;
 public class LandlordConsole extends BaseConsole {
     private Landlord user;
 
-    public LandlordConsole(User u, Branch branch, Scanner scanner,
-                            BufferedReader reader, PropertyManager pm) {
+    public LandlordConsole(User u, BaseConsole base) {
         super(new String[] {
             "add property",
             "view my properties",
-            "view applications",
-            "accept application",
+            // "view applications",
+            // "accept application",
             "log out"
-        }, branch, scanner, reader, pm);
+        }, base);
         user = (Landlord)u;
     }
+
 
     public User getUser() {
         return user;
     }
 
-    public void addProperty() throws Exception {
+    public void addProperty() throws InvalidInputException, InternalException {
         System.out.println("Enter address: ");
         String address = getLine();
         System.out.print("Enter suburb: ");
@@ -49,23 +50,24 @@ public class LandlordConsole extends BaseConsole {
         double rental = scanner.nextDouble();
         System.out.print("Enter desired contract duration (number of months): ");
         int duration = scanner.nextInt();
-
-        RentalProperty rentalProperty = new RentalProperty(address, suburb, cap, type, rental,
-                                            duration, user);
+        RentalProperty rentalProperty;
+        try {
+            rentalProperty = new RentalProperty(address, suburb, cap, type, rental,
+                                                duration, user);
+        } catch (InvalidParamException e) {
+            throw new InvalidInputException(e);
+        }
         branch.addProperty(rentalProperty);
         System.out.println("Property successfully added.");
     }
 
     public void viewMyProperties() {
-        for (RentalProperty rp : branch.getOwnedRentalProperty(user)) {
-            System.out.printf(
-                "%s %s %s\n",
-                rp.getId(), rp.getSuburb(), rp.getStatusS()
-            );
-        }
+        List<RentalProperty> pl = branch.getOwnedRentalProperty(user);
+        (new PropertyListConsole(user, pl, this)).console();
     }
 
-    public void viewApplications() throws Exception{
+    /*
+    public void viewApplications() throws InvalidInputException{
         RentalProperty rp = (RentalProperty)getPropertyById();
         for (Application a : rp.getApplications()) {
             System.out.printf(
@@ -75,31 +77,49 @@ public class LandlordConsole extends BaseConsole {
         }
     }
 
-    public void acceptApplication() throws Exception {
+
+    public void acceptApplication() throws InvalidInputException, InternalException {
         RentalProperty rp = (RentalProperty)getPropertyById();
         System.out.print("Enter application id: ");
         String aid = scanner.next();
         Application a = rp.getApplicationById(aid);
-        rp.acceptApplication(a);
+        try {
+            rp.acceptApplication(a);
+        } catch (OperationNotAllowedException e) {
+            throw new InternalException(e);
+        }
         System.out.println("Application accepted!");
     }
+    */
 
-    public void console() throws Exception{
+    @Override
+    public Property getPropertyById() throws InvalidInputException {
+        Property p = super.getPropertyById();
+        if (!p.getOwner().equals(user))
+            throw new InvalidInputException(
+                "Property specified does not belong to user."
+            );
+        return p;
+    }
+
+    public void console(){
         super.console();
         while (true) {
             try {
                 String option = displayMenu();
-                if (option == "add property")
+                if (option.equals("add property"))
                     addProperty();
-                else if (option == "view my properties")
+                else if (option.equals( "view my properties"))
                     viewMyProperties();
-                else if (option == "view applications")
-                    viewApplications();
-                else if (option == "accept application")
-                    acceptApplication();
+                // else if (option.equals( "view applications"))
+                //     viewApplications();
+                // else if (option.equals( "accept application"))
+                //     acceptApplication();
                 else
                     break;
-            } catch (Exception e) {
+            } catch (InvalidInputException e) {
+                System.out.println(e.getMessage());
+            } catch (InternalException e) {
                 System.out.println(e.getMessage());
             }
         }

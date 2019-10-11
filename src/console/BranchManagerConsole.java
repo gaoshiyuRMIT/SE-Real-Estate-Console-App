@@ -5,6 +5,7 @@ import java.util.*;
 import java.time.*;
 
 import se.*;
+import exception.*;
 import user.*;
 import user.employee.*;
 import user.customer.*;
@@ -13,32 +14,31 @@ import property.*;
 public class BranchManagerConsole extends BaseConsole {
     private BranchManager user;
 
-    public BranchManagerConsole(User user, Branch branch, Scanner scanner,
-                                BufferedReader reader, PropertyManager pm) {
+    public BranchManagerConsole(User user, BaseConsole base) {
         super(new String[] {
             "view newly-added properties",
             "list property on market",
             "log out"
-        }, branch, scanner, reader, pm);
+        }, base);
         this.user = (BranchManager)user;
     }
 
     public void viewNewlyAddedProperties() {
-        for (Property p : branch.getNewlyAddedProperties()) {
-            System.out.printf(
-                "%s %s %s\n",
-                p.getId(), p.getSuburb(), p.getClass().getSimpleName()
-            );
-        }
+        System.out.println("======== Newly Added Properties ========");
+        (new PropertyListConsole(user, branch.getNewlyAddedProperties(), this)).console();
     }
 
-    public void listPropertyOnMarket() throws Exception{
+    public void listPropertyOnMarket() throws InternalException, InvalidInputException{
         Property p = getPropertyById();
         if (p instanceof RentalProperty)
             ((RentalProperty)p).setManager(pm);
         else
-            throw new Exception("not implemented");
-        p.list();
+            throw new InternalException("not implemented");
+        try {
+            p.list();
+        } catch (OperationNotAllowedException e) {
+            throw new InternalException(e);
+        }
         System.out.println("Successfully listed property.");
     }
 
@@ -47,7 +47,7 @@ public class BranchManagerConsole extends BaseConsole {
     }
 
 
-    public void console() throws Exception{
+    public void console() {
         super.console();
         while (true) {
             try {
@@ -58,7 +58,9 @@ public class BranchManagerConsole extends BaseConsole {
                     listPropertyOnMarket();
                 else
                     break;
-            } catch (Exception e) {
+            } catch (InvalidInputException e) {
+                System.out.println(e.getMessage());
+            } catch (InternalException e) {
                 System.out.println(e.getMessage());
             }
         }

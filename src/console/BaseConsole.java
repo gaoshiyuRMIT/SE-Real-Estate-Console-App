@@ -4,65 +4,86 @@ import java.util.*;
 import java.time.*;
 import java.io.*;
 
+import exception.*;
 import se.*;
 import user.*;
 import property.*;
 import user.employee.*;
 
-public class BaseConsole {
-    private String[] menuOptions;
+public abstract class BaseConsole {
+    private List<String> menuOptions;
     protected Scanner scanner;
     protected Branch branch;
     protected BufferedReader reader;
     protected PropertyManager pm;
+    protected Util util;
 
-    public BaseConsole(String[] menuOptions, Branch branch, Scanner scanner,
+    public BaseConsole(List<String> menuOptions, Branch branch, Scanner scanner,
                         BufferedReader reader, PropertyManager pm) {
         this.menuOptions = menuOptions;
         this.scanner = scanner;
         this.branch = branch;
         this.reader = reader;
         this.pm = pm;
+        this.util = new Util(scanner);
     }
 
-    public String displayMenu() throws Exception{
+    public BaseConsole(String[] menuOptions, Branch branch, Scanner scanner,
+                        BufferedReader reader, PropertyManager pm) {
+        this(menuOptions != null ? Arrays.asList(menuOptions) : null, branch, scanner, reader, pm);
+    }
+
+    public BaseConsole(String[] menuOptions, BaseConsole base) {
+        this(menuOptions, base.branch, base.scanner, base.reader, base.pm);
+    }
+
+    public BaseConsole(BaseConsole base) {
+        this(null, base);
+    }
+
+    public void setMenuOptions(String[] menuOptions) {
+        setMenuOptions(Arrays.asList(menuOptions));
+    }
+
+    public void setMenuOptions(List<String> menuOptions) {
+        this.menuOptions = menuOptions;
+    }
+
+    public String displayMenu() throws InvalidInputException{
         System.out.println("\n=================================");
-        for (int i = 0; i < menuOptions.length; i++) {
-            System.out.printf("%-30d: %s\n", i+1, menuOptions[i]);
-        }
-        System.out.print("Enter your choice: ");
-        int op = scanner.nextInt();
-        if (op < 1 || op > menuOptions.length)
-            throw new Exception("Your choice must be a number displayed on the menu.");
-        return menuOptions[op - 1];
+        return util.displayMenu(menuOptions);
     }
 
-    public Property getPropertyById() throws Exception {
+    public Property getPropertyById() throws InvalidInputException {
         System.out.print("Enter property id: ");
         String pid = scanner.next();
-        Property p = branch.getPropertyById(pid);
+        Property p;
+        try {
+            p = branch.getPropertyById(pid);
+        } catch (InvalidParamException e) {
+            throw new InvalidInputException(e);
+        }
         return p;
     }
 
     public User getUser() {return null;};
 
-    // public void viewPropertyDetail() throws Exception {
-        // Property p = getPropertyById();
-    //     System.out.printf(
-    //         "%s %s %s %s %d %d %d",
-
-    //     );
-    // }
-
-    public String getLine() throws IOException{
+    public String getLine() throws InternalException{
         String fs;
-        fs = reader.readLine();
+        try {
+            fs = reader.readLine();
+        } catch (IOException e) {
+            throw new InternalException(e);
+        }
         if (fs != null)
             return fs.trim();
         return fs;
     }
 
-    public void console() throws Exception{
-        System.out.printf("\nWelcome back, %s\n", getUser().getClass().getSimpleName());
+    public void console() {
+        User user = getUser();
+        System.out.printf("\nWelcome back, %s\n",
+                            user == null ? "User" : user.getClass().getSimpleName());
+
     }
 }

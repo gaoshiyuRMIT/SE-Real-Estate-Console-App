@@ -6,6 +6,7 @@ import java.util.*;
 import java.time.*;
 
 import se.*;
+import exception.*;
 import user.*;
 import user.employee.*;
 import user.customer.*;
@@ -34,45 +35,55 @@ public class Console extends BaseConsole {
         System.out.println("property manager " + pm.getId());
     }
 
-    public void register() throws Exception {
+    public void register() throws InvalidInputException {
         System.out.print("Enter email: ");
         String email = scanner.next();
         System.out.print("Enter password: ");
         String password = scanner.next();
         System.out.printf("Enter role (Landlord/Tenant/Vendor/Buyer): ");
         String role = scanner.next();
-        String cid = branch.register(email, password, role);
+        String cid;
+        try {
+            cid = branch.register(email, password, role);
+        } catch (CustomerExistException | InvalidParamException e) {
+            throw new InvalidInputException(e);
+        }
         System.out.printf("Registration successful! Your user id is %s.\n", cid);
     }
 
-    public void login() throws Exception {
+    public void login() throws InvalidInputException {
         System.out.print("Enter user id: ");
         String uid = scanner.next();
         System.out.print("Enter password: ");
         String pswd = scanner.next();
         User u = branch.login(uid, pswd);
         if (u == null)
-            throw new Exception("Combination of user id and password does not exist.");
+            throw new InvalidInputException("Combination of user id and password does not exist.");
         if (u instanceof BranchManager)
-            (new BranchManagerConsole(u, branch, scanner, reader, pm)).console();
+            (new BranchManagerConsole(u, this)).console();
         else if (u instanceof Landlord)
-            (new LandlordConsole(u, branch, scanner, reader, pm)).console();
+            (new LandlordConsole(u, this)).console();
         else if (u instanceof Tenant)
-            (new TenantConsole(u, branch, scanner, reader, pm)).console();
+            (new TenantConsole(u, this)).console();
     }
 
-    public static void main(String[] args) throws Exception{
-        Console console = new Console();
+    public static void main(String[] args) throws InternalException{
+        Console console;
+        try {
+            console = new Console();
+        } catch (Exception e) {
+            throw new InternalException(e);
+        }
         while (true) {
             try {
                 String option = console.displayMenu();
-                if (option == "register")
+                if (option.equals("register"))
                     console.register();
-                else if (option == "log in")
+                else if (option.equals("log in"))
                     console.login();
                 else
                     break;
-            } catch (Exception e) {
+            } catch (InvalidInputException e) {
                 System.out.println(e.getMessage());
             }
         }
