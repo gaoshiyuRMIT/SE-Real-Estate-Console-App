@@ -18,6 +18,19 @@ public class Notification {
         this.dateTime = LocalDateTime.now();
     }
 
+    public String getTextualDetail() {
+        return String.format(
+            "%-30s: %s\n"
+                + "%-30s: \n%s",
+            "Time Received", dateTime,
+            "Message", message
+        );
+    }
+
+    public NotifStatus getStatus() {
+        return status;
+    }
+
     // change status
     public void dismiss() {
         this.status = NotifStatus.Archived;

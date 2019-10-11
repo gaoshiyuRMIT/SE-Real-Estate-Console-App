@@ -19,6 +19,7 @@ public class Branch {
     private HashMap<String, Customer> customers;
     private HashMap<String, Employee> employees;
     private HashMap<LocalDateTime, HashMap<String, PayrollItem>> payroll;
+    private Account account;
 
     public Branch(String name) {
         this.name = name;
@@ -27,6 +28,10 @@ public class Branch {
         this.forSaleProps = new HashMap<String, ForSaleProperty>();
         this.customers = new HashMap<String, Customer>();
         this.employees = new HashMap<String, Employee>();
+    }
+
+    public Account getAccount() {
+        return account;
     }
 
     public void submitHours(Employee e, int nHour) throws OperationNotAllowedException{
@@ -192,7 +197,8 @@ public class Branch {
         return newbie.getId();
     }
 
-    public void addProperty(Property p) {        boolean rental;
+    public void addProperty(Property p) {
+        boolean rental;
         if (p instanceof RentalProperty) {
             rental = true;
             this.rentalProps.put(p.getId(), (RentalProperty)p);
@@ -201,12 +207,93 @@ public class Branch {
             );
             if (ps.size() >= 2)
                 for (RentalProperty rp : ps) {
-                    rp.setMinManagementFeeRate(0.6);
-                    rp.setMaxManagementFeeRate(0.7);
+                    rp.setMinManagementFeeRate(0.06);
+                    rp.setMaxManagementFeeRate(0.07);
                 }
         } else {
             rental = false;
             this.forSaleProps.put(p.getId(), (ForSaleProperty)p);
+        }
+    }
+
+    /*
+    notify non-owners whose suburbs of interest includes this property's suburb
+    */
+    public void sendNotifForListedProperty(Property p) {
+        boolean rental = p instanceof RentalProperty;
+        String pSuburb = p.getSuburb();
+        String pid = p.getId();
+        // send notification
+        for (Customer c : customers.values()) {
+            if (!(c instanceof NonOwner))
+                continue;
+            if ((rental && c instanceof Tenant) || (!rental && c instanceof Buyer)) {
+                NonOwner nonOwner = (NonOwner)c;
+                if (nonOwner.getSuburbsOfInterest().contains(pSuburb)) {
+                    Notification notif = new Notification(
+                        String.format(
+                            "A %s property in %s has just been listed. \nProperty id: %s.",
+                            rental ? "rental" : "for-sale", pSuburb, pid
+                        ),
+                        pid
+                    );
+                    nonOwner.addNotif(notif);
+                }
+            }
+        }
+    }
+
+    /*
+    notify non-owners whose suburbs of interest includes this inspection's suburb
+    */
+    public void sendNotifForNewInspection(Property p, Inspection i) {
+        String pSuburb = p.getSuburb();
+        String pid = p.getId();
+        boolean rental = p instanceof RentalProperty;
+        for (Customer c : customers.values()) {
+            if (!(c instanceof NonOwner))
+                continue;
+            if ((rental && c instanceof Tenant) || (!rental && c instanceof Buyer)) {
+                NonOwner nonOwner = (NonOwner)c;
+                if (nonOwner.getSuburbsOfInterest().contains(pSuburb)) {
+                    Notification notif = new Notification(
+                        String.format(
+                            "An inspection is scheduled for a %s property in %s. "
+                                + "\nTime: %s. \nProperty id: %s.",
+                            rental ? "rental" : "for-sale",
+                            pSuburb, i.getDateTimeS(), pid
+                        ),
+                        pid
+                    );
+                    nonOwner.addNotif(notif);
+                }
+            }
+        }
+    }
+
+    /*
+    notify non-owners whose suburbs of interest includes this inspection's suburb
+    */
+    public void sendNotifForCancelledInspection(Property p, Inspection i) {
+        String pSuburb = p.getSuburb();
+        String pid = p.getId();
+        boolean rental = p instanceof RentalProperty;
+        for (Customer c : customers.values()) {
+            if (!(c instanceof NonOwner))
+                continue;
+            if ((rental && c instanceof Tenant) || (!rental && c instanceof Buyer)) {
+                NonOwner nonOwner = (NonOwner)c;
+                if (nonOwner.getSuburbsOfInterest().contains(pSuburb)) {
+                    Notification notif = new Notification(
+                        String.format(
+                            "The inspection:\n\tTime: %s\n\tProperty id: %s\nhas been cancelled.",
+                            i.getDateTimeS(), pid
+                        ),
+                        pid
+                    );
+                    nonOwner.addNotif(notif);
+                }
+            }
         }
     }
 
