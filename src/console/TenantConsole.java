@@ -27,6 +27,8 @@ public class TenantConsole extends BaseConsole {
             "submit application",
             "view my applications",
             "edit suburbs of interest",
+            "view active notifications",
+            "view dismissed notifications",
             "log out"
         }, base);
         user = (Tenant)u;
@@ -161,10 +163,28 @@ public class TenantConsole extends BaseConsole {
     public void editSuburbsOfInterest() throws InternalException{
         System.out.printf("Suburbs of interest: %s\n",
                             String.join(", ", user.getSuburbsOfInterest()));
-        System.out.println("Edit suburbs of interest (seperated by space):");
+        System.out.println("Enter suburbs of interest (seperated by space):");
         String line = getLine();
         String[] suburbs = line.split("\\s+");
         user.setSuburbsOfInterest(Arrays.asList(suburbs));
+    }
+
+    public void viewActiveNotifications() {
+        (new NotificationListConsole(
+                user,
+                user.getNotifications(NotifStatus.Active),
+                this
+            )
+        ).console();
+    }
+
+    public void viewDismissedNotifications() {
+        (new NotificationListConsole(
+                user,
+                user.getNotifications(NotifStatus.Archived),
+                this
+            )
+        ).console();
     }
 
     public User getUser() {
@@ -189,6 +209,10 @@ public class TenantConsole extends BaseConsole {
                     viewApplicantDetails();
                 else if (option.equals("edit suburbs of interest"))
                     editSuburbsOfInterest();
+                else if (option.equals("view active notifications"))
+                    viewActiveNotifications();
+                else if (option.equals("view dismissed notifications"))
+                    viewDismissedNotifications();
                 else
                     break;
             } catch (InvalidInputException e) {

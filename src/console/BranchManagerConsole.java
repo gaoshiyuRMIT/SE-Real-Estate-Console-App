@@ -17,7 +17,6 @@ public class BranchManagerConsole extends BaseConsole {
     public BranchManagerConsole(User user, BaseConsole base) {
         super(new String[] {
             "view newly-added properties",
-            "list property on market",
             "log out"
         }, base);
         this.user = (BranchManager)user;

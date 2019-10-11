@@ -14,7 +14,13 @@ public class Util {
             System.out.printf("%-30d: %s\n", i+1, menuOptions.get(i));
         }
         System.out.print("Enter your choice: ");
-        int op = scanner.nextInt();
+        int op;
+        try {
+            op = scanner.nextInt();
+        } catch (InputMismatchException e) {
+            scanner.nextLine();
+            throw new InvalidInputException("Must enter an integer present in the menu above.");
+        }
         if (op < 1 || op > menuOptions.size())
             throw new InvalidInputException(
                 "Your choice must be a number displayed on the menu."

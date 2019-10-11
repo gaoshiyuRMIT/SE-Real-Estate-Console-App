@@ -30,12 +30,14 @@ public class Console extends BaseConsole {
         Employee admin = new Employee("Carter.de.branchadmin@gmail.com", "123",
                                         EmployeeType.BranchAdmin);
         branch.addEmployee(bm);
+        branch.addEmployee(admin);
         User landlord = branch.login(branch.register("landlord@gmail.com", "123", "Landlord"), "123");
         User tenant = branch.login(branch.register("tenant@gmail.com", "123", "Tenant"), "123");
         System.out.println("landlord " + landlord.getId());
         System.out.println("tenant " + tenant.getId());
         System.out.println("branch manager " + bm.getId());
         System.out.println("property manager " + pm.getId());
+        System.out.println("branch admin " + admin.getId());
     }
 
     public void register() throws InvalidInputException {

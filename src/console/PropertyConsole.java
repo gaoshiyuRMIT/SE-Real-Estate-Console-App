@@ -98,6 +98,7 @@ public class PropertyConsole extends BaseConsole {
                 throw new InternalException(e);
             }
         }
+        branch.sendNotifForListedProperty(property);
         System.out.println("Successfully listed property.");
     }
 
