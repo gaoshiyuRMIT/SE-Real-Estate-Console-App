@@ -35,7 +35,7 @@ public class TestBranch {
 
     @Before
     public void setUp() {
-        branch = new Branch("Melbourne");
+        branch = new Branch("Melbourne",1);
         setUpEmployees();
     }
 

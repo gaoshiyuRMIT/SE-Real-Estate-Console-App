@@ -19,31 +19,43 @@ public class Branch {
     private HashMap<String, Customer> customers;
     private HashMap<String, Employee> employees;
     private HashMap<LocalDateTime, HashMap<String, PayrollItem>> payroll;
-	public double branchMoney;
-
-    public double getBranchMoney() {
-		return branchMoney;
-	}
-
-	public void setBranchMoney(double branchMoney) {
-		this.branchMoney = branchMoney;
-	}
-
-	public Branch(String name) {
+	public double branchAccount;    
+	//public void setBranchAccount(double branchAccount) {
+	//	this.branchAccount = branchAccount;
+	//}
+	
+	public Branch(String name, double branchAccount) {
         this.name = name;
-
+        this.branchAccount = branchAccount;
         this.rentalProps = new HashMap<String, RentalProperty>();
         this.forSaleProps = new HashMap<String, ForSaleProperty>();
         this.customers = new HashMap<String, Customer>();
         this.employees = new HashMap<String, Employee>();
     }
 
+	public double getBranchAccount() {
+		return branchAccount;
+	}
+    public double payOff(double amount) {
+    	branchAccount = branchAccount - amount;
+    	return branchAccount;
+    }
+
+    public boolean canPayoff(double amount) throws InvalidParamException {
+    	//boolean can;
+    	if (amount > 5000) throw new InvalidParamException("should be sufficient");
+    	if (amount <= 5000) {
+    		return true;
+    	}else return false;
+    	
+    }
+    
     public void submitHours(Employee e, int nHour) {
         PartTimeBaseSalary pbs = new PartTimeBaseSalary(nHour, e);
         HashMap<String, PayrollItem> monthlyPayroll = payroll.get(pbs.getDate());
         monthlyPayroll.put(pbs.getId(), pbs);
     }
-
+    
     public void addEmployee(Employee e) {
         this.employees.put(e.getId(), e);
     }

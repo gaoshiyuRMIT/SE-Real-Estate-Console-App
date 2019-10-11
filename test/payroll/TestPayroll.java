@@ -40,10 +40,12 @@ public class TestPayroll {
     
      @Before
     public void setUp() {
-        branch = new Branch("Melbourne");
+        branch = new Branch("Melbourne",5000);
         setUpEmployees();
     }
-    
+              
+     
+     
     //test part timer submit the Hour and status should be pending before approve
     @Test
     public void testHourSubmission() throws Exception{
@@ -81,10 +83,12 @@ public class TestPayroll {
     @Test
     public void testTime() throws Exception {
         branch.addEmployee(consultants[0]);
-        PartTimeBaseSalary ptbs = new PartTimeBaseSalary(5, consultants[0]);        
-        assertNotNull(ptbs.getnHour());
-        assertTrue(ptbs.getnHour() >= 0);
-        assertTrue(ptbs.getnHour() <= consultants[0].getMaxMonthlyHours());
+        PartTimeBaseSalary ptbs = new PartTimeBaseSalary(5, consultants[0]);  
+        int h = ptbs.getnHour();
+        int max =Employee.getMaxMonthlyHours();
+        assertNotNull(h);
+        assertTrue(h >= 0);
+        assertTrue(h <= max);
     }   
 
 	//check if branch account is enough to expense
@@ -96,10 +100,11 @@ public class TestPayroll {
     	branch.submitHours(consultants[0], 5);
     	PartTimeBaseSalary ptbs = new PartTimeBaseSalary(5, consultants[0]);
     	ptbs.setAmount(500);
-    	branch.setBranchMoney(1000);
-    	assertTrue(branch.getBranchMoney() >= ptbs.getAmount());       	   	
+    	assertTrue(branch.getBranchAccount() >= ptbs.getAmount());       	   	
     } 
    
+    
+    
     
     public void setUpEmployees(){
         consultants = new SalesConsultant[] {

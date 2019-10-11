@@ -18,7 +18,7 @@ public class Console extends BaseConsole {
                 "log in",
                 "exit"
             },
-            new Branch("Test"),
+            new Branch("Test",5000),
             new Scanner(System.in),
             new BufferedReader(new InputStreamReader(System.in)),
             new PropertyManager("Emmy.de.propertymanager@gmail.com", "123")

@@ -35,8 +35,8 @@ public class PayrollItem {
         return id;
     }
 
-    public void setAmount(double a) {
-        amount = a;
+    public double setAmount(double a) {
+        return amount = a;
     }
 
     public Employee getEmployee() {
