@@ -250,12 +250,12 @@ public class TestBranch {
             )
         };
         branch.addProperty(properties[0]);
-        properties[0].setManagementFeeRate(0.75);
+        properties[0].setManagementFeeRate(0.075);
         double oldRate = properties[0].getManagementFeeRate();
         branch.addProperty(properties[1]);
         double rate = properties[0].getManagementFeeRate();
-        assertEquals(oldRate, 0.75, 5e-8);
-        assertTrue(rate <= 0.7 && rate >= 0.6);
+        assertEquals(oldRate, 0.075, 5e-8);
+        assertTrue(rate <= 0.07 && rate >= 0.06);
     }
     /*
     1.browse rental property by address (road/street name)
@@ -529,11 +529,18 @@ public class TestBranch {
         assertFalse(res.contains(properties[0]));
     }
 
+    /*
+    after a property is listed,
+    1. customers interested in that suburb will be notified
+    2. customers not interested in that suburb will not be notified
+    */
     @Test
     public void testSendNotificationForListedProperty() throws Exception {
         Tenant tenant = (Tenant)branch.login(branch.register("a.de.tenant@gmail.com", "123", "Tenant"), "123");
         tenant.addSuburbOfInterest("Hawthorn");
         tenant.addSuburbOfInterest("Sunshine");
+        Tenant tenant2 = (Tenant)branch.login(branch.register("b.de.tenant@gmail.com", "123", "Tenant"), "123");
+        tenant2.addSuburbOfInterest("Kew");
 
         Landlord landlord = (Landlord)branch.login(branch.register("a.de.landlord@gmail.com", "123", "Landlord"), "123");
         HashMap<String, Integer> cap = new HashMap<String, Integer>();
@@ -547,22 +554,21 @@ public class TestBranch {
         branch.addProperty(p);
         p.setManager(propMgrs[0]);
 
-        List<Notification> activeNotifListBeforeListing = tenant.getNotifications(NotifStatus.Active);
-
         p.list();
         branch.sendNotifForListedProperty(p);
 
-        List<Notification> activeNotifList = tenant.getNotifications(NotifStatus.Active);
+        List<Notification> notInterestedCustomerNotifList = tenant2.getNotifications(NotifStatus.Active);
+        List<Notification> notifList = tenant.getNotifications(NotifStatus.Active);
         Notification notif = null;
         String msg = "";
-        if (activeNotifList.size() > 0) {
-            notif = activeNotifList.get(0);
+        if (notifList.size() > 0) {
+            notif = notifList.get(0);
             msg = notif.getMessage();
         }
         String propertyId = p.getId();
 
-        assertTrue(activeNotifListBeforeListing.isEmpty());
-        assertEquals(activeNotifList.size(), 1);
+        assertTrue(notInterestedCustomerNotifList.isEmpty());
+        assertEquals(notifList.size(), 1);
         assertTrue(msg.contains("listed") && msg.contains(propertyId));
     }
 
