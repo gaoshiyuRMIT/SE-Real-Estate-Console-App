@@ -3,7 +3,7 @@ package exception;
 
 public class OfferAmountTooLowException extends Exception {
     public OfferAmountTooLowException() {
-        super();
+        super("Offer amount too low.");
     }
 
     public OfferAmountTooLowException(String msg) {

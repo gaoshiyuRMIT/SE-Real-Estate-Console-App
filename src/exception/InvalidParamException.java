@@ -3,7 +3,7 @@ package exception;
 
 public class InvalidParamException extends Exception {
     public InvalidParamException() {
-        super();
+        super("Invalid parameter.");
     }
 
     public InvalidParamException(String msg) {

@@ -3,7 +3,7 @@ package exception;
 
 public class InsufficientBalanceException extends Exception {
     public InsufficientBalanceException() {
-        super();
+        super("Insufficient balance.");
     }
 
     public InsufficientBalanceException(String msg) {

@@ -3,7 +3,7 @@ package exception;
 
 public class NotAuthorisedException extends Exception {
     public NotAuthorisedException() {
-        super();
+        super("Not authorised.");
     }
 
     public NotAuthorisedException(String msg) {

@@ -3,7 +3,7 @@ package exception;
 
 public class OperationNotAllowedException extends Exception {
     public OperationNotAllowedException() {
-        super();
+        super("Operation not allowed.");
     }
 
     public OperationNotAllowedException(String msg) {
