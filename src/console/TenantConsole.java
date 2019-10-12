@@ -129,7 +129,7 @@ public class TenantConsole extends BaseConsole {
         int duration = scanner.nextInt();
         Application a;
         try {
-            a = new Application(rp, Arrays.asList(id), rental, duration, user);
+            a = new Application(Arrays.asList(id), rental, duration, user);
         } catch (InvalidParamException e) {
             throw new InvalidInputException(e);
         }

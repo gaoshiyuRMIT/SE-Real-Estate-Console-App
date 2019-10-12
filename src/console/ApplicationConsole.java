@@ -19,7 +19,7 @@ public class ApplicationConsole extends BaseConsole {
                                 throws InternalException{
         super(base);
         try {
-            this.property = branch.getPropertyById(application.getPropertyId());
+            this.property = branch.getPropertyById(Property.extractPropertyId(application));
         } catch (InvalidParamException e) {
             throw new InternalException(e);
         }
