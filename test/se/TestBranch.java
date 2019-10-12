@@ -529,6 +529,53 @@ public class TestBranch {
         assertFalse(res.contains(properties[0]));
     }
 
+    @Test
+    public void testSendNotificationForListedProperty() throws Exception {
+        Tenant tenant = (Tenant)branch.login(branch.register("a.de.tenant@gmail.com", "123", "Tenant"), "123");
+        tenant.addSuburbOfInterest("Hawthorn");
+        tenant.addSuburbOfInterest("Sunshine");
+
+        Landlord landlord = (Landlord)branch.login(branch.register("a.de.landlord@gmail.com", "123", "Landlord"), "123");
+        HashMap<String, Integer> cap = new HashMap<String, Integer>();
+        cap.put("bedroom", 2);
+        cap.put("bathroom", 1);
+        cap.put("car space", 2);
+        RentalProperty p = new RentalProperty(
+            "31 Thomas St, VIC 3122", "Hawthorn", cap,
+            PropertyType.House, 500, 6, landlord
+        );
+        branch.addProperty(p);
+        p.setManager(propMgrs[0]);
+
+        List<Notification> activeNotifListBeforeListing = tenant.getNotifications(NotifStatus.Active);
+
+        p.list();
+        branch.sendNotifForListedProperty(p);
+
+        List<Notification> activeNotifList = tenant.getNotifications(NotifStatus.Active);
+        Notification notif = null;
+        String msg = "";
+        if (activeNotifList.size() > 0) {
+            notif = activeNotifList.get(0);
+            msg = notif.getMessage();
+        }
+        String propertyId = p.getId();
+
+        assertTrue(activeNotifListBeforeListing.isEmpty());
+        assertEquals(activeNotifList.size(), 1);
+        assertTrue(msg.contains("listed") && msg.contains(propertyId));
+    }
+
+    @Test
+    public void testSendNotificationForNewInspection() throws Exception {
+        fail("not implemented");
+    }
+
+    @Test
+    public void testSendNotificationForCancelledInspection() throws Exception {
+        fail("not implemented");
+    }
+
     public void setUpVendor() throws Exception {
         String cid = branch.register("john.doe345@gmail.com", "111111", "Vendor");
         this.vendor = (Vendor)(branch.login(cid, "111111"));
