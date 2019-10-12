@@ -23,6 +23,17 @@ public class ForSaleProperty extends Property {
         this.commissionRate = maxCommissionRate;
     }
 
+    public String getTextualDetail() {
+        SalesConsultant sc = getConsultant();
+        return super.getTextualDetail()
+            + "\n" + String.format(
+                "%-30s: %.2f\n"
+                    + "%-30s: %s",
+                "mininum price", minPrice,
+                "sales consultant", sc != null ? getConsultant().getId() : "not assigned"
+            );
+    }
+
     public List<PurchaseOffer> getApplications() {
         List<PurchaseOffer> res = new ArrayList<PurchaseOffer>();
         for (ApplicationBase ab : super.getApplicationBases())
@@ -68,6 +79,10 @@ public class ForSaleProperty extends Property {
             );
         }
         this.commissionRate = r;
+    }
+
+    public double getCommissionRate() {
+        return commissionRate;
     }
 
     public void addApplication(PurchaseOffer a) throws OperationNotAllowedException,

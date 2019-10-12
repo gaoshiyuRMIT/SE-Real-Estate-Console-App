@@ -4,6 +4,7 @@ import java.util.*;
 import static java.util.AbstractMap.SimpleEntry;
 
 import se.*;
+import finance.*;
 import consts.*;
 import user.customer.*;
 import user.employee.*;
@@ -18,6 +19,7 @@ public class RentalProperty extends Property {
     private List<Lease> leases;
     private double managementFeeRate;
     private SimpleEntry<Double, Double> managementFeeRateRange;
+    private Account account;
 
     public RentalProperty(String address, String suburb, HashMap<String, Integer> capacity,
                             PropertyType type, double weeklyRental, int desiredDuration,
@@ -29,6 +31,23 @@ public class RentalProperty extends Property {
         this.managementFeeRate = 0.08;
         this.managementFeeRateRange = new SimpleEntry<Double, Double>(0.07, 0.08);
         this.leases = new ArrayList<Lease>();
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public String getTextualDetail() {
+        PropertyManager pm = getManager();
+        return super.getTextualDetail()
+                + "\n" + String.format(
+                    "%-30s: %.2f per week\n"
+                        + "%-30s: %d months\n"
+                        + "%-30s: %s",
+                    "desired rental", weeklyRental,
+                    "desired contract duration", desiredDuration,
+                    "property manager", pm != null ? getManager().getId() : "not assigned"
+                );
     }
 
     public RentalProperty(String address, String suburb, HashMap<String, Integer> capacity,

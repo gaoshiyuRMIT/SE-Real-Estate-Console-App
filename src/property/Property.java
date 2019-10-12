@@ -43,6 +43,28 @@ public abstract class Property{
         this(address, suburb, capacity, PropertyType.valueOf(typeS), owner);
     }
 
+    public String getTextualDetail() {
+        String ret = String.format(
+            "%-30s: %s\n"
+                + "%-30s: %s\n"
+                + "%-30s: %s\n"
+                + "%-30s: %s\n"
+                + "%-30s: %s\n"
+                + "%-30s: %s",
+            "property id", id,
+            "address", address,
+            "suburb", suburb,
+            "type", type.name(),
+            "status", status.name(),
+            "owner", owner.getId()
+        );
+        ret += "\ncapacity:";
+        for (String k : capacity.keySet()) {
+            ret += String.format("\n  %-30s: %d", k, capacity.get(k));
+        }
+        return ret;
+    }
+
     public List<ApplicationBase> getApplicationBases() {
         return applications;
     }
@@ -147,12 +169,17 @@ public abstract class Property{
         return true;
     }
 
+    public static String extractPropertyId(ApplicationBase a) {
+        return a.getId().substring(0, 9);
+    }
+
     public void addApplicationBase(ApplicationBase a) throws OperationNotAllowedException{
         if (this.getStatus() != PropertyStatus.ApplicationOpen)
             throw new OperationNotAllowedException(
                 "Application for this property is currently closed."
             );
         this.applications.add(a);
+        a.addIdPrefix(getId() + "-");
     }
 
     public List<ApplicationBase> getPendingApplicationBases() {

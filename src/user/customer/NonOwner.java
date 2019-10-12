@@ -6,15 +6,28 @@ import exception.*;
 
 public abstract class NonOwner extends Customer {
     private HashMap<String, ApplicantDetail> applicants;
-    private String interestedSuburb;
+
+    // suburbs of interest
+    private List<String> suburbs;
 
     public NonOwner(String email, String passwd) {
         super(email, passwd);
         applicants = new HashMap<String, ApplicantDetail>();
+        suburbs = new ArrayList<String>();
     }
 
-    public void setSuburb(String suburb) {
-        interestedSuburb = suburb;
+    public void addSuburbOfInterest(String suburb) {
+        suburbs.add(suburb.toUpperCase());
+    }
+
+    public void setSuburbsOfInterest(List<String> l) {
+        suburbs.clear();
+        for (String s : l)
+            addSuburbOfInterest(s);
+    }
+
+    public List<String> getSuburbsOfInterest() {
+        return suburbs;
     }
 
     public List<ApplicantDetail> getApplicants(List<ID> ids){

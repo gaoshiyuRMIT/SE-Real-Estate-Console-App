@@ -4,7 +4,7 @@ import user.*;
 import consts.*;
 
 public class Employee extends User {
-    private static int maxMonthlyHours = 40;
+    private static int maxMonthlyHours = 170;
     private static int idCounter = 0;
     private boolean partTime;
     private EmployeeType role;
@@ -20,6 +20,10 @@ public class Employee extends User {
         this(email, password, role);
         this.hourlySalary = hourlySalary;
         this.partTime = true;
+    }
+
+    public boolean isPartTime() {
+        return partTime;
     }
 
     public static int getMaxMonthlyHours() {

@@ -54,4 +54,18 @@ public class ApplicantDetail {
     public boolean equals(ApplicantDetail d) {
         return id.equals(d.id);
     }
+
+    public String getTextualDetail() {
+        return String.format(
+            "%-30s: %s\n"
+                + "%-30s: %s\n"
+                + "%-30s: %s\n"
+                + "%-30s: %.2f\n"
+                + "employment history:\n",
+            "ID", id, "name", name, "occupation", occupation,
+            "annual income", annualIncome
+        ) + String.join("\n", employmentHistory)
+            + "\nrental history:\n"
+            + String.join("\n", rentalHistory);
+    }
 }

@@ -26,6 +26,16 @@ public class PurchaseOffer extends ApplicationBase {
         settlementPaid = false;
     }
 
+    public String getTextualDetail() {
+        return super.getTextualDetail()
+            + "\n" + String.format(
+                "%-30s: %s\n"
+                    + "%-30s: %s",
+                "buyer", getInitiator().getId(),
+                "amount", getAmount()
+            );
+    }
+
     public boolean isSecured() {
         return depositPaid;
     }

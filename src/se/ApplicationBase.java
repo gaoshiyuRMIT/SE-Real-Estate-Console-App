@@ -5,6 +5,7 @@ import java.util.*;
 
 import exception.*;
 import user.customer.*;
+import util.*;
 
 public abstract class ApplicationBase {
     private String id;
@@ -35,6 +36,27 @@ public abstract class ApplicationBase {
         this.applicantIds = applicantIds;
         this.initiator = initiator;
         this.applicants = null;
+    }
+
+    public void addIdPrefix(String prefix) {
+        id = prefix + id;
+    }
+
+    public String getTextualDetail() {
+        return String.format(
+            "%-30s: %s\n"
+                + "%-30s: %s\n"
+                + "%-30s: %s\n"
+                + "%-30s: %s",
+            "Application id", id,
+            "Date Received", dateReceived,
+            "Status", getStatusS(),
+            "Applicants", StringUtil.join(", ", applicantIds)
+        );
+    }
+
+    public NonOwner getInitiator() {
+        return initiator;
     }
 
     public String getStatusS() {

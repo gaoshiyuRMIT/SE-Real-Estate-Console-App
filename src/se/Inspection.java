@@ -1,6 +1,7 @@
 package se;
 
 import java.time.*;
+import java.time.format.*;
 
 import exception.*;
 
@@ -14,6 +15,14 @@ public class Inspection {
             throw new InvalidParamException("Cannot schedule an inspection in the past.");
         this.dateTime = dateTime;
         cancelled = false;
+    }
+
+    public String getDateTimeS() {
+        return dateTime.format(DateTimeFormatter.ofPattern("EEE, dd/MM/yyyy, h:ma"));
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
     public boolean isCancelled() {

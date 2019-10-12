@@ -39,4 +39,8 @@ public class Notification {
     public List<String> getURIs() {
         return uris;
     }
+    
+    public String getMessage() {
+    	return message;
+    }
  }

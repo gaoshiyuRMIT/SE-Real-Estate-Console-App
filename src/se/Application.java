@@ -26,7 +26,18 @@ public class Application extends ApplicationBase {
         this.weeklyRental = weeklyRental;
         this.duration = duration;
         rentBondPaid = false;
+    }
 
+    public String getTextualDetail() {
+        return super.getTextualDetail()
+            + "\n" + String.format(
+                "%-30s: %s\n"
+                    + "%-30s: %.2f\n"
+                    + "%-30s: %d months",
+                "tenant", getInitiator().getId(),
+                "weekly rental", weeklyRental,
+                "duration", duration
+            );
     }
 
 	public double getWeeklyRental() {
