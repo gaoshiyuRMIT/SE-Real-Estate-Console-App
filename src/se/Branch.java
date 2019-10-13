@@ -28,15 +28,38 @@ public class Branch {
         this.forSaleProps = new HashMap<String, ForSaleProperty>();
         this.customers = new HashMap<String, Customer>();
         this.employees = new HashMap<String, Employee>();
+        this.account = new Account(10000);
     }
 
     public Account getAccount() {
         return account;
     }
 
+    public HashMap<Employee, Double> preparePayrollFullTimeSalary() {
+        return null;
+    }
+    public HashMap<Employee, Double> preparePayrollPartTimeSalary() {
+        return null;
+    }
+    public HashMap<Employee, Double> preparePayrollSalesBonus() {
+        return null;
+    }
+    public HashMap<RentalProperty, Double> preparePayrollLandlordPayout() {
+        return null;
+    }
+
+    public void addSalesBonus(SalesConsultant consultant, PurchaseOffer po)
+                                    throws OperationNotAllowedException{
+        addPayrollItem(new SalesBonus(consultant, po));
+    }
+
+    public void addPayrollItem(PayrollItem pi) {
+        getThisMonthPayroll().put(pi.getId(), pi);
+    }
+
     public void submitHours(Employee e, int nHour) throws OperationNotAllowedException{
         PartTimeBaseSalary pbs = new PartTimeBaseSalary(nHour, e);
-        getMonthlyPayroll(pbs.getDate()).put(pbs.getId(), pbs);
+        addPayrollItem(pbs);
     }
 
     public List<PartTimeBaseSalary> getPendingHourSubmissions() {
@@ -51,12 +74,13 @@ public class Branch {
         return res;
     }
 
-    public PartTimeBaseSalary getHourSubmission(LocalDateTime date, String id) {
-        return (PartTimeBaseSalary)getMonthlyPayroll(date).get(id);
+    public PartTimeBaseSalary getHourSubmission(LocalDateTime date, Employee e) {
+        String payrollItemId = PartTimeBaseSalary.formatId(e);
+        return (PartTimeBaseSalary)getMonthlyPayroll(date).get(payrollItemId);
     }
 
-    public PartTimeBaseSalary getHourSubmission(LocalDateTime date, Employee e) {
-        return getHourSubmission(date, PartTimeBaseSalary.formatId(e));
+    public PartTimeBaseSalary getThisMonthHourSubmission(Employee e) {
+        return getHourSubmission(LocalDateTime.now(), e);
     }
 
     public HashMap<String, PayrollItem> getThisMonthPayroll() {

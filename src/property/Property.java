@@ -37,6 +37,7 @@ public abstract class Property{
         this.owner = owner;
         this.applications = new ArrayList<ApplicationBase>();
         this.inspections = new ArrayList<Inspection>();
+
     }
 
     public Property(String address, String suburb, HashMap<String, Integer> capacity,
@@ -180,6 +181,7 @@ public abstract class Property{
                 "Application for this property is currently closed."
             );
         this.applications.add(a);
+        a.setProperty(this);
         a.addIdPrefix(getId() + "-");
     }
 
@@ -243,13 +245,8 @@ public abstract class Property{
     }
 
     public void cancelAllInspections() throws OperationNotAllowedException{
-        try {
-            Branch branch = getBranch();
-        } catch (AttributeUnsetException e) {
-            throw new OperationNotAllowedException(
-                "Inspections cannot be cancelled when this property does not belong to any branch."
-            );
-        }
+        Branch branch;
+        branch = getBranch();
         for (Inspection i : getUpcomingInspections()) {
             i.setCancelled();
             branch.sendNotifForCancelledInspection(this, i);
@@ -260,11 +257,7 @@ public abstract class Property{
         branch = b;
     }
 
-    public Branch getBranch() throws AttributeUnsetException{
-        if (branch == null)
-            throw new AttributeUnsetException(
-                "This property currently do not belong to any branch."
-            );
+    public Branch getBranch(){
         return branch;
     }
 }

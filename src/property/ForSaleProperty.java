@@ -141,6 +141,13 @@ public class ForSaleProperty extends Property {
                                             throws OperationNotAllowedException{
         if (!this.getApplications().contains(a) || !a.isSecured())
             throw new OperationNotAllowedException();
-        a.setSettlementPaid(commissionRate);
+        a.setSettlementPaid();
+        // credit branch account with commission
+        double commission = a.getCommission();
+        Branch branch;
+        branch = getBranch();
+        branch.getAccount().deposit(commission);
+        // create sales bonus
+        branch.addSalesBonus(getConsultant(), a);
     }
 }

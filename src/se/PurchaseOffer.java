@@ -5,6 +5,7 @@ import java.util.*;
 
 import exception.*;
 import user.customer.*;
+import property.*;
 
 public class PurchaseOffer extends ApplicationBase {
     private static int idCounter = 0;
@@ -13,6 +14,7 @@ public class PurchaseOffer extends ApplicationBase {
     private double commissionRate;
     private boolean depositPaid;
     private boolean settlementPaid;
+    private ForSaleProperty property;
 
     public static String genId() {
         return String.format("po%08s", idCounter++);
@@ -24,6 +26,18 @@ public class PurchaseOffer extends ApplicationBase {
         this.amount = amount;
         depositPaid = false;
         settlementPaid = false;
+        commissionRate = 0;
+    }
+
+    public double getCommissionRate() {
+        if (!isFulfilled())
+            return property.getCommissionRate();
+        else
+            return commissionRate;
+    }
+
+    public ForSaleProperty getProperty() {
+        return (ForSaleProperty)super.getProperty();
     }
 
     public String getTextualDetail() {
@@ -44,13 +58,13 @@ public class PurchaseOffer extends ApplicationBase {
         return settlementPaid;
     }
 
-    public void setSettlementPaid(double commissionRate) throws OperationNotAllowedException {
+    public void setSettlementPaid() throws OperationNotAllowedException {
         if (!isSecured())
             throw new OperationNotAllowedException(
                 "Settlement cannot be paid before deposit is paid."
             );
-        this.commissionRate = commissionRate;
         settlementPaid = true;
+        commissionRate = getProperty().getCommissionRate();
     }
 
     public void setDepositPaid() {
@@ -62,6 +76,7 @@ public class PurchaseOffer extends ApplicationBase {
     }
 
     public double getCommission() {
-        return commissionRate * amount;
+        return amount * getCommissionRate();
     }
+
 }

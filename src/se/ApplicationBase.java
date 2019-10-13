@@ -3,6 +3,7 @@ package se;
 import java.time.*;
 import java.util.*;
 
+import property.*;
 import exception.*;
 import user.customer.*;
 import util.*;
@@ -12,6 +13,7 @@ public abstract class ApplicationBase {
     private List<ID> applicantIds;
     private List<ApplicantDetail> applicants;
 
+    private Property property;
     private NonOwner initiator;
     private LocalDateTime dateReceived;
     private LocalDateTime dateAccepted;
@@ -36,6 +38,14 @@ public abstract class ApplicationBase {
         this.applicantIds = applicantIds;
         this.initiator = initiator;
         this.applicants = null;
+    }
+
+    public void setProperty(Property p) {
+        property = p;
+    }
+
+    public Property getProperty() {
+        return property;
     }
 
     public void addIdPrefix(String prefix) {

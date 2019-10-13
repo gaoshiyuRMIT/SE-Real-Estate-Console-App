@@ -31,6 +31,7 @@ public class RentalProperty extends Property {
         this.managementFeeRate = 0.08;
         this.managementFeeRateRange = new SimpleEntry<Double, Double>(0.07, 0.08);
         this.leases = new ArrayList<Lease>();
+        this.account = new Account(1000);
     }
 
     public Account getAccount() {
@@ -97,9 +98,13 @@ public class RentalProperty extends Property {
     }
 
     public double getManagementFee() {
+        return this.managementFeeRate * getDeFactoMonthlyRental();
+    }
+
+    public double getDeFactoMonthlyRental() {
         Lease l = getCurrentLease();
         double weeklyRental = (l == null) ? this.weeklyRental : l.getWeeklyRental();
-        return this.managementFeeRate * weeklyRental * 365 / (12 * 7);
+        return weeklyRental * 365 / (12 * 7);
     }
 
     public void setMinManagementFeeRate(double f) {
@@ -177,6 +182,9 @@ public class RentalProperty extends Property {
         cancelAllInspections();
         Lease lease = new Lease(a);
         this.leases.add(lease);
+        // credit account
+        double credit = a.getBondAmount() + getDeFactoMonthlyRental();
+        account.deposit(credit);
     }
 
     public void withdrawApplication(Application a) throws OperationNotAllowedException {

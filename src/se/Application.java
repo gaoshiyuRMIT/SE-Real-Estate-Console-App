@@ -5,6 +5,7 @@ import java.util.*;
 
 import exception.*;
 import user.customer.*;
+import property.*;
 
 public class Application extends ApplicationBase {
     private static int idCounter = 0;
@@ -26,6 +27,10 @@ public class Application extends ApplicationBase {
         this.weeklyRental = weeklyRental;
         this.duration = duration;
         rentBondPaid = false;
+    }
+
+    public RentalProperty getProperty() {
+        return (RentalProperty)super.getProperty();
     }
 
     public String getTextualDetail() {
@@ -51,6 +56,10 @@ public class Application extends ApplicationBase {
             );
 		this.weeklyRental = weeklyRental;
 	}
+
+    public double getBondAmount() {
+        return getWeeklyRental() * 4;
+    }
 
 	public int getDuration() {
 		return duration;
