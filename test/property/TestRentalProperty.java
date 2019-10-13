@@ -36,6 +36,8 @@ public class TestRentalProperty {
             "124 Thomas St, VIC 3122", "Hawthorn", cap,
             PropertyType.House, 300, 6, landlord
         );
+        Branch branch = new Branch("Melbourne");
+        branch.addProperty(rentalProperty);
     }
 
     /*
