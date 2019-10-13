@@ -7,8 +7,4 @@ public class BranchManager extends Employee {
         super(email, password, EmployeeType.BranchManager);
     }
 
-
-    public BranchManager(String email, String password, double hourlySalary) {
-        super(email, password, EmployeeType.BranchManager, hourlySalary);
-    }
 }

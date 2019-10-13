@@ -4,7 +4,8 @@ import user.*;
 import consts.*;
 
 public class Employee extends User {
-    private static int maxMonthlyHours = 170;
+    private static final int maxMonthlyHours = 170;
+    private static final double defaultHourlySalary = 50;
     private static int idCounter = 0;
     private boolean partTime;
     private EmployeeType role;
@@ -14,12 +15,15 @@ public class Employee extends User {
         super(email, password, genId());
         this.role = role;
         this.partTime = false;
+        hourlySalary = defaultHourlySalary;
     }
 
-    public Employee(String email, String password, EmployeeType role, double hourlySalary) {
-        this(email, password, role);
-        this.hourlySalary = hourlySalary;
-        this.partTime = true;
+    public void setPartTime() {
+        partTime = true;
+    }
+
+    public void setFullTime() {
+        partTime = false;
     }
 
     public boolean isPartTime() {

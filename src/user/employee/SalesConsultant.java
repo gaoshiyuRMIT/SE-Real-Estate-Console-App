@@ -7,8 +7,4 @@ public class SalesConsultant extends Employee {
         super(email, password,  EmployeeType.SalesConsultant);
     }
 
-
-    public SalesConsultant(String email, String password, double hourlySalary) {
-        super(email, password,  EmployeeType.SalesConsultant, hourlySalary);
-    }
 }
