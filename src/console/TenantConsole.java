@@ -82,7 +82,7 @@ public class TenantConsole extends BaseConsole {
         }
     }
 
-    public void addApplicantDetail() throws InternalException{
+    public void addApplicantDetail() throws InternalException, InvalidInputException{
         System.out.print("Enter ID type (Passport/DriverLicence): ");
         String idType = scanner.next();
         System.out.print("Enter ID number: ");

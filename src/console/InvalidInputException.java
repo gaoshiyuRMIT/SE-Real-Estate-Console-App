@@ -13,4 +13,8 @@ public class InvalidInputException extends Exception {
     public InvalidInputException(Throwable t) {
         super(t);
     }
+
+    public InvalidInputException(String msg, Throwable t) {
+        super(msg, t);
+    }
 }

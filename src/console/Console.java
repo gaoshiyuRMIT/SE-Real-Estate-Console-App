@@ -11,6 +11,7 @@ import user.*;
 import user.employee.*;
 import user.customer.*;
 import consts.*;
+import console.util.*;
 
 public class Console extends BaseConsole {
     public Console() throws Exception{
@@ -21,7 +22,7 @@ public class Console extends BaseConsole {
                 "exit"
             },
             new Branch("Test"),
-            new Scanner(System.in),
+            new SEScanner(System.in),
             new BufferedReader(new InputStreamReader(System.in)),
             new PropertyManager("Emmy.de.propertymanager@gmail.com", "123")
         );

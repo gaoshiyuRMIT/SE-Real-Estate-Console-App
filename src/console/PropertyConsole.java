@@ -75,6 +75,8 @@ public class PropertyConsole extends BaseConsole {
             for (PropertyManager pm : lpm) {
                 System.out.printf("id %s email %s\n", pm.getId(), pm.getEmail());
             }
+            System.out.println("==================================");
+
             System.out.println("Please assign a property manager to the rental property.");
             Employee manager = getEmployeeById(lpm);
             ((RentalProperty)property).setManager((PropertyManager)manager);
@@ -89,6 +91,8 @@ public class PropertyConsole extends BaseConsole {
             for (SalesConsultant sc : lsc) {
                 System.out.printf("id %s email %s\n", sc.getId(), sc.getEmail());
             }
+            System.out.println("==================================");
+
             System.out.println("Please assign a sales consultant to the for-sale property.");
             Employee consultant = getEmployeeById(lsc);
             ((ForSaleProperty)property).setConsultant((SalesConsultant)consultant);

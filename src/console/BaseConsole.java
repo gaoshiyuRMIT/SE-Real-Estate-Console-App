@@ -10,15 +10,17 @@ import user.*;
 import property.*;
 import user.employee.*;
 
+import console.util.*;
+
 public abstract class BaseConsole {
     private List<String> menuOptions;
-    protected Scanner scanner;
+    protected SEScanner scanner;
     protected Branch branch;
     protected BufferedReader reader;
     protected PropertyManager pm;
     protected Util util;
 
-    public BaseConsole(List<String> menuOptions, Branch branch, Scanner scanner,
+    public BaseConsole(List<String> menuOptions, Branch branch, SEScanner scanner,
                         BufferedReader reader, PropertyManager pm) {
         this.menuOptions = menuOptions;
         this.scanner = scanner;
@@ -28,7 +30,7 @@ public abstract class BaseConsole {
         this.util = new Util(scanner);
     }
 
-    public BaseConsole(String[] menuOptions, Branch branch, Scanner scanner,
+    public BaseConsole(String[] menuOptions, Branch branch, SEScanner scanner,
                         BufferedReader reader, PropertyManager pm) {
         this(menuOptions != null ? Arrays.asList(menuOptions) : null, branch, scanner, reader, pm);
     }

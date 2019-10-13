@@ -1,11 +1,13 @@
-package console;
+package console.util;
 
 import java.util.*;
 
-public class Util {
-    private Scanner scanner;
+import console.*;
 
-    public Util(Scanner scanner) {
+public class Util {
+    private SEScanner scanner;
+
+    public Util(SEScanner scanner) {
         this.scanner = scanner;
     }
 
@@ -14,13 +16,7 @@ public class Util {
             System.out.printf("%-30d: %s\n", i+1, menuOptions.get(i));
         }
         System.out.print("Enter your choice: ");
-        int op;
-        try {
-            op = scanner.nextInt();
-        } catch (InputMismatchException e) {
-            scanner.nextLine();
-            throw new InvalidInputException("Must enter an integer present in the menu above.");
-        }
+        int op = scanner.nextInt();
         if (op < 1 || op > menuOptions.size())
             throw new InvalidInputException(
                 "Your choice must be a number displayed on the menu."
