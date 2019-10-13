@@ -198,9 +198,7 @@ public class Branch {
     }
 
     public void addProperty(Property p) {
-        boolean rental;
         if (p instanceof RentalProperty) {
-            rental = true;
             this.rentalProps.put(p.getId(), (RentalProperty)p);
             List<RentalProperty> ps = getOwnedRentalProperty(
                 ((RentalProperty)p).getLandlord()
@@ -211,9 +209,9 @@ public class Branch {
                     rp.setMaxManagementFeeRate(0.07);
                 }
         } else {
-            rental = false;
             this.forSaleProps.put(p.getId(), (ForSaleProperty)p);
         }
+        p.setBranch(this);
     }
 
     /*

@@ -22,6 +22,7 @@ public abstract class Property{
     private Customer owner;
     private Employee assignee;
     private List<ApplicationBase> applications;
+    private Branch branch;
 
 
     public Property(String address, String suburb, HashMap<String, Integer> capacity,
@@ -241,9 +242,30 @@ public abstract class Property{
         return res;
     }
 
-    public void cancelAllInspections() {
-        for (Inspection i : getUpcomingInspections())
+    public void cancelAllInspections() throws OperationNotAllowedException{
+        try {
+            Branch branch = getBranch();
+        } catch (AttributeUnsetException e) {
+            throw new OperationNotAllowedException(
+                "Inspections cannot be cancelled when this property does not belong to any branch."
+            );
+        }
+        for (Inspection i : getUpcomingInspections()) {
             i.setCancelled();
+            branch.sendNotifForCancelledInspection(this, i);
+        }
+    }
+
+    public void setBranch(Branch b) {
+        branch = b;
+    }
+
+    public Branch getBranch() throws AttributeUnsetException{
+        if (branch == null)
+            throw new AttributeUnsetException(
+                "This property currently do not belong to any branch."
+            );
+        return branch;
     }
 }
 
