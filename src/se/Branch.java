@@ -155,28 +155,28 @@ public class Branch {
 
     public List<RentalProperty> getOwnedRentalProperty(Landlord c) {
         ArrayList<RentalProperty> res = new ArrayList<RentalProperty>();
-        for (Property p : getProperties(null, c))
+        for (Property p : getProperties(c))
             res.add((RentalProperty)p);
         return res;
     }
 
     public List<RentalProperty> getManagedRentalProperty(PropertyManager e) {
         ArrayList<RentalProperty> res = new ArrayList<RentalProperty>();
-        for (Property p : getProperties(null, e))
+        for (Property p : getProperties(e))
             res.add((RentalProperty)p);
         return res;
     }
 
     public List<ForSaleProperty> getManagedForSaleProperty(SalesConsultant e) {
         ArrayList<ForSaleProperty> res = new ArrayList<ForSaleProperty>();
-        for (Property p : getProperties(null, e))
+        for (Property p : getProperties(e))
             res.add((ForSaleProperty)p);
         return res;
     }
 
     public List<ForSaleProperty> getOwnedForSaleProperty(Vendor c) {
         ArrayList<ForSaleProperty> res = new ArrayList<ForSaleProperty>();
-        for (Property p : getProperties(null, c))
+        for (Property p : getProperties(c))
             res.add((ForSaleProperty)p);
         return res;
     }
@@ -435,6 +435,10 @@ public class Branch {
         return ret;
     }
 
+    public List<Property> getProperties(Customer owner) {
+        return getProperties(null, owner);
+    }
+
     public List<Property> getProperties(PropertyStatus st, Employee e) {
         ArrayList<Property> ret = new ArrayList<Property>();
         if (e.getRole() == EmployeeType.SalesConsultant) {
@@ -447,5 +451,9 @@ public class Branch {
                     ret.add(rp);
         }
         return ret;
+    }
+
+    public List<Property> getProperties(Employee e) {
+        return getProperties(null, e);
     }
 }
