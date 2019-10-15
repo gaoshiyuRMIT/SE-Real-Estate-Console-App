@@ -3,6 +3,7 @@ package finance;
 import java.time.*;
 
 import user.employee.*;
+import util.*;
 
 public class PayrollItem {
     private static int idCounter = 0;
@@ -23,8 +24,7 @@ public class PayrollItem {
         this.employee = employee;
         paid = false;
         amount = 0;
-        LocalDateTime now = LocalDateTime.now();
-        date = LocalDateTime.of(now.getYear(), now.getMonth(), 0, 0, 0);
+        date = LocalDateTimeUtil.extractMonth(LocalDateTime.now());
         id = formatId(idPrefix, employee);
         this.amount = amount;
     }

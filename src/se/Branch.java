@@ -11,6 +11,7 @@ import user.customer.*;
 import user.employee.*;
 import user.*;
 import property.*;
+import util.*;
 
 public class Branch {
     private String name;
@@ -29,14 +30,18 @@ public class Branch {
         this.customers = new HashMap<String, Customer>();
         this.employees = new HashMap<String, Employee>();
         this.account = new Account(10000);
+        this.payroll = new HashMap<LocalDateTime, HashMap<String, PayrollItem>>();
+        this.payroll.put(LocalDateTimeUtil.extractMonth(LocalDateTime.now()),
+                        new HashMap<String, PayrollItem>());
     }
 
     public Account getAccount() {
         return account;
     }
 
+
     public void runPayroll(LocalDateTime date) throws InsufficientBalanceException{
-        date = LocalDateTime.of(date.getYear(), date.getMonth(), 0, 0, 0);
+        date = LocalDateTimeUtil.extractMonth(date);
         // pay salary and bonus
         HashMap<Employee, Double> ep = prepareEmployeePayOut(date);
         for (Employee e : ep.keySet()) {
@@ -50,6 +55,8 @@ public class Branch {
             account.printCheck(amount, "payment to landlord");
         }
         // set up next month's full time base salaries
+        payroll.put(LocalDateTimeUtil.extractMonth(LocalDateTime.now()),
+                    new HashMap<String, PayrollItem>());
         for (Employee e : employees.values()) {
             if (!e.isPartTime()) {
                 addPayrollItem(new FullTimeBaseSalary(e),
@@ -123,7 +130,7 @@ public class Branch {
     }
 
     public HashMap<String, PayrollItem> getMonthlyPayroll(LocalDateTime date) {
-        date = LocalDateTime.of(date.getYear(), date.getMonth(), 0, 0, 0);
+        date = LocalDateTimeUtil.extractMonth(date);
         return payroll.get(date);
     }
 

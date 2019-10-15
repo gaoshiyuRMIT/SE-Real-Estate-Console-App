@@ -57,8 +57,10 @@ public abstract class ApplicationBase {
             "%-30s: %s\n"
                 + "%-30s: %s\n"
                 + "%-30s: %s\n"
+                + "%-30s: %s\n"
                 + "%-30s: %s",
             "Application id", id,
+            "Property id", property.getId(),
             "Date Received", dateReceived,
             "Status", getStatusS(),
             "Applicants", StringUtil.join(", ", applicantIds)
