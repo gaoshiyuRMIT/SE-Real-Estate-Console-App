@@ -37,6 +37,10 @@ public class PayrollItem {
         return id;
     }
 
+    public double getAmount() {
+        return amount;
+    }
+
     public void setAmount(double a) {
         amount = a;
     }

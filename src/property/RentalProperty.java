@@ -43,7 +43,7 @@ public class RentalProperty extends Property {
     public void deductPropertyExpense(double amount) throws InsufficientBalanceException {
         try {
             account.withdraw(amount);
-        } catch (InsufficientBalance e) {
+        } catch (InsufficientBalanceException e) {
             getBranch().getAccount().withdraw(amount);
         }
     }
