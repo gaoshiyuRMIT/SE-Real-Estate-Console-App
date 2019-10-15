@@ -43,14 +43,14 @@ public class PropertyListConsole extends BaseConsole{
 
     public void console() {
         while (true) {
-            System.out.println("======= Properties ==========");
+            System.out.println(util.getPageBreak("Properties"));
             for (Property rp : propertyList) {
                 System.out.printf(
                     "%s %s %s\n",
                     rp.getId(), rp.getSuburb(), rp.getStatusS()
                 );
             }
-            System.out.println("=============================");
+            System.out.println(util.getPageBreak());
             try {
                 String option = displayMenu();
                 if (option.equals("view property"))

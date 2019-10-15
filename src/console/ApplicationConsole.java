@@ -48,9 +48,11 @@ public class ApplicationConsole extends BaseConsole {
     }
 
     public void viewDetail() {
-        System.out.printf("====== Property %s %s, Application %s =======\n",
+        System.out.println(util.getPageBreak(
+            String.format("Property %s %s, Application %s",
                             property.getId(), property.getSuburb(),
-                            application.getId());
+                            application.getId())
+        ));
         System.out.println(application.getTextualDetail());
     }
 
@@ -145,9 +147,10 @@ public class ApplicationConsole extends BaseConsole {
     }
 
     public void console() {
-        System.out.printf("Application %s by %s, %s\n", application.getId(),
-                            application.getInitiator().getId(),
-                            application.getStatusS());
+        String title = String.format("Application %s by %s, %s\n", application.getId(),
+                                    application.getInitiator().getId(),
+                                    application.getStatusS());
+        System.out.println(util.getPageBreak(title));
         while (true) {
             try {
                 String option = displayMenu();

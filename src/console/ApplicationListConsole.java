@@ -43,12 +43,12 @@ public class ApplicationListConsole extends BaseConsole {
 
     public void console() {
         while (true) {
-            System.out.println("====== Applications ======");
+            System.out.println(util.getPageBreak("Applications"));
             for (ApplicationBase a : appList) {
                 System.out.printf("%s by %s, %s\n", a.getId(), a.getInitiator().getId(),
                                     a.getStatusS());
             }
-            System.out.println("===========================");
+            System.out.println(util.getPageBreak());
             try {
                 String option = displayMenu();
                 if (option.equals("view application"))

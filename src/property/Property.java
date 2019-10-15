@@ -62,7 +62,7 @@ public abstract class Property{
         );
         ret += "\ncapacity:";
         for (String k : capacity.keySet()) {
-            ret += String.format("\n  %-30s: %d", k, capacity.get(k));
+            ret += String.format("\n  %-28s: %d", k, capacity.get(k));
         }
         return ret;
     }

@@ -44,7 +44,7 @@ public class PropertyConsole extends BaseConsole {
     }
 
     public void viewPropertyDetail() {
-        System.out.println("===== property detail =======");
+        System.out.println(util.getPageBreak("Property Detail"));
         System.out.println(property.getTextualDetail());
         if (!(user instanceof NonOwner)) {
             if (property instanceof RentalProperty) {
@@ -64,18 +64,18 @@ public class PropertyConsole extends BaseConsole {
 
     public void viewApplications() {
         RentalProperty rentalProperty = (RentalProperty)property;
-        System.out.println("======== Applications =========");
+        System.out.println(util.getPageBreak("Applications"));
         (new ApplicationListConsole(user, rentalProperty.getApplications(), this)).console();
     }
 
     public void listPropertyOnMarket() throws InvalidInputException, InternalException{
         if (property instanceof RentalProperty) {
             List<PropertyManager> lpm = branch.getAllPropertyManagers();
-            System.out.println("====== All Property Managers ======");
+            System.out.println(util.getPageBreak("All Property Managers"));
             for (PropertyManager pm : lpm) {
                 System.out.printf("id %s email %s\n", pm.getId(), pm.getEmail());
             }
-            System.out.println("==================================");
+            System.out.println(util.getPageBreak());
 
             System.out.println("Please assign a property manager to the rental property.");
             Employee manager = getEmployeeById(lpm);
@@ -87,11 +87,12 @@ public class PropertyConsole extends BaseConsole {
             }
         } else if (property instanceof ForSaleProperty) {
             List<SalesConsultant> lsc = branch.getAllSaleConsultants();
-            System.out.println("====== All Sales Consultants ======");
+            System.out.println(util.getPageBreak("All Sales Consultants"));
+
             for (SalesConsultant sc : lsc) {
                 System.out.printf("id %s email %s\n", sc.getId(), sc.getEmail());
             }
-            System.out.println("==================================");
+            System.out.println(util.getPageBreak());
 
             System.out.println("Please assign a sales consultant to the for-sale property.");
             Employee consultant = getEmployeeById(lsc);
@@ -119,8 +120,10 @@ public class PropertyConsole extends BaseConsole {
 
     public void console() {
         while (true) {
-            System.out.printf("Property %s %s %s\n", property.getId(),
-                                property.getSuburb(), property.getStatusS());
+            System.out.println(util.getPageBreak(
+                String.format("Property %s %s %s\n", property.getId(),
+                                property.getSuburb(), property.getStatusS())
+            ));
             try {
                 String option = displayMenu();
                 if (option.equals("view property detail"))

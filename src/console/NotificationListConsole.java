@@ -38,12 +38,12 @@ public class NotificationListConsole extends BaseConsole {
     }
 
     public void console() {
-        System.out.println("======= Notifications ==========");
+        System.out.println(util.getPageBreak("Notifications"));
         for (int i = 0; i < notifList.size(); i++) {
             Notification n = notifList.get(i);
             System.out.printf("No. %d\n", i+1);
             System.out.println(n.getTextualDetail());
-            System.out.println("=========================");
+            System.out.println(util.getPageBreak());
         }
 
         while (true) {

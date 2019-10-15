@@ -52,7 +52,7 @@ public abstract class BaseConsole {
     }
 
     public String displayMenu() throws InvalidInputException{
-        System.out.println("\n=================================");
+        System.out.println(util.getPageBreak("Menu"));
         return util.displayMenu(menuOptions);
     }
 
