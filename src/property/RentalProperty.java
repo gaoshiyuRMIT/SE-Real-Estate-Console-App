@@ -31,7 +31,21 @@ public class RentalProperty extends Property {
         this.managementFeeRate = 0.08;
         this.managementFeeRateRange = new SimpleEntry<Double, Double>(0.07, 0.08);
         this.leases = new ArrayList<Lease>();
-        this.account = new Account(1000);
+        this.account = new Account();
+    }
+
+    public void deductManagementFee() throws InsufficientBalanceException {
+        double amount = getManagementFee();
+        account.withdraw(amount);
+        getBranch().getAccount().deposit(amount);
+    }
+
+    public void deductPropertyExpense(double amount) throws InsufficientBalanceException {
+        try {
+            account.withdraw(amount);
+        } catch (InsufficientBalance e) {
+            getBranch().getAccount().withdraw(amount);
+        }
     }
 
     public Account getAccount() {

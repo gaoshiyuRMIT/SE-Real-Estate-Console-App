@@ -35,17 +35,53 @@ public class Branch {
         return account;
     }
 
-    public HashMap<Employee, Double> preparePayrollFullTimeSalary() {
-        return null;
+    public void runPayroll(LocalDateTime date) {
+        date = LocalDateTime.of(date.getYear(), date.getMonth(), 0, 0, 0);
+        // pay salary and bonus
+        HashMap<Employee, Double> ep = prepareEmployeePayOut();
+        for (Employee e : ep.keySet()) {
+            double amount = ep.get(e);
+            printCheck(amount, "payment to employee");
+        }
+        // pay landlord
+        HashMap<Landlord, Double> lp = prepareLandlordPayout();
+        for (Landlord l : lp.keySet()) {
+            double amount = ep.get(e);
+            printCheck(amount, "payment to landlord");
+        }
+        // set up next month's full time base salaries
+        for (Employee e : employees) {
+            if (e.isFullTime()) {
+                addPayrollItem(new FullTimeBaseSalary(e),
+                                date.plusMonths(1));
+            }
+        }
     }
-    public HashMap<Employee, Double> preparePayrollPartTimeSalary() {
-        return null;
+
+    public HashMap<Employee, Double> prepareEmployeePayOut() {
+        HashMap<Employee, Double> ret = new HashMap<Employee, Double>();
+        for (PayrollItem pi : getMonthlyPayroll(date)) {
+            Employee e = pi.getEmployee();
+            double amount = pi.getAmount();
+            payout.put(e, amount + ret.getOrDefault(e, 0.0));
+        }
+        return ret;
     }
-    public HashMap<Employee, Double> preparePayrollSalesBonus() {
-        return null;
-    }
-    public HashMap<RentalProperty, Double> preparePayrollLandlordPayout() {
-        return null;
+
+    public HashMap<Landlord, Double> prepareLandlordPayout(){
+        HashMap<Landlord, Double> ret = new HashMap<Landlord, Double>();
+        for (RentalProperty p : rentalProps) {
+            while (true) {
+                double balance = p.getAccount().getBalance();
+                try {
+                    p.getAccount().transferTo(account, balance);
+                    break;
+                } catch (InsifficientBalanceException e) {
+                }
+            }
+            ret.put(p.getLandlord(), balance);
+        }
+        return ret;
     }
 
     public void addSalesBonus(SalesConsultant consultant, PurchaseOffer po)
@@ -55,6 +91,10 @@ public class Branch {
 
     public void addPayrollItem(PayrollItem pi) {
         getThisMonthPayroll().put(pi.getId(), pi);
+    }
+
+    public void addPayrollItem(PayrollItem pi, LocalDateTime date) {
+        getMonthlyPayroll(date).put(pi.getId(), pi);
     }
 
     public void submitHours(Employee e, int nHour) throws OperationNotAllowedException{
@@ -93,7 +133,13 @@ public class Branch {
     }
 
     public void addEmployee(Employee e) {
+        // store employee
         this.employees.put(e.getId(), e);
+        // add to payroll
+        if (e.isFullTime()) {
+            FullTimeBaseSalary pi = new FullTimeBaseSalary(e);
+            addPayrollItem(pi);
+        }
     }
 
     public List<SimpleEntry<RentalProperty, Application>> getApplications(Tenant t) {

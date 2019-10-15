@@ -3,14 +3,20 @@ package finance;
 import exception.*;
 
 public class Account {
+    private double initialBalance;
     private double balance;
 
     public Account(double iniBal) {
+        initialBalance = iniBal;
         balance = iniBal;
     }
 
     public Account() {
         this(0.0);
+    }
+
+    public double getNetIncome() {
+        return balance - initialBalance;
     }
 
     public void withdraw(double amount) throws InsufficientBalanceException{
