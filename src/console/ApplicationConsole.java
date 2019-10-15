@@ -27,6 +27,7 @@ public class ApplicationConsole extends BaseConsole {
         this.application = application;
         List<String> menu = new ArrayList<String>();
         menu.add("view detail");
+        menu.add("view property detail");
         menu.add("back");
         if (user instanceof Customer && !(user instanceof NonOwner)) {
             if (application.isPending()) {
@@ -146,8 +147,12 @@ public class ApplicationConsole extends BaseConsole {
         }
     }
 
+    public void viewPropertyDetail() {
+        (new PropertyConsole(user, property, this)).console();
+    }
+
     public void console() {
-        String title = String.format("Application %s by %s, %s\n", application.getId(),
+        String title = String.format("Application %s by %s, %s", application.getId(),
                                     application.getInitiator().getId(),
                                     application.getStatusS());
         System.out.println(util.getPageBreak(title));
@@ -166,6 +171,8 @@ public class ApplicationConsole extends BaseConsole {
                     payRentAndBond();
                 else if (option.equals("pay deposit"))
                     payDeposit();
+                else if (option.equals("view property detail"))
+                    viewPropertyDetail();
                 else
                     break;
             } catch (InvalidInputException e) {

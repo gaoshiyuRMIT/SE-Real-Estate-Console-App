@@ -142,14 +142,11 @@ public class TenantConsole extends BaseConsole {
     }
 
     public void viewMyApplications() {
-        System.out.println(util.getPageBreak("Applications"));
+        List<Application> appList = new ArrayList<Application>();
         for (SimpleEntry<RentalProperty, Application> e : branch.getApplications(user)) {
-            RentalProperty p = e.getKey();
-            Application a = e.getValue();
-            System.out.printf("Property %s %s\n", p.getId(), p.getSuburb());
-            System.out.println(a.getTextualDetail());
-            System.out.println(util.getPageBreak());
+            appList.add(e.getValue());
         }
+        (new ApplicationListConsole(user, appList, this)).console();
     }
 
     public void viewApplicantDetails() {

@@ -44,6 +44,9 @@ public class ApplicationListConsole extends BaseConsole {
     public void console() {
         while (true) {
             System.out.println(util.getPageBreak("Applications"));
+            System.out.println(util.getPageBreak(
+                String.format("Displaying %d result(s).", appList.size())
+            ));
             for (ApplicationBase a : appList) {
                 System.out.printf("%s by %s, %s\n", a.getId(), a.getInitiator().getId(),
                                     a.getStatusS());

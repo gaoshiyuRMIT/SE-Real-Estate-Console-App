@@ -44,6 +44,9 @@ public class PropertyListConsole extends BaseConsole{
     public void console() {
         while (true) {
             System.out.println(util.getPageBreak("Properties"));
+            System.out.println(util.getPageBreak(
+                String.format("Displaying %d result(s).", propertyList.size())
+            ));
             for (Property rp : propertyList) {
                 System.out.printf(
                     "%s %s %s\n",

@@ -64,7 +64,6 @@ public class PropertyConsole extends BaseConsole {
 
     public void viewApplications() {
         RentalProperty rentalProperty = (RentalProperty)property;
-        System.out.println(util.getPageBreak("Applications"));
         (new ApplicationListConsole(user, rentalProperty.getApplications(), this)).console();
     }
 
@@ -121,7 +120,7 @@ public class PropertyConsole extends BaseConsole {
     public void console() {
         while (true) {
             System.out.println(util.getPageBreak(
-                String.format("Property %s %s %s\n", property.getId(),
+                String.format("Property %s %s %s", property.getId(),
                                 property.getSuburb(), property.getStatusS())
             ));
             try {
