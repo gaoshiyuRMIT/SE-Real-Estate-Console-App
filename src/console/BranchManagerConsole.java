@@ -23,7 +23,6 @@ public class BranchManagerConsole extends BaseConsole {
     }
 
     public void viewNewlyAddedProperties() {
-        System.out.println(util.getPageBreak("Newly Added Properties"));
         (new PropertyListConsole(user, branch.getNewlyAddedProperties(), this)).console();
     }
 
