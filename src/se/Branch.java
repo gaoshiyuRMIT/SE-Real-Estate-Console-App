@@ -131,7 +131,7 @@ public class Branch {
         // store employee
         this.employees.put(e.getId(), e);
         // add to payroll
-        if (e.isPartTime()) {
+        if (!e.isPartTime()) {
             FullTimeBaseSalary pi = new FullTimeBaseSalary(e);
             addPayrollItem(pi);
         }
