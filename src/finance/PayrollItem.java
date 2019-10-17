@@ -33,6 +33,10 @@ public class PayrollItem {
         return String.format("%s-%s", idPrefix, employee.getId());
     }
 
+    public void setPaid() {
+        paid = true;
+    }
+
     public String getId() {
         return id;
     }

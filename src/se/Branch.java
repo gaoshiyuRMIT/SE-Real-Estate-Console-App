@@ -71,6 +71,7 @@ public class Branch {
             Employee e = pi.getEmployee();
             double amount = pi.getAmount();
             ret.put(e, amount + ret.getOrDefault(e, 0.0));
+            pi.setPaid();
         }
         return ret;
     }
