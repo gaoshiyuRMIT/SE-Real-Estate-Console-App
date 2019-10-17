@@ -34,36 +34,6 @@ public class RentalProperty extends Property {
         this.account = new Account();
     }
 
-    public void deductManagementFee() throws InsufficientBalanceException {
-        double amount = getManagementFee();
-        account.withdraw(amount);
-        getBranch().getAccount().deposit(amount);
-    }
-
-    public void deductPropertyExpense(double amount) throws InsufficientBalanceException {
-        try {
-            account.withdraw(amount);
-        } catch (InsufficientBalanceException e) {
-            getBranch().getAccount().withdraw(amount);
-        }
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public String getTextualDetail() {
-        PropertyManager pm = getManager();
-        return super.getTextualDetail()
-                + "\n" + String.format(
-                    "%-30s: %.2f per week\n"
-                        + "%-30s: %d months\n"
-                        + "%-30s: %s",
-                    "desired rental", weeklyRental,
-                    "desired contract duration", desiredDuration,
-                    "property manager", pm != null ? getManager().getId() : "not assigned"
-                );
-    }
 
     public RentalProperty(String address, String suburb, HashMap<String, Integer> capacity,
                             String typeS, double weeklyRental, int desiredDuration,
@@ -213,4 +183,35 @@ public class RentalProperty extends Property {
             return null;
         return l;
     }
+    public void deductManagementFee() throws InsufficientBalanceException {
+        double amount = getManagementFee();
+        account.withdraw(amount);
+        getBranch().getAccount().deposit(amount);
+    }
+
+    public void deductPropertyExpense(double amount) throws InsufficientBalanceException {
+        try {
+            account.withdraw(amount);
+        } catch (InsufficientBalanceException e) {
+            getBranch().getAccount().withdraw(amount);
+        }
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public String getTextualDetail() {
+        PropertyManager pm = getManager();
+        return super.getTextualDetail()
+                + "\n" + String.format(
+                    "%-30s: %.2f per week\n"
+                        + "%-30s: %d months\n"
+                        + "%-30s: %s",
+                    "desired rental", weeklyRental,
+                    "desired contract duration", desiredDuration,
+                    "property manager", pm != null ? getManager().getId() : "not assigned"
+                );
+    }
+
 }
