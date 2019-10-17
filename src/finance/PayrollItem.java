@@ -37,6 +37,10 @@ public class PayrollItem {
         paid = true;
     }
 
+    public boolean isPaid() {
+        return paid;
+    }
+
     public String getId() {
         return id;
     }

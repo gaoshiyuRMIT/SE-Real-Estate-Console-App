@@ -68,6 +68,8 @@ public class Branch {
     public HashMap<Employee, Double> prepareEmployeePayOut(LocalDateTime date) {
         HashMap<Employee, Double> ret = new HashMap<Employee, Double>();
         for (PayrollItem pi : getMonthlyPayroll(date).values()) {
+            if (pi.isPaid())
+                continue;
             Employee e = pi.getEmployee();
             double amount = pi.getAmount();
             ret.put(e, amount + ret.getOrDefault(e, 0.0));
