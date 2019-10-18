@@ -13,6 +13,7 @@ public class BranchAdminConsole extends BaseConsole {
 
     public BranchAdminConsole(User user, BaseConsole base) {
         super(new String[] {
+            "browse tenants",
             "view payout to employees",
             "view payout to landlords",
             "prepare payout to employees",
@@ -84,7 +85,23 @@ public class BranchAdminConsole extends BaseConsole {
         }
     }
 
-
+    public void browseTenants() {
+        System.out.print("Enter ID type (Passport/DriverLicence): ");
+        String idType = scanner.next();
+        System.out.print("Enter ID number: ");
+        String idContent = scanner.next();
+        ID id = new ID(idType, idContent);
+        List<NonOwner> res = branch.getNonOwnerWithApplicant(id);
+        List<Tenant> tenants = new ArrayList<Tenant>();
+        for (NonOwner no : res) {
+            if (no instanceof Tenant)
+                tenants.add((Tenant)no);
+        }
+        System.out.println(util.getPageBreak("Tenants"));
+        for (Tenant t : tenants) {
+            System.out.println(t.getId());
+        }
+    }
 
     public void console() {
         super.console();
@@ -101,6 +118,8 @@ public class BranchAdminConsole extends BaseConsole {
                     viewPayoutToEmployees();
                 else if (option.equals("view payout to landlords"))
                     viewPayoutToLandlords();
+                else if (option.equals("browse tenants"))
+                    browseTenants();
                 else
                     break;
             } catch (InvalidInputException e) {

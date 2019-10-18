@@ -448,4 +448,15 @@ public class Branch {
     public List<Property> getProperties(Employee e) {
         return getProperties(null, e);
     }
+
+    public List<NonOwner> getNonOwnerWithApplicant(ID id) {
+        List<NonOwner> res = new ArrayList<NonOwner>();
+        for (Customer c : customers) {
+            if (c instanceof NonOwner) {
+                if (((NonOwner)c).hasApplicant(id))
+                    res.add((NonOwner)c);
+            }
+        }
+        return res;
+    }
 }
