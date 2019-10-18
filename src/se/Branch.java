@@ -20,6 +20,9 @@ public class Branch {
     private HashMap<String, Customer> customers;
     private HashMap<String, Employee> employees;
     private HashMap<LocalDateTime, HashMap<String, PayrollItem>> payroll;
+    private HashMap<Employee, Double> preparedEmployeePayout;
+    private HashMap<Landlord, Double> preparedLandlordPayout;
+
     private Account account;
 
     public Branch(String name) {
@@ -33,6 +36,8 @@ public class Branch {
         this.payroll = new HashMap<LocalDateTime, HashMap<String, PayrollItem>>();
         this.payroll.put(LocalDateTimeUtil.extractMonth(LocalDateTime.now()),
                         new HashMap<String, PayrollItem>());
+        preparedEmployeePayout = new HashMap<Employee, Double>();
+        preparedLandlordPayout = new HashMap<Landlord, Double>();
     }
 
     public Account getAccount() {
@@ -43,16 +48,18 @@ public class Branch {
     public void runPayroll(LocalDateTime date) throws InsufficientBalanceException{
         date = LocalDateTimeUtil.extractMonth(date);
         // pay salary and bonus
-        HashMap<Employee, Double> ep = prepareEmployeePayOut(date);
+        HashMap<Employee, Double> ep = preparedEmployeePayout;
         for (Employee e : ep.keySet()) {
             double amount = ep.get(e);
             account.printCheck(amount, "payment to employee");
+            ep.remove(e);
         }
         // pay landlord
-        HashMap<Landlord, Double> lp = prepareLandlordPayout(date);
+        HashMap<Landlord, Double> lp = preparedLandlordPayout;
         for (Landlord l : lp.keySet()) {
             double amount = ep.get(l);
             account.printCheck(amount, "payment to landlord");
+            ep.remove(l);
         }
         // set up next month's full time base salaries
         payroll.put(LocalDateTimeUtil.extractMonth(LocalDateTime.now()),
@@ -65,8 +72,8 @@ public class Branch {
         }
     }
 
-    public HashMap<Employee, Double> prepareEmployeePayOut(LocalDateTime date) {
-        HashMap<Employee, Double> ret = new HashMap<Employee, Double>();
+    public void prepareEmployeePayOut(LocalDateTime date) {
+        HashMap<Employee, Double> ret = preparedEmployeePayout;
         for (PayrollItem pi : getMonthlyPayroll(date).values()) {
             if ((pi instanceof PartTimeBaseSalary
                     && !((PartTimeBaseSalary)pi).isApproved()
@@ -77,18 +84,18 @@ public class Branch {
             ret.put(e, amount + ret.getOrDefault(e, 0.0));
             pi.setPaid();
         }
-        return ret;
     }
 
-    public HashMap<Landlord, Double> prepareLandlordPayout(LocalDateTime date)
-                                                    throws InsufficientBalanceException{
-        HashMap<Landlord, Double> ret = new HashMap<Landlord, Double>();
+    public void prepareLandlordPayout() throws InsufficientBalanceException{
+        HashMap<Landlord, Double> ret = preparedLandlordPayout;
         for (RentalProperty p : rentalProps.values()) {
             double balance = p.getAccount().getBalance();
+            if (balance == 0)
+                continue;
             p.getAccount().transferTo(account, balance);
-            ret.put(p.getLandlord(), balance);
+            Landlord l = p.getLandlord();
+            ret.put(l, balance + ret.getOrDefault(l, 0.0));
         }
-        return ret;
     }
 
     public void addSalesBonus(SalesConsultant consultant, PurchaseOffer po)
