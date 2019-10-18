@@ -45,6 +45,14 @@ public class Branch {
     }
 
 
+    public HashMap<Employee, Double> getPreparedEmployeePayout() {
+        return preparedEmployeePayout;
+    }
+
+    public HashMap<Landlord, Double> getPreparedLandlordPayout() {
+        return preparedLandlordPayout;
+    }
+
     public void runPayroll(LocalDateTime date) throws InsufficientBalanceException{
         date = LocalDateTimeUtil.extractMonth(date);
         // pay salary and bonus
@@ -62,8 +70,8 @@ public class Branch {
             ep.remove(l);
         }
         // set up next month's full time base salaries
-        payroll.put(LocalDateTimeUtil.extractMonth(LocalDateTime.now()),
-                    new HashMap<String, PayrollItem>());
+        payroll.putIfAbsent(date.plusMonths(1),
+                            new HashMap<String, PayrollItem>());
         for (Employee e : employees.values()) {
             if (!e.isPartTime()) {
                 addPayrollItem(new FullTimeBaseSalary(e),
@@ -156,40 +164,11 @@ public class Branch {
         }
     }
 
-    public List<SimpleEntry<RentalProperty, Application>> getApplications(Tenant t) {
-        ArrayList<SimpleEntry<RentalProperty, Application>> res
-                = new ArrayList<SimpleEntry<RentalProperty, Application>>();
+    public List<Application> getApplications(Tenant t) {
+        List<Application> res = new ArrayList<Application>();
         for (RentalProperty p : this.rentalProps.values())
             for (Application a : p.getApplicationsInitiatedBy(t))
-                res.add(new SimpleEntry<RentalProperty, Application>(p, a));
-        return res;
-    }
-
-    public List<RentalProperty> getOwnedRentalProperty(Landlord c) {
-        ArrayList<RentalProperty> res = new ArrayList<RentalProperty>();
-        for (Property p : getProperties(c))
-            res.add((RentalProperty)p);
-        return res;
-    }
-
-    public List<RentalProperty> getManagedRentalProperty(PropertyManager e) {
-        ArrayList<RentalProperty> res = new ArrayList<RentalProperty>();
-        for (Property p : getProperties(e))
-            res.add((RentalProperty)p);
-        return res;
-    }
-
-    public List<ForSaleProperty> getManagedForSaleProperty(SalesConsultant e) {
-        ArrayList<ForSaleProperty> res = new ArrayList<ForSaleProperty>();
-        for (Property p : getProperties(e))
-            res.add((ForSaleProperty)p);
-        return res;
-    }
-
-    public List<ForSaleProperty> getOwnedForSaleProperty(Vendor c) {
-        ArrayList<ForSaleProperty> res = new ArrayList<ForSaleProperty>();
-        for (Property p : getProperties(c))
-            res.add((ForSaleProperty)p);
+                res.add(a);
         return res;
     }
 
@@ -284,11 +263,12 @@ public class Branch {
     public void addProperty(Property p) {
         if (p instanceof RentalProperty) {
             this.rentalProps.put(p.getId(), (RentalProperty)p);
-            List<RentalProperty> ps = getOwnedRentalProperty(
-                ((RentalProperty)p).getLandlord()
+            List<Property> ps = getProperties(
+                p.getOwner()
             );
             if (ps.size() >= 2)
-                for (RentalProperty rp : ps) {
+                for (Property p_ : ps) {
+                    RentalProperty rp = (RentalProperty)p_;
                     rp.setMinManagementFeeRate(0.06);
                     rp.setMaxManagementFeeRate(0.07);
                 }

@@ -73,6 +73,10 @@ public class RentalProperty extends Property {
         this.weeklyRental = r;
     }
 
+    public void setDuration(int d) {
+        desiredDuration = d;
+    }
+
     public void setManager(PropertyManager e) {
         setEmployee(e);
     }

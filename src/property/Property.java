@@ -45,6 +45,10 @@ public abstract class Property{
         this(address, suburb, capacity, PropertyType.valueOf(typeS), owner);
     }
 
+    public HashMap<String, Integer> getCapacity() {
+        return capacity;
+    }
+
     public String getTextualDetail() {
         String ret = String.format(
             "%-30s: %s\n"
@@ -134,6 +138,11 @@ public abstract class Property{
     public String getSuburb() {
         return suburb;
     }
+
+    public void setSuburb(String suburb) {
+        this.suburb = suburb;
+    }
+
 
 	public boolean match(String address, String suburb,
                             HashMap<String, Integer> capacity,
@@ -259,6 +268,14 @@ public abstract class Property{
 
     public Branch getBranch(){
         return branch;
+    }
+
+    public void setAddress(String a) {
+        address = a;
+    }
+
+    public void setPropertyType(String typeS) {
+        type = PropertyType.valueOf(typeS);
     }
 }
 
