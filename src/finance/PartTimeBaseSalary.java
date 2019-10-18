@@ -46,4 +46,8 @@ public class PartTimeBaseSalary extends PayrollItem{
     public boolean isPending() {
         return status == HoursStatus.Pending;
     }
+
+    public boolean isApproved() {
+        return status == HoursStatus.Approved;
+    }
 }
