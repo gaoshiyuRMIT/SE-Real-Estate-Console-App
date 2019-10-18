@@ -71,6 +71,8 @@ public class Console extends BaseConsole {
             (new LandlordConsole(u, this)).console();
         else if (u instanceof Tenant)
             (new TenantConsole(u, this)).console();
+        else if (u instanceof Employee && ((Employee)u).getRole() == EmployeeType.BranchAdmin)
+            (new BranchAdminConsole(u, this)).console();
     }
 
     public static void main(String[] args) throws InternalException{

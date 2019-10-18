@@ -143,8 +143,8 @@ public class TenantConsole extends BaseConsole {
 
     public void viewMyApplications() {
         List<Application> appList = new ArrayList<Application>();
-        for (SimpleEntry<RentalProperty, Application> e : branch.getApplications(user)) {
-            appList.add(e.getValue());
+        for (Application a : branch.getApplications(user)) {
+            appList.add(a);
         }
         (new ApplicationListConsole(user, appList, this)).console();
     }

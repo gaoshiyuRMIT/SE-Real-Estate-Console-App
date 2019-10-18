@@ -60,7 +60,7 @@ public class LandlordConsole extends BaseConsole {
     }
 
     public void viewMyProperties() {
-        List<RentalProperty> pl = branch.getOwnedRentalProperty(user);
+        List<Property> pl = branch.getProperties(user);
         (new PropertyListConsole(user, pl, this)).console();
     }
 

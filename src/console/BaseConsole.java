@@ -43,6 +43,34 @@ public abstract class BaseConsole {
         this(null, base);
     }
 
+    public int getInt() throws InternalException, InvalidInputException,
+                                EmptyInputException{
+        String s = getLine();
+        if (s.isEmpty())
+            throw new EmptyInputException();
+        int res;
+        try {
+            res = Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            throw new InvalidInputException("A whole number/integer is required.");
+        }
+        return res;
+    }
+
+    public double getDouble()  throws InternalException, InvalidInputException,
+                                        EmptyInputException{
+        String s = getLine();
+        if (s.isEmpty())
+            throw new EmptyInputException();
+        double res;
+        try {
+            res = Double.parseDouble(s);
+        } catch (NumberFormatException e) {
+            throw new InvalidInputException("A whole number/integer is required.");
+        }
+        return res;
+    }
+
     public void setMenuOptions(String[] menuOptions) {
         setMenuOptions(Arrays.asList(menuOptions));
     }

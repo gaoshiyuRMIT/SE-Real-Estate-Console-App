@@ -106,6 +106,56 @@ public class PropertyConsole extends BaseConsole {
         System.out.println("Successfully listed property.");
     }
 
+    public void editRentalAndDuration() throws InvalidInputException, InternalException {
+        viewPropertyDetail();
+        System.out.println("Fill in the fields you want to change (leave blank if no change):");
+        System.out.println("Enter weekly rental: ");
+        try {
+            ((RentalProperty)property).setWeeklyRental(getDouble());
+        } catch (EmptyInputException e) {}
+        catch (OperationNotAllowedException e) {
+            throw new InvalidInputException(e);
+        }
+        System.out.println("Enter desired contract duration (number of months): ");
+        try {
+            ((RentalProperty)property).setDuration(getInt());
+        } catch (EmptyInputException e) {}
+        System.out.println("Change saved.");
+    }
+
+    public void editPropertyDetail() throws InvalidInputException, InternalException{
+        viewPropertyDetail();
+        System.out.println("Fill in the fields you want to change (leave blank if no change):");
+        System.out.println("Enter address: ");
+        String address = getLine();
+        if (!address.isEmpty())
+            property.setAddress(address);
+        System.out.println("Enter suburb: ");
+        String suburb = getLine();
+        if (!suburb.isEmpty())
+            property.setSuburb(suburb);
+        System.out.println("Enter type (House/Unit/Flat/Townhouse/Studio): ");
+        String type = getLine();
+        if (!type.isEmpty())
+            property.setPropertyType(type);
+        HashMap<String, Integer> cap = property.getCapacity();
+        System.out.println("Enter capacity,");
+        System.out.println("Enter number of bedrooms: ");
+        try {
+            cap.put("bedroom", getInt());
+        } catch (EmptyInputException e) {}
+        System.out.println("Enter number of bathrooms: ");
+        try {
+            cap.put("bathroom", getInt());
+        } catch (EmptyInputException e) {}
+        System.out.println("Enter number of car spaces: ");
+        try {
+            cap.put("car space", getInt());
+        } catch (EmptyInputException e) {}
+        System.out.println("Change saved.");
+    }
+
+
     public Employee getEmployeeById(List<? extends Employee> l) throws InvalidInputException{
         System.out.print("Enter employee id: ");
         String eid = scanner.next();
@@ -131,6 +181,10 @@ public class PropertyConsole extends BaseConsole {
                     viewApplications();
                 else if (option.equals("list property on market"))
                     listPropertyOnMarket();
+                else if (option.equals("edit property detail"))
+                    editPropertyDetail();
+                else if (option.equals("edit rental and duration"))
+                    editRentalAndDuration();
                 else
                     break;
             } catch (InvalidInputException e) {
@@ -141,3 +195,4 @@ public class PropertyConsole extends BaseConsole {
         }
     }
 }
+
