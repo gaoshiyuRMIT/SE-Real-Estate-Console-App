@@ -12,5 +12,8 @@ javac -cp $CP src/console/*.java \
                 src/user/customer/*.java \
                 src/user/employee/*.java  \
                 'test'/*.java \
+                'test'/property/*.java \
+                'test'/se/*.java \
+                'test'/user/customer/*.java \
                 -d bin
 java -ea -cp $CP console.Console
