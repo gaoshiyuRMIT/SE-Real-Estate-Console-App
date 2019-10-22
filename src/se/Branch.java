@@ -451,7 +451,7 @@ public class Branch {
 
     public List<NonOwner> getNonOwnerWithApplicant(ID id) {
         List<NonOwner> res = new ArrayList<NonOwner>();
-        for (Customer c : customers) {
+        for (Customer c : customers.values()) {
             if (c instanceof NonOwner) {
                 if (((NonOwner)c).hasApplicant(id))
                     res.add((NonOwner)c);
