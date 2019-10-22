@@ -125,7 +125,7 @@ public class TestBranch {
 
         branch.addProperty(rentalProperty);
 
-        List<RentalProperty> ps = branch.getOwnedRentalProperty(landlord);
+        List<Property> ps = branch.getProperties(landlord);
         List<Property> ps1 = branch.getNewlyAddedProperties();
         assertTrue(ps.contains(rentalProperty));
         assertTrue(ps1.contains(rentalProperty));
@@ -138,7 +138,7 @@ public class TestBranch {
 
         branch.addProperty(forSaleProperty);
 
-        List<ForSaleProperty> ps = branch.getOwnedForSaleProperty(vendor);
+        List<Property> ps = branch.getProperties(vendor);
         List<Property> ps1 = branch.getNewlyAddedProperties();
         assertTrue(ps.contains(forSaleProperty));
         assertTrue(ps1.contains(forSaleProperty));
@@ -156,7 +156,7 @@ public class TestBranch {
         branch.addProperty(rentalProperty);
         rentalProperty.setManager(propMgrs[0]);
 
-        List<RentalProperty> ps = branch.getManagedRentalProperty(propMgrs[0]);
+        List<Property> ps = branch.getProperties(propMgrs[0]);
         assertTrue(ps.contains(rentalProperty));
     }
 
@@ -222,11 +222,8 @@ public class TestBranch {
         );
         rentalProperty.addApplication(a);
 
-        List<SimpleEntry<RentalProperty, Application>> as
-                = branch.getApplications(tenant);
-        assertTrue(as.contains(
-            new SimpleEntry<RentalProperty, Application>(rentalProperty, a)
-        ));
+        List<Application> as = branch.getApplications(tenant);
+        assertTrue(as.contains(a));
     }
 
     /*
